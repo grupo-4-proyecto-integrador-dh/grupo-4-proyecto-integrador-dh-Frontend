@@ -1,0 +1,18 @@
+.bg-body-tertiary {
+  background-color: #fffdf4 !important; /* Cambia este color por el que desees */
+}
+
+.btn-outline-success {
+  border-color: #e76f51 !important; /* Cambia este color por el que desees */
+  color: #e76f51 !important; /* Cambia este color por el que desees */
+}
+
+.btn-outline-success:hover {
+  border-color: #e76f51 !important; /* Cambia este color por el que desees */
+  background-color: #e76f51 !important; /* Cambia este color por el que desees */
+  color: #fff !important; /* Cambia este color por el que desees */
+}
+
+.text-body-tertiary {
+  color: #e76f51 !important; /* Cambia este color por el que desees */
+}
