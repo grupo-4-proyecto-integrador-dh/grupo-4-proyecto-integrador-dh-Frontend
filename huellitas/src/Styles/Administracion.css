@@ -1,0 +1,98 @@
+/* Estilos generales */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FAF3E0; /* Beige pastel */
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+}
+
+/* Contenedor principal más corto y centrado */
+.container {
+    background: #FFF5E1; /* Tono más claro de beige */
+    padding: 40px;
+    width: 600px; /* Más corto y compacto */
+    min-height: 400px; /* Más corto */
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    border: 2px solid #F4A261; /* Borde naranja */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Ajuste para pantallas más grandes */
+@media (min-width: 1200px) {
+    .container {
+        width: 650px;
+        min-height: 450px;
+    }
+}
+
+h1 {
+    font-size: 28px;
+    color: #E76F51; /* Naranja más oscuro */
+    font-weight: bold;
+}
+
+/* Estilos para los campos de entrada */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 2px solid #E9C46A; /* Amarillo pastel */
+    border-radius: 8px;
+    font-size: 16px;
+    background: #FFFAF0; /* Fondo suave */
+    transition: 0.3s;
+}
+
+.input-field:focus {
+    border-color: #E76F51;
+    outline: none;
+    box-shadow: 0px 0px 10px rgba(231, 111, 81, 0.3);
+}
+
+/* Botón de guardar */
+.button {
+    background: #E76F51;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 5px 15px rgba(231, 111, 81, 0.3);
+}
+
+.button:hover {
+    background: #D45D41;
+    transform: scale(1.05);
+}
+
+/* Mensajes de éxito y error */
+.mensaje {
+    font-size: 16px;
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.mensaje.exito {
+    background: #D4EDDA;
+    color: #155724;
+    border: 2px solid #A8D5BA;
+}
+
+.mensaje.error {
+    background: #F8D7DA;
+    color: #721C24;
+    border: 2px solid #E27D85;
+}
