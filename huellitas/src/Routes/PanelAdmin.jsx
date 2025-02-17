@@ -1,11 +1,7 @@
-const PanelAdmin = () => {
-  return <div>PanelAdmin</div>;
-};
-
 import React, { useState, useEffect } from "react";
-import "./administracion.css";
+import "../Styles/administracion.css";
 
-function App() {
+function PanelAdmin() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
@@ -13,7 +9,7 @@ function App() {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [servicios, setServicios] = useState([]);
 
-  // Cargar servicios desde localStorage al iniciar
+  // Cargar servicios guardados en localStorage
   useEffect(() => {
     const serviciosGuardados = JSON.parse(localStorage.getItem("servicios")) || [];
     setServicios(serviciosGuardados);
@@ -25,7 +21,6 @@ function App() {
       return;
     }
 
-    // Verificar si el servicio ya existe
     const existe = servicios.some(
       (servicio) => servicio.nombre.toLowerCase() === nombre.toLowerCase()
     );
@@ -35,14 +30,20 @@ function App() {
       return;
     }
 
-    // Agregar nuevo servicio
-    const nuevoServicio = { nombre, descripcion, precio, imagen };
+    // Asegurar que el precio sea un número válido
+    const precioNumerico = parseFloat(precio);
+    if (isNaN(precioNumerico) || precioNumerico <= 0) {
+      setMensaje({ texto: "⚠️ El precio debe ser un número válido.", tipo: "error" });
+      return;
+    }
+
+    const nuevoServicio = { nombre, descripcion, precio: precioNumerico, imagen };
     const nuevosServicios = [...servicios, nuevoServicio];
 
     setServicios(nuevosServicios);
-    localStorage.setItem("servicios", JSON.stringify(nuevosServicios)); // Guardar en localStorage
+    localStorage.setItem("servicios", JSON.stringify(nuevosServicios));
 
-    setMensaje({ texto: "✅ ¡Servicio guardado con éxito!", tipo: "exito" });
+    setMensaje({ texto: "✅ ¡Servicio agregado con éxito!", tipo: "exito" });
 
     // Limpiar campos después de guardar
     setNombre("");
@@ -67,7 +68,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>🔧 Gestión de Servicios</h1>
+      <h1>🛒 Gestión de servicios </h1>
 
       <input
         type="text"
@@ -102,11 +103,11 @@ function App() {
 
       {imagen && <img src={imagen} alt="Vista previa" className="preview-img" />}
 
-      <button className="button" onClick={agregarServicio}>Guardar Servicio</button>
+      <button className="button" onClick={agregarServicio}>Agregar Servicio</button>
 
       {mensaje.texto && <p className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</p>}
     </div>
   );
 }
 
-export default App;
+export default PanelAdmin;

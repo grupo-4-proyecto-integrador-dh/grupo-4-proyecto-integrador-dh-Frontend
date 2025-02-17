@@ -8,15 +8,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; 
+    min-height: 100vh; 
 }
 
-/* Contenedor principal más corto y centrado */
+/* Contenedor principal responsivo */
 .container {
     background: #FFF5E1; /* Tono más claro de beige */
     padding: 40px;
-    width: 600px; /* Más corto y compacto */
-    min-height: 400px; /* Más corto */
+    max-width: 90%; /* Ajuste dinámico */
+    width: 600px; 
+    min-height: 400px; 
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
     border: 2px solid #F4A261; /* Borde naranja */
@@ -25,18 +26,50 @@ body {
     justify-content: center;
 }
 
-/* Ajuste para pantallas más grandes */
-@media (min-width: 1200px) {
+/* Ajustes para tablets */
+@media (max-width: 768px) {
     .container {
-        width: 650px;
-        min-height: 450px;
+        padding: 30px;
+        width: 85%;
+        min-height: 350px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+
+    .input-field {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .button {
+        font-size: 16px;
+        padding: 10px;
     }
 }
 
-h1 {
-    font-size: 28px;
-    color: #E76F51; /* Naranja más oscuro */
-    font-weight: bold;
+/* Ajustes para móviles */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        width: 90%;
+        min-height: auto;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .input-field {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .button {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
 
 /* Estilos para los campos de entrada */
@@ -44,10 +77,10 @@ h1 {
     width: 100%;
     padding: 12px;
     margin: 12px 0;
-    border: 2px solid #E9C46A; /* Amarillo pastel */
+    border: 2px solid #E9C46A;
     border-radius: 8px;
     font-size: 16px;
-    background: #FFFAF0; /* Fondo suave */
+    background: #FFFAF0;
     transition: 0.3s;
 }
 
