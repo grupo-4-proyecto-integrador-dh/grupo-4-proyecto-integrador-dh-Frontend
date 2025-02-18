@@ -2,7 +2,10 @@ import "../Styles/Header.css";
 import { Link } from "react-router-dom";
 import logo from "../logo-example_1 1 (1).ico";
 
+
 const Header = () => {
+ 
+
   return (
     <nav className="navbar navbar-expand-lg sticky-top bg-body-tertiary">
       <div className="container-fluid p-4">
@@ -15,6 +18,9 @@ const Header = () => {
             className="d-inline-block align-text-top"
           />
         </Link>
+
+        
+
         <button
           className="navbar-toggler"
           type="button"
@@ -53,3 +59,5 @@ const Header = () => {
 };
 
 export default Header;
+
+
