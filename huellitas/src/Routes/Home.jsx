@@ -1,31 +1,21 @@
-import React, { useState, useEffect } from "react";
-import productos from "../productos"; // Asegúrate de la ruta correcta
-import Card from "../Components/Card";
+import React from "react";
+import productos from "../productos"; // Asegúrate de que los productos están en un array
+import "../Styles/App.css";
 
 const Home = () => {
-  const [productosAleatorios, setProductosAleatorios] = useState([]);
-
-  useEffect(() => {
-    const obtenerProductosAleatorios = () => {
-      let copiaProductos = [...productos];
-      let seleccionados = [];
-
-      while (seleccionados.length < 10 && copiaProductos.length > 0) {
-        const indexAleatorio = Math.floor(Math.random() * copiaProductos.length);
-        seleccionados.push(copiaProductos[indexAleatorio]);
-        copiaProductos.splice(indexAleatorio, 1); // Elimina el producto para evitar repetición
-      }
-
-      setProductosAleatorios(seleccionados);
-    };
-
-    obtenerProductosAleatorios();
-  }, []);
+  // Mezcla los productos de forma aleatoria y toma los primeros 10
+  const productosAleatorios = [...productos]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 10);
 
   return (
     <div className="grid-container">
       {productosAleatorios.map((producto) => (
-        <Card key={producto.id} producto={producto} />
+        <div className="card" key={producto.id}>
+          <img src={producto.imagen} alt={producto.nombre} />
+          <h3>{producto.nombre}</h3>
+          <p>{producto.descripcion}</p>
+        </div>
       ))}
     </div>
   );
