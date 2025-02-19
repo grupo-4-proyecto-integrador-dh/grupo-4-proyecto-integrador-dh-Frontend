@@ -5,6 +5,7 @@ import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
+import NotFoundPage from "./Components/NotFoundPage";
 import "./Styles/index.css";
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/detalle" element={<Detalle />} />
         <Route path="/admin" element={<PanelAdmin />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </>
