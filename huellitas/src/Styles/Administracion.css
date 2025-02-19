@@ -129,3 +129,11 @@ body {
     color: #721C24;
     border: 2px solid #E27D85;
 }
+
+.mensaje-bloqueo {
+    color: #721C24;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 50px;
+  }
+  
