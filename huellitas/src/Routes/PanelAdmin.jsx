@@ -8,6 +8,16 @@ function PanelAdmin() {
   const [imagen, setImagen] = useState(null);
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [servicios, setServicios] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // <1024px se considera móvil
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Cargar servicios guardados en localStorage
   useEffect(() => {
@@ -65,6 +75,11 @@ function PanelAdmin() {
       reader.readAsDataURL(file);
     }
   };
+
+  // Bloquear el acceso si es un dispositivo móvil
+  if (isMobile) {
+    return <h2 className="mensaje-bloqueo">❌ El panel de administración no está disponible en dispositivos móviles.</h2>;
+  }
 
   return (
     <div className="container">
