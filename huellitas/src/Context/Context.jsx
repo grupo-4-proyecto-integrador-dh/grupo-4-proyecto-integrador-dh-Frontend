@@ -1,11 +1,10 @@
-import { createContext, useContext,  useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import { reducer } from "../Reducers/reducer";
 
-const UserStates = createContext();
+const ProductState = createContext();
 
-const initialState = {};
-// eslint-disable-next-line react/prop-types
-const Context = ({ children }) => {
+const initialState = { products: [] };
+export const Context = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   // const url = "https://jsonplaceholder.typicode.com/users";
 
@@ -24,12 +23,10 @@ const Context = ({ children }) => {
   // }, []);
 
   return (
-    <UserStates.Provider value={{ state, dispatch }}>
+    <ProductState.Provider value={{ state, dispatch }}>
       {children}
-    </UserStates.Provider>
+    </ProductState.Provider>
   );
 };
-export default Context;
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useUserStates = () => useContext(UserStates);
+export const useProductState = () => useContext(ProductState);

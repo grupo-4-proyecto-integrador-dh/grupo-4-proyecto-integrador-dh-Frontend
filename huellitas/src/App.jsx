@@ -1,27 +1,26 @@
-
 import { Route, Routes } from "react-router-dom";
 import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
-import Header from "./Components/Header";
-import Footer from "./Components/Footer";
+import Layout from "./Layouts/Layout";
 import "./Styles/index.css";
 
+import ListaProductos from "./Routes/ListaProductos";
 
 function App() {
   return (
     <>
-      <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/detalle" element={<Detalle />} />
-        <Route path="/admin" element={<PanelAdmin />} />
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/administracion" element={<PanelAdmin />} />
+          <Route path="/alojamiento/:id" element={<Detalle />} />
+          <Route path="/lista" element={<ListaProductos />} />
+          <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
+        </Route>
       </Routes>
-      <Footer />
     </>
   );
 }
 
 export default App;
- 
-
