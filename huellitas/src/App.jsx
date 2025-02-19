@@ -1,23 +1,27 @@
-import "./Styles/index.css";
+
 import { Route, Routes } from "react-router-dom";
 import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
-import Layout from "./Layouts/Layout";
+import Header from "./Components/Header";
+import Footer from "./Components/Footer";
+import "./Styles/index.css";
+
 
 function App() {
   return (
     <>
+      <Header />
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/administracion" element={<PanelAdmin />} />
-          <Route path="/alojamiento/:id" element={<Detalle />} />
-          <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
-        </Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/detalle" element={<Detalle />} />
+        <Route path="/admin" element={<PanelAdmin />} />
       </Routes>
+      <Footer />
     </>
   );
 }
 
 export default App;
+ 
+

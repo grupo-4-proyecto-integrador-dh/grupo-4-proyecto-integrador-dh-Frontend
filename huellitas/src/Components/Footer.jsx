@@ -1,3 +1,4 @@
+
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import '../Styles/Footer.css';
@@ -47,5 +48,7 @@ function Footer() {
     </footer>
   );
 }
+
+
 
 export default Footer;
