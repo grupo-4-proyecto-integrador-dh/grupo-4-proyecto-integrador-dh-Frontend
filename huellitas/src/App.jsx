@@ -3,6 +3,8 @@ import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
+import NotFoundPage from "./Components/NotFoundPage";
+
 import "./Styles/index.css";
 
 import ListaProductos from "./Routes/ListaProductos";
@@ -16,7 +18,8 @@ function App() {
           <Route path="/administracion" element={<PanelAdmin />} />
           <Route path="/alojamiento/:id" element={<Detalle />} />
           <Route path="/lista" element={<ListaProductos />} />
-          <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
+          <Route path="/detalle" element={<Detalle />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </>
