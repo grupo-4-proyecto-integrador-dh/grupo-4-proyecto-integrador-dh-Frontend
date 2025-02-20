@@ -1,27 +1,111 @@
 @import url("https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 
 .footer {
-  margin-top: auto;
-  font-family: "Martian Mono", monospace;
-  font-size: small;
-}
-
-.footer-bg {
   background-color: #fffdf4;
   color: #e76f51;
   box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Martian Mono", monospace;
+  font-size: small;
+  padding: 20px 0;
+  width: 100%;
+  position: relative;
+  bottom: 0;
 }
 
-.footer a {
-  color: #e76f51;
-  text-decoration: none;
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+  /* Added gap for spacing */
 }
 
-.footer a:hover {
-  color: #555;
+.footer-left {
+  max-width: 300px;
+  margin-right: 20px;
+  /* Added margin */
 }
 
 .footer-logo {
   width: 160px;
   height: auto;
+  margin-bottom: 10px;
+}
+
+.footer-copyright {
+  text-align: left;
+}
+
+.footer-menu {
+  flex: 1;
+  margin-right: 20px;
+  /* Added margin */
+}
+
+.footer-menu h4,
+.footer-social h4 {
+  font-size: 18px;
+}
+
+.footer-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-menu ul li {
+  margin-bottom: 12px;
+  /* Adjusted margin */
+}
+
+.footer-menu ul li a {
+  color: #e76f51;
+  text-decoration: none;
+}
+
+.footer-menu ul li a:hover {
+  color: #555;
+}
+
+.footer-social {
+  text-align: right;
+  margin-right: 20px;
+  /* Added margin */
+}
+
+.social-icons a {
+  font-size: 24px;
+  color: #e76f51;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    /* Adjusted padding */
+    gap: 10px;
+    /* Adjusted gap for smaller screens */
+  }
+
+  .footer-left,
+  .footer-menu,
+  .footer-social {
+    margin-bottom: 20px;
+  }
+
+  .footer-social {
+    text-align: center;
+  }
 }

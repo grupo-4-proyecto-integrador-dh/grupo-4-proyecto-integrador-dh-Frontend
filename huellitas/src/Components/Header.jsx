@@ -1,52 +1,34 @@
 import "../Styles/Header.css";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import logo from "/media/svg/logo-svg.svg";
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="navbar navbar-expand-lg sticky-top bg-body-tertiary">
-      <div className="container-fluid p-4">
-        <Link className="navbar-brand" to="/">
-          <img
-            src={logo}
-            alt="Huellitas Logo"
-            width="160"
-            height="40"
-            className="d-inline-block align-text-top"
-          />
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link className="logo" to="/">
+          <img src={logo} alt="Huellitas Logo" className="logo-img" />
         </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
+        <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
+          ☰
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link
-                className="nav-link active fst-italic text-body-tertiary"
-                aria-current="page"
-                to="/"
-              >
+
+        <div className={`nav-links ${isOpen ? "open" : ""}`}>
+          <ul>
+            <li>
+              <Link to="/" className="nav-text">
                 Un hogar para tu mascota
               </Link>
             </li>
           </ul>
-          <form className="d-flex" role="search">
-            <button className="btn btn-outline-success me-2" type="button">
-              Crear Cuenta
-            </button>
-            <button className="btn btn-outline-success" type="button">
-              Iniciar Sesión
-            </button>
-          </form>
+          <div className="auth-buttons">
+            <button className="btn">Crear Cuenta</button>
+            <button className="btn">Iniciar Sesión</button>
+          </div>
         </div>
       </div>
     </nav>

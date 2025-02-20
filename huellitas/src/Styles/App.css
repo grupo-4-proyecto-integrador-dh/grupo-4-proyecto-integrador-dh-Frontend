@@ -1,52 +1,17 @@
-/* 📌 Logo */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+* {
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-/* 📌 Animación del logo */
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-/* 📌 Texto informativo */
-.read-the-docs {
-  color: #888;
-  /* Liver */
-}
-
-/* Responsive: 1 columna en pantallas pequeñas */
-@media (max-width: 600px) {
-  .grid-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Responsive: 1 columna en pantallas pequeñas */
-@media (max-width: 600px) {
-  .grid-container {
-    grid-template-columns: 1fr;
-  }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

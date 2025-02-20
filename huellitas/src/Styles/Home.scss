@@ -15,7 +15,6 @@
       border: 3px colors.$light solid;
       padding: 3px;
       border-radius: 13px;
-
       width: 370px;
       cursor: pointer;
       img {
@@ -37,6 +36,7 @@
         }
       }
       p {
+        user-select: none;
         z-index: 1;
         color: colors.$white;
         position: absolute;
