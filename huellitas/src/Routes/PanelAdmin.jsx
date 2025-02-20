@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/administracion.css";
+import { useNavigate } from "react-router-dom";
 
 function PanelAdmin() {
   const [nombre, setNombre] = useState("");
@@ -9,6 +10,7 @@ function PanelAdmin() {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [servicios, setServicios] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -118,7 +120,10 @@ function PanelAdmin() {
 
       {imagen && <img src={imagen} alt="Vista previa" className="preview-img" />}
 
-      <button className="button" onClick={agregarServicio}>Agregar Servicio</button>
+      <div className="button-container">
+        <button className="button" onClick={agregarServicio}>Agregar Servicio</button>
+        <button className="buttonList" onClick={()=> navigate("/lista")}>Lista de Servicios</button>
+      </div>
 
       {mensaje.texto && <p className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</p>}
     </div>
