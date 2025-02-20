@@ -1,0 +1,120 @@
+.imagen_principal{
+  grid-column: 1/3;
+  grid-row: 1/3;
+  height: 100%;
+  width: 100%;
+  border-radius: 5%;
+}
+
+.foto{
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+  box-shadow: 5px 5px 5px rgba(141, 10, 10, 0.5);
+  border-radius: 5%;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  transition: filter 0.3s ease-in-out;
+}
+
+.foto:hover {
+    filter: brightness(80%);
+}
+
+
+.imagen_secundaria{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.galeria{
+  background-color:rgba(236, 220, 187, 0.9);
+  display: grid;
+  position: relative;
+  animation: fadeIn 2s ease-in-out;
+}
+
+
+.grid-layout{
+  grid-gap: 1%;
+  display: grid; 
+  grid-template-columns: auto auto auto auto;
+  grid-template-rows: 50% 50%;
+}
+
+.boton_vermas{
+  height: 8%;
+  width: 8%;
+  position: absolute;
+  top: 90%;
+  left: 90%;
+  background-color: rgba(182, 152, 152, 0.7);
+  box-shadow: 0 0.1vh 0.1vh 0;
+  border-radius: 10%;
+}
+
+.boton_vermas:hover{
+  background-color: rgb(177, 165, 165);
+
+}
+
+.boton_cerrar{
+  height: 5%;
+  width: 5%;
+  position: absolute;
+  top: 5%;
+  left: 90%;
+  background-color: rgba(102, 96, 96, 0.205);
+  border-radius: 5%;
+  border: none;
+  font-size: xx-large;
+  
+}
+.boton_cerrar:hover{
+  background-color: rgb(221, 206, 206);
+
+}
+
+.ventana_modal{
+  display: flex;
+  background-color: rgba(182, 152, 152, 0.9);
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+}
+
+
+.fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.fadeOut {
+  animation: fadeOut 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
