@@ -1,0 +1,119 @@
+@use "colors";
+
+.main__categorias {
+  & > span {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    height: 300px;
+
+    .categorias__card {
+      position: relative;
+      background-color: colors.$white;
+      border: 3px colors.$light solid;
+      padding: 3px;
+      border-radius: 13px;
+
+      width: 370px;
+      cursor: pointer;
+      img {
+        position: relative;
+        border-radius: 10px;
+        aspect-ratio: 2/1;
+        object-fit: cover;
+        filter: grayscale(20%) brightness(50%);
+        text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.51);
+
+        ::before {
+          content: "asda";
+          position: absolute;
+          top: 0;
+          left: 5px;
+          width: 100%;
+          height: 100%;
+          background-color: black;
+        }
+      }
+      p {
+        z-index: 1;
+        color: colors.$white;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 2rem;
+        padding: 2ch;
+        text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.51);
+      }
+    }
+
+    :hover {
+      img {
+        filter: brightness(60%);
+      }
+    }
+  }
+}
+
+.main__recomendaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: colors.$light;
+  padding: 3rem 2rem;
+
+  h1 {
+    color: colors.$primary;
+    font-size: 2rem;
+    font-weight: 1000;
+  }
+  .main__recomendaciones__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+
+    .card {
+      border: 1px solid colors.$light;
+      width: 300px;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      background-color: colors.$white;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      aspect-ratio: 1/1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        aspect-ratio: 3/2;
+        width: 100%;
+        border-radius: 5px;
+        max-height: 200px;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.main__buscar {
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  justify-content: center;
+  align-items: center;
+  background-color: colors.$light;
+
+  p {
+    color: colors.$primary;
+    font-weight: 1000;
+    font-size: 2rem;
+  }
+}

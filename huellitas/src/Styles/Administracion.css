@@ -1,26 +1,27 @@
 /* Estilos generales */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #FAF3E0; /* Beige pastel */
     text-align: center;
-    padding: 20px;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; 
+    min-height: 100vh;
 }
 
 /* Contenedor principal responsivo */
 .container {
-    background: #FFF5E1; /* Tono más claro de beige */
+    background: #FFF5E1;
+    /* Tono más claro de beige */
     padding: 40px;
-    max-width: 90%; /* Ajuste dinámico */
-    width: 600px; 
-    min-height: 400px; 
+    max-width: 90%;
+    /* Ajuste dinámico */
+    width: 600px;
+    min-height: 400px;
     border-radius: 15px;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
-    border: 2px solid #F4A261; /* Borde naranja */
+    border: 2px solid #F4A261;
+    /* Borde naranja */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -33,7 +34,7 @@ body {
         width: 85%;
         min-height: 350px;
     }
-    
+
     h1 {
         font-size: 24px;
     }
@@ -135,5 +136,4 @@ body {
     text-align: center;
     font-size: 20px;
     margin-top: 50px;
-  }
-  
+}

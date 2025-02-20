@@ -31,15 +31,6 @@
   }
 }
 
-/* 📌 Estilos de tarjetas */
-.card {
-  padding: 2em;
-  background-color: #8EB897;
-  /* Cambridge Blue */
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 /* 📌 Texto informativo */
 .read-the-docs {
   color: #888;
@@ -51,54 +42,6 @@
   .grid-container {
     grid-template-columns: 1fr;
   }
-}
-
-/* Estilos para la cuadrícula de productos */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  /* 2 columnas */
-  grid-template-rows: repeat(5, auto);
-  /* Máximo 5 filas */
-  gap: 20px;
-  /* Espacio entre productos */
-  padding: 20px;
-  justify-content: center;
-  /* Centra la cuadrícula */
-  align-items: center;
-  /* Asegura alineación vertical */
-  max-width: 800px;
-  /* Limita el ancho máximo */
-  margin: auto;
-  /* Centra la cuadrícula en la pantalla */
-}
-
-/* Estilos de cada tarjeta de producto */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
-  text-align: center;
-  background-color: white;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  /* Para que todas las tarjetas sean iguales */
-  max-width: 300px;
-  /* Ajusta según necesidad */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Ajuste de imágenes */
-.card img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-  max-height: 200px;
-  /* Evita imágenes demasiado grandes */
-  object-fit: cover;
-  /* Ajusta la imagen sin deformarla */
 }
 
 /* Responsive: 1 columna en pantallas pequeñas */
