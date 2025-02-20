@@ -13,8 +13,9 @@ body {
 }
 
 /*  Header */
+/*
 .header {
-  /*background-color: transparent; */
+  
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -27,6 +28,7 @@ body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   height: 60px;
 }
+  */
 /* Botón Volver alineado a la derecha */
 .back-button {
   position: fixed;
@@ -153,15 +155,15 @@ body {
   }
 }
 
-/* 🔹 Pantallas medianas (Tablets y pantallas hasta 991px) */
+/*  Pantallas medianas (Tablets y pantallas hasta 991px) */
 @media (min-width: 601px) and (max-width: 991px) {
   .header {
     height: 55px;
-    padding: 12px 15px; /* Ajuste de padding */
+    padding: 12px 15px; 
   }
 
   .title {
-    font-size: 20px; /* Ajustar tamaño del título */
+    font-size: 20px; /* Ajustar  título */
   }
 
   .back-button {
@@ -202,7 +204,7 @@ body {
 }
 
 
-/* 🔹 Pantallas medianas (Tablets) */
+/*  Pantallas medianas (Tablets) */
 @media (min-width: 601px) and (max-width: 1024px) {
   .header {
     height: 55px;
@@ -228,7 +230,7 @@ body {
   }
 }
 
-/* 🔹 Pantallas grandes (Desktop) */
+/*  Pantallas grandes (Desktop) */
 @media (min-width: 1025px) {
   .back-button {
     top: 90px;
