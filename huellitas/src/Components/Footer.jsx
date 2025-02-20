@@ -1,7 +1,7 @@
 import { Container, Row, Col, Nav } from "react-bootstrap";
 import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import "../Styles/Footer.css";
-import logo from "/public/media/svg/logo-svg.svg";
+import logo from "/media/svg/logo-svg.svg";
 
 function Footer() {
   return (
