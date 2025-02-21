@@ -9,22 +9,18 @@ const Header = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link className="logo" to="/">
-          <img src={logo} alt="Huellitas Logo" className="logo-img" />
-        </Link>
+        <div className="brand">
+          <Link className="brand-link" to="/">
+            <img src={logo} alt="Huellitas Logo" className="logo-img" />
+            <span className="nav-text">Un hogar para tu mascota</span>
+          </Link>
+        </div>
 
         <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
           ☰
         </button>
 
         <div className={`nav-links ${isOpen ? "open" : ""}`}>
-          <ul>
-            <li>
-              <Link to="/" className="nav-text">
-                Un hogar para tu mascota
-              </Link>
-            </li>
-          </ul>
           <div className="auth-buttons">
             <button className="btn">Crear Cuenta</button>
             <button className="btn">Iniciar Sesión</button>

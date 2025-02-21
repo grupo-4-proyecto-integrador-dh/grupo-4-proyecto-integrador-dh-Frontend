@@ -20,6 +20,7 @@
       img {
         position: relative;
         border-radius: 10px;
+        width: 100%;
         aspect-ratio: 2/1;
         object-fit: cover;
         filter: grayscale(20%) brightness(50%);
@@ -71,33 +72,61 @@
     color: colors.$primary;
     font-size: 2rem;
     font-weight: 1000;
+    text-align: center;
   }
+
   .main__recomendaciones__grid {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 10px;
-    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, auto);
+    gap: 20px;
+    justify-items:center;
     align-items: center;
 
     .card {
       border: 1px solid colors.$light;
-      width: 300px;
+      width: 100%;
+      max-width: 400px;
+      height: 200px;
       border-radius: 10px;
-      padding: 15px;
       text-align: center;
       background-color: colors.$white;
       box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      aspect-ratio: 1/1;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
 
       img {
-        aspect-ratio: 3/2;
-        width: 100%;
-        border-radius: 5px;
-        max-height: 200px;
+        width: 50%;
+        height: 100%; 
+        border-radius: 5px 0 0 5px;
         object-fit: cover;
+      }
+
+      .card-content {
+        width: 50%;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      h3{
+        font-size: 18px;
+      }
+
+      h3, p {
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: wrap;
+        text-align: left;
       }
     }
   }
@@ -116,4 +145,25 @@
     font-weight: 1000;
     font-size: 2rem;
   }
+}
+
+@media (max-width: 768px) {
+  .main__recomendaciones {
+    .main__recomendaciones__grid {
+      grid-template-columns: 1fr;
+      h3{
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+
+  .main__categorias{
+    & > span {
+      flex-direction: column;
+      gap: 1rem;
+      height: auto;
+    }
+  }
+
 }

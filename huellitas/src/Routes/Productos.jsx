@@ -5,7 +5,7 @@ import "../Styles/Productos.css";
 const Productos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [images, setImages] = useState([]);
-  const cardsPerPage = 10;
+  const [cardsPerPage, setCardsPerPage] = useState(10);
   const totalCards = 19;
   const totalPages = Math.ceil(totalCards / cardsPerPage);
 
@@ -20,7 +20,23 @@ const Productos = () => {
       setImages(fetchedImages);
     };
     fetchImages();
-  }, [totalCards]);
+  }, []);
+
+  useEffect(() => {
+    const updateCardsPerPage = () => {
+      if (window.innerWidth <= 480) {
+        setCardsPerPage(4);
+      } else if (window.innerWidth <= 768) {
+        setCardsPerPage(6);
+      } else {
+        setCardsPerPage(10);
+      }
+    };
+
+    updateCardsPerPage();
+    window.addEventListener("resize", updateCardsPerPage);
+    return () => window.removeEventListener("resize", updateCardsPerPage);
+  }, []);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -37,16 +53,14 @@ const Productos = () => {
   const renderCards = () => {
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
-    return images
-      .slice(startIndex, endIndex)
-      .map((imageUrl, index) => (
-        <CardP
-          key={startIndex + index}
-          title={`Dog ${startIndex + index + 1}`}
-          description="A random dog image"
-          imageUrl={imageUrl}
-        />
-      ));
+    return images.slice(startIndex, endIndex).map((imageUrl, index) => (
+      <CardP
+        key={startIndex + index}
+        title={`Dog ${startIndex + index + 1}`}
+        description="A random dog image"
+        imageUrl={imageUrl}
+      />
+    ));
   };
 
   return (

@@ -12,12 +12,6 @@ const Detalle = () => {
 
   return (
     <div>
-      {/*  
-      <header className="header">
-        <h1 className="title">Hospedaje Premium</h1>
-      </header>*/}
-
-      {/* Botón flotante FUERA del header */}
       <button className="back-button" onClick={() => navigate("/")}>
         ⬅ Volver
       </button>
