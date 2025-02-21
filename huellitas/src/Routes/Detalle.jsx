@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 //import AvailabilityTable from "../Components/AvailabilityTable";
 import "../Styles/Detalle.scss";
+import Galeria from "../Components/Detalle/Galeria";
 
 const Detalle = () => {
   const navigate = useNavigate();
@@ -25,8 +26,9 @@ const Detalle = () => {
         <div className="content">
           <div className="service-description">
             <h2 className="hospedaje-premium">Hospedaje Premium para Perros</h2>
-            <p>Este paquete incluye:</p>
+            <Galeria />
             <ul className="benefits">
+            <p>Este paquete incluye:</p>
               <li>
                 <strong>Alojamiento en habitación cómoda y climatizada.</strong>
               </li>
@@ -39,22 +41,17 @@ const Detalle = () => {
               <li>
                 Disponible para <strong>estadías de 3, 5 o 7 días</strong>.
               </li>
+              <button className="reserve-button" onClick={makeReservation}>
+                Reservar ahora
+              </button>
             </ul>
           </div>
-
-          <img
-            src="/Hospedaje-premium.png"
-            alt="Hospedaje Premium para Perros"
-            className="service-image"
-          />
         </div>
 
         {/* <h2 className="table-title">Precios y Disponibilidad</h2>
         <AvailabilityTable />*/}
 
-        <button className="reserve-button" onClick={makeReservation}>
-          Reservar ahora
-        </button>
+        
       </div>
     </div>
   );
