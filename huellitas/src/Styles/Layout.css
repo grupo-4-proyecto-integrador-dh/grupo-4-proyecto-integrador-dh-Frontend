@@ -16,6 +16,10 @@ header {
   padding: 0;
 }
 
+header {
+  margin-top: 73px;
+}
+
 .content {
   flex: 1;
   display: flex;
