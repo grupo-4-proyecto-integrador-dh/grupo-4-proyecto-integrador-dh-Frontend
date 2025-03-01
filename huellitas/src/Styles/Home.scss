@@ -61,12 +61,14 @@
   }
 }
 
+
 .main__recomendaciones {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   background-color: colors.$light;
   padding: 3rem 2rem;
+  align-items: center;
 
   h1 {
     color: colors.$primary;
@@ -83,54 +85,91 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(5, auto);
     gap: 20px;
-    justify-items:center;
+    justify-items: center;
     align-items: center;
+  }
+}
 
-    .card {
-      border: 1px solid colors.$light;
-      width: 100%;
-      max-width: 400px;
-      height: 200px;
-      border-radius: 10px;
-      text-align: center;
-      background-color: colors.$white;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid colors.$light;
+  width: 100%;
+  max-width: 400px;
+  min-width: 200px;
+  height: 250px;
+  border-radius: 10px;
+  background-color: colors.$white;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  
+  .card__image {
+    width: 50%;
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+    object-fit: cover;
+  }
 
-      img {
-        width: 50%;
-        height: 100%; 
-        border-radius: 5px 0 0 5px;
-        object-fit: cover;
-      }
+  .card__content {
+    width: 50%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+  }
 
-      .card-content {
-        width: 50%;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      
-      h3{
-        font-size: 18px;
-      }
+  .card__title {
+    font-size: 18px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-      h3, p {
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: wrap;
-        text-align: left;
-      }
+  .card__description {
+    font-size: 14px;
+    color: gray;
+    margin: 5px 0 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  
+  button {
+    padding: 10px;
+    border: none;
+    background-color: colors.$primary;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    
+    &:disabled {
+      background-color: gray;
+      cursor: not-allowed;
     }
   }
 }
+
+@media (max-width: 768px) {
+  .main__recomendaciones__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .main__buscar {
   display: flex;

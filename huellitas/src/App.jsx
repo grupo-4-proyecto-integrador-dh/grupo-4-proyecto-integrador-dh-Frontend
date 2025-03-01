@@ -4,7 +4,6 @@ import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
-import Productos from "./Routes/Productos";
 
 import "./Styles/index.css";
 
@@ -16,7 +15,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/productos" element={<Productos />} />
           <Route path="/administracion" element={<PanelAdmin />} />
           <Route path="/alojamiento/:id" element={<Detalle />} />
           <Route path="/lista" element={<ListaProductos />} />
