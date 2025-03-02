@@ -11,8 +11,11 @@ const RecomendacionesAlojamientos = () => {
   useEffect(() => {
     const fetchAlojamientos = async () => {
       const response = await fetch("/imagenes.json"); 
-      const data = await response.json(); 
-      setAlojamientos(data);
+      const data = await response.json();
+      
+      const shuffledAlojamientos = data.map((a) => a).sort(() => Math.random() - 0.5);
+      
+      setAlojamientos(shuffledAlojamientos);
     };
     fetchAlojamientos();
   }, []);
@@ -32,13 +35,13 @@ const RecomendacionesAlojamientos = () => {
   const renderCards = () => {
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
-    return alojamientos.slice(startIndex, endIndex).map((alojamiento, index) => (
+    return alojamientos.slice(startIndex, endIndex).map((alojamiento) => (
       <Card
-        key={alojamiento.id}  
-        id={alojamiento.id}   
-        title={alojamiento.nombre} 
-        description={alojamiento.descripcion} 
-        price={alojamiento.precio} 
+        key={alojamiento.id}
+        id={alojamiento.id}
+        title={alojamiento.nombre}
+        description={alojamiento.descripcion}
+        price={alojamiento.precio}
         imageUrl={alojamiento.imagenes[0]} 
       />
     ));
