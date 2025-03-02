@@ -127,7 +127,7 @@ function PanelAdmin() {
       </div>
 
       {mensaje.texto && <p className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</p>}
-      <Cloudinary  {children}/>
+      <Cloudinary/>
     </div>
     
   );
