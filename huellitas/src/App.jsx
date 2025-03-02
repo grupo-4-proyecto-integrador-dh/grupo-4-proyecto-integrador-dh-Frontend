@@ -4,7 +4,7 @@ import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
-import Productos from "./Routes/Productos";
+
 import Registro from "./Routes/Registro";
 import ListaProductos from "./Routes/ListaProductos";
 import Header from "./Components/Header";
@@ -13,10 +13,11 @@ import "./Styles/index.css";
 
 function App() {
   return (
+
+
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="productos" element={<Productos />} />
         <Route path="administracion" element={<PanelAdmin />} />
         <Route path="alojamiento/:id" element={<Detalle />} />
         <Route path="lista" element={<ListaProductos />} />
@@ -25,6 +26,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+
   );
 }
 
