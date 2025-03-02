@@ -11,6 +11,7 @@ import Header from "./Components/Header";
 
 import "./Styles/index.css";
 
+
 function App() {
   return (
     <>
@@ -20,6 +21,7 @@ function App() {
           <Route path="/administracion" element={<PanelAdmin />} />
           <Route path="/alojamiento/:id" element={<Detalle />} />
           <Route path="/lista" element={<ListaProductos />} />
+          <Route path="/detalle" element={<Detalle />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
