@@ -7,7 +7,6 @@ import NotFoundPage from "./Components/NotFoundPage";
 
 import "./Styles/index.css";
 
-import ListaProductos from "./Routes/ListaProductos";
 
 function App() {
   return (
@@ -17,7 +16,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/administracion" element={<PanelAdmin />} />
           <Route path="/alojamiento/:id" element={<Detalle />} />
-          <Route path="/lista" element={<ListaProductos />} />
           <Route path="/detalle" element={<Detalle />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
