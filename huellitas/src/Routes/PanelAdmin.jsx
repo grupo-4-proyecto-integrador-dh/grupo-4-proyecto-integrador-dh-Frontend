@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Children } from "react";
 import "../Styles/administracion.css";
 import { useNavigate } from "react-router-dom";
 import Cloudinary from "../Components/PanelAdmin/Cloudinary";
@@ -127,7 +127,7 @@ function PanelAdmin() {
       </div>
 
       {mensaje.texto && <p className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</p>}
-      <Cloudinary />
+      <Cloudinary  {children}/>
     </div>
     
   );
