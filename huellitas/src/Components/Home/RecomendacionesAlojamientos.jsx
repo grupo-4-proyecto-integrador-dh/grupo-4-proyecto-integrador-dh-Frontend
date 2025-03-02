@@ -3,21 +3,22 @@ import Card from "../Home/CardRecomendaciones";
 
 const RecomendacionesAlojamientos = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [alojamientos, setAlojamientos] = useState([]);
+  const [images, setImages] = useState([]);
   const cardsPerPage = 10;
   const totalCards = 19;
   const totalPages = Math.ceil(totalCards / cardsPerPage);
 
   useEffect(() => {
-    const fetchAlojamientos = async () => {
-      const response = await fetch("/imagenes.json"); 
-      const data = await response.json();
-      
-      const shuffledAlojamientos = data.map((a) => a).sort(() => Math.random() - 0.5);
-      
-      setAlojamientos(shuffledAlojamientos);
+    const fetchImages = async () => {
+      const fetchedImages = [];
+      for (let i = 0; i < totalCards; i++) {
+        const response = await fetch("https://dog.ceo/api/breeds/image/random"); //Esto se tiene que cambiar por la API de alojamientos
+        const data = await response.json();
+        fetchedImages.push(data.message);
+      }
+      setImages(fetchedImages);
     };
-    fetchAlojamientos();
+    fetchImages();
   }, []);
 
   const handleNextPage = () => {
@@ -35,14 +36,12 @@ const RecomendacionesAlojamientos = () => {
   const renderCards = () => {
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
-    return alojamientos.slice(startIndex, endIndex).map((alojamiento) => (
+    return images.slice(startIndex, endIndex).map((imageUrl, index) => (
       <Card
-        key={alojamiento.id}
-        id={alojamiento.id}
-        title={alojamiento.nombre}
-        description={alojamiento.descripcion}
-        price={alojamiento.precio}
-        imageUrl={alojamiento.imagenes[0]} 
+        key={startIndex + index}
+        title={`Dog ${startIndex + index + 1}`}
+        description="A random dog image"
+        imageUrl={imageUrl}
       />
     ));
   };

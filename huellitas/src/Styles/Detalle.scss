@@ -34,8 +34,14 @@
     align-items: center;
   }
 
+  .service-image {
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
   .hospedaje-premium,
-  .service-container{
+  .service-description {
     text-align: left;
   }
 
@@ -93,6 +99,10 @@
       padding: 15px;
     }
 
+    .service-image {
+      max-width: 90%;
+    }
+
     .reserve-button {
       width: 100%;
       padding: 10px;
@@ -126,12 +136,16 @@
       text-align: center;
     }
 
-    .service-container {
+    .service-description {
       text-align: left;
       max-width: 80%;
     }
 
-     .reserve-button {
+    .service-image {
+      max-width: 70%;
+    }
+
+    .reserve-button {
       width: 60%;
       font-size: 16px;
       padding: 12px 18px;
@@ -159,6 +173,9 @@
       gap: 20px;
     }
 
+    .service-image {
+      max-width: 60%;
+    }
 
     .reserve-button {
       width: 80%;
@@ -177,6 +194,10 @@
       display: flex;
       flex-direction: row;
       gap: 30px;
+    }
+
+    .service-image {
+      max-width: 400px;
     }
 
     .reserve-button {

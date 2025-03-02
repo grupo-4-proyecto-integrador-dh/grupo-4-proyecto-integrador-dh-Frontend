@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../Styles/administracion.css";
-import { useNavigate } from "react-router-dom";
-import Cloudinary from "../Components/PanelAdmin/Cloudinary";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit, FaHome, FaClipboardList, FaMoneyBillWave, FaCog } from "react-icons/fa";
 import "../styles/administracion.css";
@@ -228,51 +225,6 @@ const PanelAdmin = () => {
   }
 
   return (
-    <div className="container">
-      <h1>🛒 Gestión de servicios </h1>
-
-      <input
-        type="text"
-        className="input-field"
-        placeholder="Nombre del servicio"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-      />
-
-      <input
-        type="text"
-        className="input-field"
-        placeholder="Descripción del servicio"
-        value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
-      />
-
-      <input
-        type="number"
-        className="input-field"
-        placeholder="Precio del servicio"
-        value={precio}
-        onChange={(e) => setPrecio(e.target.value)}
-      />
-
-      <input
-        type="file"
-        className="input-field"
-        accept="image/*"
-        onChange={handleImageUpload}
-      />
-
-      {imagen && <img src={imagen} alt="Vista previa" className="preview-img" />}
-
-      <div className="button-container">
-        <button className="button" onClick={agregarServicio}>Agregar Servicio</button>
-        <button className="buttonList" onClick={()=> navigate("/lista")}>Lista de Servicios</button>
-      </div>
-
-      {mensaje.texto && <p className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</p>}
-      <Cloudinary />
-    </div>
-    
     <div className="admin-container">
       {/* Menú de Navegación */}
       <div className="sidebar">

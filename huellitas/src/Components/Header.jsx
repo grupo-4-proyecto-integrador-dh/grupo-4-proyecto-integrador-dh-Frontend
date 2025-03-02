@@ -1,11 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import "../Styles/Header.css";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import logo from "/media/svg/logo-svg.svg";
-import "../Styles/Header.css";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Hook para navegación
 
   return (
     <nav className="navbar">
@@ -23,15 +22,7 @@ const Header = () => {
 
         <div className={`nav-links ${isOpen ? "open" : ""}`}>
           <div className="auth-buttons">
-            <button
-              className="crear-cuenta-button"
-              onClick={() => {
-                console.log("Redirigiendo a /registro...");
-                navigate("/registro");
-              }}
-            >
-              Crear Cuenta
-            </button>
+            <button className="btn">Crear Cuenta</button>
             <button className="btn">Iniciar Sesión</button>
           </div>
         </div>
