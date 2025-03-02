@@ -13,20 +13,18 @@ import "./Styles/index.css";
 
 function App() {
   return (
-
-
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="administracion" element={<PanelAdmin />} />
-        <Route path="alojamiento/:id" element={<Detalle />} />
-        <Route path="lista" element={<ListaProductos />} />
-        <Route path="detalle" element={<Detalle />} />
-        <Route path="registro" element={<Registro />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
-
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/productos" element={<Productos />} />
+          <Route path="/administracion" element={<PanelAdmin />} />
+          <Route path="/alojamiento/:id" element={<Detalle />} />
+          <Route path="/lista" element={<ListaProductos />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
