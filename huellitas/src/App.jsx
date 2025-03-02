@@ -5,26 +5,26 @@ import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
 import Productos from "./Routes/Productos";
+import Registro from "./Routes/Registro";
+import ListaProductos from "./Routes/ListaProductos";
+import Header from "./Components/Header";
 
 import "./Styles/index.css";
 
-import ListaProductos from "./Routes/ListaProductos";
-
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/productos" element={<Productos />} />
-          <Route path="/administracion" element={<PanelAdmin />} />
-          <Route path="/alojamiento/:id" element={<Detalle />} />
-          <Route path="/lista" element={<ListaProductos />} />
-          <Route path="/detalle" element={<Detalle />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path="productos" element={<Productos />} />
+        <Route path="administracion" element={<PanelAdmin />} />
+        <Route path="alojamiento/:id" element={<Detalle />} />
+        <Route path="lista" element={<ListaProductos />} />
+        <Route path="detalle" element={<Detalle />} />
+        <Route path="registro" element={<Registro />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 
