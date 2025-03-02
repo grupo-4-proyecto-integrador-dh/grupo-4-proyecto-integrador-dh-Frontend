@@ -23,7 +23,7 @@ const Header = () => {
         <div className={`nav-links ${isOpen ? "open" : ""}`}>
           <div className="auth-buttons">
             <button className="btn">Crear Cuenta</button>
-            <button className="btn">Iniciar Sesión</button>
+            <Link to="/login" className="btn">Iniciar Sesión</Link>
           </div>
         </div>
       </div>
