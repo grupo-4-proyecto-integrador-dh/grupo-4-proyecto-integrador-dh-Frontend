@@ -1,10 +1,27 @@
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 //import AvailabilityTable from "../Components/AvailabilityTable";
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
 
+
 const Detalle = () => {
   const navigate = useNavigate();
+  const [alojamiento, setAlojamiento] = useState(1);
+  const { id } = useParams();
+  console.log(id);
+  const url = "/imagenes.json";
+
+  useEffect(() => {
+    axios.get(url)
+      .then(response => {
+        const alojamientoEncontrado = response.data.find(alojamiento => alojamiento.id === parseInt(id));
+        setAlojamiento(alojamientoEncontrado || {});
+      })
+      .catch(error => console.error("Error cargando imágenes:", error));
+  }, [id]);
+  
 
   const makeReservation = () => {
     alert("¡Reserva solicitada! Nos pondremos en contacto contigo.");
@@ -18,27 +35,22 @@ const Detalle = () => {
 
       <div className="container-detalle">
         <div className="content">
-          <div className="service-description">
-            <h2 className="hospedaje-premium">Hospedaje Premium para Perros</h2>
-            <Galeria />
-            <ul className="benefits">
-            <p>Este paquete incluye:</p>
-              <li>
-                <strong>Alojamiento en habitación cómoda y climatizada.</strong>
-              </li>
-              <li>
-                Alimentación personalizada según las necesidades del perro.
-              </li>
-              <li>3 paseos diarios en zonas seguras.</li>
-              <li>Supervisión 24/7 por personal especializado.</li>
-              <li>Baño y aseo antes del regreso a casa.</li>
-              <li>
-                Disponible para <strong>estadías de 3, 5 o 7 días</strong>.
-              </li>
-              <button className="reserve-button" onClick={makeReservation}>
+          <div className="service-container">
+            <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
+            <Galeria imagenes={alojamiento.imagenes}/>
+            <div className="servicio-detalle">
+              <h4>Descripción:</h4>
+              {alojamiento.descripcion}
+              <div className="servicio-categoria">             
+              </div>
+            </div>
+            
+            
+
+            <button className="reserve-button" onClick={makeReservation}>
                 Reservar ahora
-              </button>
-            </ul>
+            </button>
+
           </div>
         </div>
 
