@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit, FaHome, FaClipboardList, FaMoneyBillWave, FaCog } from "react-icons/fa";
-import "../styles/administracion.css";
+import "../Styles/Administracion.css";
 import axios from "axios"; 
 
 const api = axios.create({
@@ -268,7 +268,9 @@ const PanelAdmin = () => {
           <tbody>
             {servicios.filter(servicio => servicio.nombre.toLowerCase().includes(busqueda.toLowerCase())).map((servicio) => (
               <tr key={servicio.id}>
-                <td>{servicio.id}</td><td>{servicio.nombre}</td><td>{servicio.descripcion}</td>
+                <td>{servicio.id}</td>
+                <td>{servicio.nombre}</td>
+                <td>{servicio.descripcion}</td>
                 <td>${servicio.precio}</td>
                 <td>
                   {servicio.imagenes.length > 0 ? servicio.imagenes.map((img, index) => (
