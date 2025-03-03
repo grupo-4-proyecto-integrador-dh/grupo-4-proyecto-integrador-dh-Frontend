@@ -1,22 +1,30 @@
 import React from "react";
-import {Modal} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Foto from "./Foto";
 
-function GaleriaModal({ show, setShow, foto = []  }) {
+function GaleriaModal({ show, setShow, foto = [] }) {
+  if (!show) return null;
+
   return (
-    <Modal show={show} onHide={() => setShow(false)} fullscreen centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Galería</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="grid_layout_modal">
-        {foto.map((foto, index) => (
-          <Foto key={index} imagen={foto} tipoFoto="imagen_modal"/>
-        ))}
+    <div className="modal_galeria_ver_más">
+      <div className="contenido_galeria_ver_más">
+        <div className="header_galeria_ver_más">
+          <button
+            type="button"
+            className="boton_cerrar_galeria_modal btn-close"
+            aria-label="Close"
+            onClick={() => setShow(false)} 
+          ></button>
+          <h4>Galería</h4>
         </div>
-</Modal.Body>
-    </Modal>
+
+        <div className="grid_layout_modal">
+          {foto.map((foto, index) => (
+            <Foto key={index} imagen={foto} tipoFoto="imagen_modal" />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 

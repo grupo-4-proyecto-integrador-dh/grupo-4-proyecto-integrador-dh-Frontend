@@ -6,10 +6,9 @@ import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
 
 import Registro from "./Routes/Registro";
-import ListaProductos from "./Routes/ListaProductos";
-import Header from "./Components/Header";
 
 import "./Styles/index.css";
+
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/administracion" element={<PanelAdmin />} />
           <Route path="/alojamiento/:id" element={<Detalle />} />
-          <Route path="/lista" element={<ListaProductos />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
