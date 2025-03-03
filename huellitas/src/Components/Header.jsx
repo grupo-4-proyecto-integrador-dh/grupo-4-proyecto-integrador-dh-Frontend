@@ -1,48 +1,3 @@
-
-/*import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import logo from "/media/svg/logo-svg.svg";
-import "../Styles/Header.css";
-
-const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Hook para navegación
-
-  return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <div className="brand">
-          <Link className="brand-link" to="/">
-            <img src={logo} alt="Huellitas Logo" className="logo-img" />
-            <span className="nav-text">Un hogar para tu mascota</span>
-          </Link>
-        </div>
-
-        <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
-          ☰
-        </button>
-
-        <div className={`nav-links ${isOpen ? "open" : ""}`}>
-          <div className="auth-buttons">
-            <button
-              className="crear-cuenta-button"
-              onClick={() => {
-                console.log("Redirigiendo a /registro...");
-                navigate("/registro");
-              }}
-            >
-              Crear Cuenta
-            </button>
-            <Link to="/login" className="btn">Iniciar Sesión</Link>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
-export default Header;
-*/
 import "../Styles/Header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -93,8 +48,8 @@ const Header = () => {
         </button>
 
         {/* Contenedor de enlaces y usuario */}
-        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>
-          {user ? (
+        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>        
+           {user ? (
             <div className="user-info">
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
                 {user.name ? user.name.charAt(0).toUpperCase() : ""}
@@ -110,7 +65,15 @@ const Header = () => {
             </div>
           ) : (
             <div className="auth-buttons">
-              <button className="btn">Crear Cuenta</button>
+              <button
+              className="crear-cuenta-button"
+              onClick={() => {
+                console.log("Redirigiendo a /registro...");
+                navigate("/registro");
+              }}
+            >
+              Crear Cuenta
+            </button>
               <Link to="/login" className="btn">Iniciar Sesión</Link>
             </div>
           )}
