@@ -8,8 +8,11 @@ const api = axios.create({
   baseURL: "http://localhost:8081/alojamientos", 
 });
 
-
 const PanelAdmin = () => {
+  //Cloudinary
+  const preset_name = "huellitas";                         
+  const cloud_name = "dr8ya7bax"; 
+
   // Estados
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -20,6 +23,8 @@ const PanelAdmin = () => {
   const [modalAbierto, setModalAbierto] = useState(false);
   const [servicioEditando, setServicioEditando] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [ image, setImage ] = useState([]);
+  const [ loading, setLoading ] = useState(false)
 
   // Manejo de cambio de tamaño de pantalla para que no se pueda ver en celulares
   useEffect(() => {
@@ -38,6 +43,44 @@ const PanelAdmin = () => {
         console.error("Error al cargar los servicios:", error);
       });
   }, []);
+
+  //upload image
+  const uploadImage = async (e) => {
+    const files = e.target.files;  // Recuperamos el array de archivos
+    const newImageUrls = [];  // Array para almacenar las URLs de las imágenes subidas
+
+    setLoading(true);  // Indicamos que la imagen se está cargando
+
+    try {
+        // Subir cada imagen de forma individual
+        for (let i = 0; i < files.length; i++) {
+            const data = new FormData();  // Creamos un nuevo FormData para cada archivo
+            data.append('file', files[i]);  // Agregamos el archivo al FormData
+            data.append('upload_preset', preset_name);  // Agregamos el preset de Cloudinary
+
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+                method: 'POST',
+                body: data,
+            });
+
+            const result = await response.json();  // Parseamos la respuesta JSON
+
+            if (result.secure_url) {
+                newImageUrls.push(result.secure_url);  // Agregamos la URL de la imagen al array
+            }
+        }
+
+        // Actualizamos el estado con las nuevas imágenes
+        setImagenes((prevImagenes) => [...prevImagenes, ...newImageUrls]);
+
+    } catch (error) {
+        console.error('Error uploading images:', error);
+    } finally {
+        setLoading(false);  // Terminamos el proceso de carga
+    }
+}
+
+
 
   // Alternar modal
   const toggleModal = () => {
@@ -317,31 +360,21 @@ const PanelAdmin = () => {
               type="file" 
               accept="image/*" 
               multiple 
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                const newImages = files.map(file => {
-                  const reader = new FileReader();
-                  return new Promise(resolve => {
-                  reader.onloadend = () => resolve(reader.result);
-                  reader.readAsDataURL(file);
-                  });
-                });
-
-                Promise.all(newImages).then(images => {
-                setImagenes(prev => [...prev, ...images]);
-                });
-              }} 
-            />
+              onChange={(e)=>uploadImage(e)} 
+            />         
             {/* Vista previa de imágenes */}
-            <div className="image-preview">
-              {imagenes.map((img, index) => (
-                <div key={index} className="image-container">
-                  <img src={img} alt={`Imagen ${index}`} className="preview-img" />
-                  <button 
-                  className="delete-img-btn" onClick={() => eliminarImagen(index)}>x</button>
-                </div>
-              ))}
-            </div>
+            {loading ? (
+              <h3>Loading...</h3>
+            ) : (
+              <div className="image-preview">
+                {imagenes.map((img, index) => (
+                  <div key={index} className="image-container">
+                    <img src={img} alt={`Uploaded image ${index}`} className="preview-img" />
+                    <button className="delete-img-btn" onClick={() => eliminarImagen(index)}>x</button>
+                  </div>
+                ))}
+              </div>
+            )}
             {/* Botón para guardar el servicio */}
             <button className="btn-agregar" onClick={agregarServicio}>Guardar Servicio</button>
           </div>
