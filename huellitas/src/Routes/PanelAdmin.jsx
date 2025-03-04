@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { FaPlus, FaTrash, FaEdit, FaHome, FaClipboardList, FaMoneyBillWave, FaCog } from "react-icons/fa";
 import "../Styles/Administracion.css";
@@ -25,6 +25,7 @@ const PanelAdmin = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [ image, setImage ] = useState([]);
   const [ loading, setLoading ] = useState(false)
+  const fileInputRef = useRef(null);
 
   // Manejo de cambio de tamaño de pantalla para que no se pueda ver en celulares
   useEffect(() => {
@@ -72,6 +73,7 @@ const PanelAdmin = () => {
 
         // Actualizamos el estado con las nuevas imágenes
         setImagenes((prevImagenes) => [...prevImagenes, ...newImageUrls]);
+        setArchivos((prev) => [...prev, ...files]);
 
     } catch (error) {
         console.error('Error uploading images:', error);
@@ -79,8 +81,6 @@ const PanelAdmin = () => {
         setLoading(false);  // Terminamos el proceso de carga
     }
 }
-
-
 
   // Alternar modal
   const toggleModal = () => {
@@ -257,9 +257,28 @@ const PanelAdmin = () => {
   };
   
   // Eliminar imagen
-  const eliminarImagen = (index) => {
-    setImagenes(prev => prev.filter((_, i) => i !== index));
-  };
+const eliminarImagen = (index) => {
+  // Filtramos para quitar la imagen en la posición 'index'
+  const nuevasImagenes = imagenes.filter((_, i) => i !== index);
+
+  // Actualizamos el estado
+  setImagenes(nuevasImagenes);
+
+  // Si hay un input de archivos, actualizamos su contenido
+  if (fileInputRef.current) {
+      const dataTransfer = new DataTransfer();
+      
+      // Recorremos las imágenes restantes y las añadimos de nuevo
+      for (let i = 0; i < fileInputRef.current.files.length; i++) {
+          if (i !== index) {
+              dataTransfer.items.add(fileInputRef.current.files[i]);
+          }
+      }
+
+      fileInputRef.current.files = dataTransfer.files; // Asignamos el nuevo FileList
+  }
+};
+
 
   // Verificación de pantalla no se puede ver en móvil
   if (isMobile) {
@@ -360,6 +379,7 @@ const PanelAdmin = () => {
               type="file" 
               accept="image/*" 
               multiple 
+              ref={fileInputRef}
               onChange={(e)=>uploadImage(e)} 
             />         
             {/* Vista previa de imágenes */}
