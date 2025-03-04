@@ -47,7 +47,7 @@
     transition: border-color 0.3s ease-in-out;
   
     &:focus {
-      border-color: orange;
+      border-color: #e76f51;
       outline: none;
     }
   }
@@ -77,14 +77,14 @@
     transition: background-color 0.3s ease-in-out;
   
     &:hover {
-      background-color: darkorange;
+      background-color: #e76f51;
     }
   }
   
 
   .crear-cuenta-button {
 
-    background-color: orange;
+    background-color: #e76f51;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -105,7 +105,7 @@
 
   
     &:hover {
-      background-color: darkorange;
+      background-color: #e76f51;
     }
   }
   
