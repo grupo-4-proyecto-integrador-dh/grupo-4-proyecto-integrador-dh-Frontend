@@ -47,7 +47,7 @@
     transition: border-color 0.3s ease-in-out;
   
     &:focus {
-      border-color: orange;
+      border-color: #e76f51;
       outline: none;
     }
   }
@@ -66,7 +66,7 @@
   
 
   .registro-button {
-    background-color: orange;
+    background-color: #e76f51;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -77,15 +77,15 @@
     transition: background-color 0.3s ease-in-out;
   
     &:hover {
-      background-color: darkorange;
+      background-color: #e76f51;
     }
   }
   
 
   .crear-cuenta-button {
 
-    background-color: orange;
-    color: white;
+    background-color: #e76f51;
+    color: #e76f51;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -99,13 +99,14 @@
     padding: 8px 15px;
     cursor: pointer;
     font-weight: 500;
-    color: #e76f51;
+    color:#e76f51;
     border-radius: 5px;
     transition: 0.3s;
 
   
     &:hover {
-      background-color: darkorange;
+      background-color: #e76f51;
+      color: white;
     }
   }
   
