@@ -3,7 +3,7 @@ import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
-import NotFoundPage from "./Components/NotFoundPage";
+import NotFoundPage from "../styles/NotFoundPage.css";
 
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
