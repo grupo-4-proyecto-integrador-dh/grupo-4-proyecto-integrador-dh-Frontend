@@ -85,7 +85,7 @@
   .crear-cuenta-button {
 
     background-color: #e76f51;
-    color: white;
+    color: #e76f51;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -99,13 +99,14 @@
     padding: 8px 15px;
     cursor: pointer;
     font-weight: 500;
-    color: white;
+    color:#e76f51;
     border-radius: 5px;
     transition: 0.3s;
 
   
     &:hover {
       background-color: #e76f51;
+      color: white;
     }
   }
   
