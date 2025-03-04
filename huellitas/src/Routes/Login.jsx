@@ -47,7 +47,7 @@ const Login = () => {
           <div className="error-message">
             <span>⚠️ {error}</span>
             <br />
-            <Link to="/register" className="register-link">Regístrate aquí</Link>
+            <Link to="/Registro" className="register-link">Regístrate aquí</Link>
           </div>
         )}
 
