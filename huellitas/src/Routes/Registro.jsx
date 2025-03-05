@@ -37,17 +37,17 @@ export default function Registro() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Recuperar usuarios guardados en localStorage o inicializar array vacío
+      
       const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-      // Verificar si el email ya está registrado
+      
       const emailExists = storedUsers.some((user) => user.email === formData.email);
       if (emailExists) {
         setErrors({ email: "Este correo ya está registrado." });
         return;
       }
 
-      // Agregar nuevo usuario y guardar en localStorage
+      
       const newUser = { ...formData };
       const updatedUsers = [...storedUsers, newUser];
       localStorage.setItem("users", JSON.stringify(updatedUsers));
@@ -55,7 +55,7 @@ export default function Registro() {
       setRegistroExitoso(true);
       setTimeout(() => {
         setRegistroExitoso(false);
-        navigate("/login"); // Redirigir a la página de login
+        navigate("/login"); 
       }, 2000);
     }
   };
