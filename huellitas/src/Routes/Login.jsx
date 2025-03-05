@@ -1,7 +1,8 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
+
+const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/login";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,23 +16,44 @@ const Login = () => {
     setError("");
 
     try {
-      // Recuperar usuarios desde localStorage
-      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, contrasena: password }),
+      });
 
-      // Buscar el usuario por email y password
-      const user = storedUsers.find((u) => u.email === email && u.password === password);
-
-      if (user) {
-        console.log("Inicio de sesión exitoso", user);
-        localStorage.setItem("user", JSON.stringify(user)); // Guardar en localStorage
-        window.dispatchEvent(new Event("storage")); // Notificar el cambio global
-        navigate("/");
-      } else {
-        setError("Correo o contraseña incorrectos. Verifica tus datos.");
+      if (!response.ok) {
+        throw new Error("Correo o contraseña incorrectos.");
       }
+
+      const data = await response.json();
+      console.log("Datos del backend:", data);
+
+      // Guardar el token y la información del usuario
+      if (data.jwt) {
+        if (rememberMe) {
+          localStorage.setItem("token", data.jwt); // Guardar el token
+        } else {
+          sessionStorage.setItem("token", data.jwt); // Guardar el token en sessionStorage
+        }
+
+        // Guardar la información del usuario
+        const user = {
+          nombre: data.nombre,
+          apellido: data.apellido,
+        };
+        localStorage.setItem("user", JSON.stringify(user)); // Guardar el nombre y apellido del usuario
+      }
+
+      console.log("Inicio de sesión exitoso", data);
+      window.dispatchEvent(new Event("storage")); // Notificar el cambio global
+      navigate("/"); // Redirigir a la página principal
+
     } catch (err) {
-      console.error("Error en la solicitud:", err);
-      setError("Hubo un problema al conectar con el servidor. Intenta de nuevo.");
+      console.error("Error en la autenticación:", err);
+      setError("Correo o contraseña incorrectos. Verifica tus datos.");
     }
   };
 
@@ -40,7 +62,7 @@ const Login = () => {
       <div className="login-box">
         <h2>Iniciar Sesión</h2>
 
-        {/* Mensaje de error  */}
+        {/* Mensaje de error */}
         {error && (
           <div className="error-message">
             <span>⚠️ {error}</span>
@@ -62,10 +84,10 @@ const Login = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
+            <label htmlFor="contrasena">Contraseña</label>
             <input
               type="password"
-              id="password"
+              id="contrasena"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -93,3 +115,5 @@ const Login = () => {
 };
 
 export default Login;
+
+

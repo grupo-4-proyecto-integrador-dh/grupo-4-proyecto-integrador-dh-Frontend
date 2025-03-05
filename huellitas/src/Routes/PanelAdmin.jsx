@@ -5,7 +5,7 @@ import "../Styles/Administracion.css";
 import axios from "axios"; 
 
 const api = axios.create({
-  baseURL: "http://localhost:8081/alojamientos", 
+  baseURL: "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app", 
 });
 
 const PanelAdmin = () => {
