@@ -43,6 +43,7 @@ const Login = () => {
         const user = {
           nombre: data.nombre,
           apellido: data.apellido,
+          email: data.email
         };
         localStorage.setItem("user", JSON.stringify(user)); // Guardar el nombre y apellido del usuario
       }

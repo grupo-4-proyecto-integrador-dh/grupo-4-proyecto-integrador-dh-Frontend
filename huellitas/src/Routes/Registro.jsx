@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
-const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/registro";
+const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
 
 export default function Registro() {
   const [formData, setFormData] = useState({
@@ -16,7 +16,6 @@ export default function Registro() {
   const [registroExitoso, setRegistroExitoso] = useState(false);
   const navigate = useNavigate();
   const [errorMensaje, setErrorMensaje] = useState("");
-  
 
   const validate = () => {
     let newErrors = {};
@@ -42,29 +41,34 @@ export default function Registro() {
     e.preventDefault();
     setErrorMensaje("");  // Limpiar el mensaje de error previo
     if (validate()) {
-      
-      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData), // Enviar los datos del formulario al backend
+        });
 
-      
-      const emailExists = storedUsers.some((user) => user.email === formData.email);
-      if (emailExists) {
-        setErrors({ email: "Este correo ya está registrado." });
-        return;
+        if (!response.ok) {
+          throw new Error("Hubo un error en el registro");
+        }
+
+        const data = await response.json();
+        console.log("Registro exitoso:", data);
+
+        // Mostrar el mensaje de éxito
+        setRegistroExitoso(true);
+        setTimeout(() => {
+          setRegistroExitoso(false);
+          navigate("/login"); // Redirigir al login
+        }, 2000);
+      } catch (error) {
+        console.error("Error en el registro:", error);
+        setErrorMensaje("Hubo un error al registrar el usuario. Intenta nuevamente.");
       }
-
-      
-      const newUser = { ...formData };
-      const updatedUsers = [...storedUsers, newUser];
-      localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-      setRegistroExitoso(true);
-      setTimeout(() => {
-        setRegistroExitoso(false);
-        navigate("/login"); 
-      }, 2000);
     }
   };
-  
 
   return (
     <div className="registro-container">
@@ -125,4 +129,5 @@ export default function Registro() {
     </div>
   );
 }
+
 
