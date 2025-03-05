@@ -53,12 +53,12 @@ const Header = () => {
            {user ? (
             <div className="user-info">
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
-                {user.name ? user.name.charAt(0).toUpperCase() : ""}
-                {user.lastName ? user.lastName.charAt(0).toUpperCase() : ""}
+                {user.nombre ? user.nombre.charAt(0).toUpperCase() : ""}
+                {user.apellido ? user.apellido.charAt(0).toUpperCase() : ""}
               </div>
               {menuOpen && (
                 <div className="user-menu">
-                  <p>{user.name} {user.lastName}</p>
+                  <p>{user.nombre} {user.apellido}</p>
                   <p>{user.email}</p>
                   <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>

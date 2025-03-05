@@ -14,8 +14,9 @@ export default function Registro() {
 
   const [errors, setErrors] = useState({});
   const [registroExitoso, setRegistroExitoso] = useState(false);
-  const [errorMensaje, setErrorMensaje] = useState("");
   const navigate = useNavigate();
+  const [errorMensaje, setErrorMensaje] = useState("");
+  
 
   const validate = () => {
     let newErrors = {};
@@ -41,45 +42,26 @@ export default function Registro() {
     e.preventDefault();
     setErrorMensaje("");  // Limpiar el mensaje de error previo
     if (validate()) {
-      try {
-        console.log("Datos enviados al backend:", JSON.stringify(formData)); // Log de los datos enviados
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
+      
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-        const textResponse = await response.text(); // Obtener la respuesta como texto primero
-        console.log("Respuesta del backend:", textResponse);
-
-        if (!response.ok) {
-          throw new Error(textResponse);  // En lugar de intentar parsear como JSON, tira el texto directamente
-        }
-        
-        try {
-          const data = JSON.parse(textResponse);  // Intenta parsear a JSON manualmente si es posible
-          console.log("Datos JSON:", data);
-        } catch (error) {
-          console.error("No se pudo parsear como JSON:", error);
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Error del servidor:", errorData); // Log de los detalles del error
-          throw new Error(errorData.message || "Error en el registro.");
-        }
-  
-        setRegistroExitoso(true);
-        setTimeout(() => {
-          setRegistroExitoso(false);
-          navigate("/login"); // Redirige al login después del registro exitoso
-        }, 3000);
-      } catch (error) {
-        console.error("Error en el registro:", error);
-        setErrorMensaje(error.message);
+      
+      const emailExists = storedUsers.some((user) => user.email === formData.email);
+      if (emailExists) {
+        setErrors({ email: "Este correo ya está registrado." });
+        return;
       }
+
+      
+      const newUser = { ...formData };
+      const updatedUsers = [...storedUsers, newUser];
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+      setRegistroExitoso(true);
+      setTimeout(() => {
+        setRegistroExitoso(false);
+        navigate("/login"); 
+      }, 2000);
     }
   };
   
@@ -116,7 +98,7 @@ export default function Registro() {
           <input
             type="email"
             name="email"
-            placeholder="Correo electrónico"
+            placeholder="Ingresa tu Correo"
             value={formData.email}
             onChange={handleChange}
             className={errors.email ? "input-error" : "input"}
@@ -135,7 +117,6 @@ export default function Registro() {
 
           <button type="submit" className="registro-button">Registrarse</button>
 
-          {/* Mensaje de éxito */}
           {registroExitoso && (
             <p className="success-message">✅ Registro exitoso. Redirigiendo...</p>
           )}
