@@ -15,18 +15,16 @@ const Login = () => {
     setError("");
 
     try {
-      // Simulación de usuarios 
-      const fakeUsers = [
-        { name: "Andres", lastName: "Pérez", email: "andres@example.com", password: "123456" },
-        { name: "Ana", lastName: "García", email: "ana@example.com", password: "654321" },
-      ];
+      // Recuperar usuarios desde localStorage
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-      const user = fakeUsers.find((u) => u.email === email && u.password === password);
+      // Buscar el usuario por email y password
+      const user = storedUsers.find((u) => u.email === email && u.password === password);
 
       if (user) {
         console.log("Inicio de sesión exitoso", user);
         localStorage.setItem("user", JSON.stringify(user)); // Guardar en localStorage
-        window.dispatchEvent(new Event("storage")); //  cambio global
+        window.dispatchEvent(new Event("storage")); // Notificar el cambio global
         navigate("/");
       } else {
         setError("Correo o contraseña incorrectos. Verifica tus datos.");
@@ -95,4 +93,3 @@ const Login = () => {
 };
 
 export default Login;
-
