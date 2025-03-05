@@ -12,6 +12,7 @@ export default function Registro() {
 
   const [errors, setErrors] = useState({});
   const [registroExitoso, setRegistroExitoso] = useState(false);
+  const navigate = useNavigate();
 
   const validate = () => {
     let newErrors = {};
@@ -36,11 +37,26 @@ export default function Registro() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Usuario registrado", formData);
-      setRegistroExitoso(true); // Muestra el mensaje de éxito
+      // Recuperar usuarios guardados en localStorage o inicializar array vacío
+      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+      // Verificar si el email ya está registrado
+      const emailExists = storedUsers.some((user) => user.email === formData.email);
+      if (emailExists) {
+        setErrors({ email: "Este correo ya está registrado." });
+        return;
+      }
+
+      // Agregar nuevo usuario y guardar en localStorage
+      const newUser = { ...formData };
+      const updatedUsers = [...storedUsers, newUser];
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+      setRegistroExitoso(true);
       setTimeout(() => {
-        setRegistroExitoso(false); // Oculta el mensaje después de unos segundos
-      }, 4000);
+        setRegistroExitoso(false);
+        navigate("/login"); // Redirigir a la página de login
+      }, 2000);
     }
   };
 
@@ -72,7 +88,7 @@ export default function Registro() {
           <input
             type="email"
             name="email"
-            placeholder="Correo electrónico"
+            placeholder="Ingresa tu Correo"
             value={formData.email}
             onChange={handleChange}
             className={errors.email ? "input-error" : "input"}
@@ -82,7 +98,7 @@ export default function Registro() {
           <input
             type="password"
             name="password"
-            placeholder="Contraseña"
+            placeholder="Ingresa tu Contraseña"
             value={formData.password}
             onChange={handleChange}
             className={errors.password ? "input-error" : "input"}
@@ -91,9 +107,8 @@ export default function Registro() {
 
           <button type="submit" className="registro-button">Registrarse</button>
 
-          {/* Mensaje de éxito */}
           {registroExitoso && (
-            <p className="success-message">✅ Registro exitoso. ¡Bienvenido!</p>
+            <p className="success-message">✅ Registro exitoso. Redirigiendo...</p>
           )}
         </form>
       </div>
