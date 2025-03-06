@@ -2,17 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
+const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
+
 export default function Registro() {
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     email: "",
-    password: "",
+    contrasena: "",
   });
 
   const [errors, setErrors] = useState({});
   const [registroExitoso, setRegistroExitoso] = useState(false);
   const navigate = useNavigate();
+  const [errorMensaje, setErrorMensaje] = useState("");
 
   const validate = () => {
     let newErrors = {};
@@ -23,8 +26,8 @@ export default function Registro() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "El email no es válido";
     }
-    if (!formData.password || formData.password.length < 6) {
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+    if (!formData.contrasena || formData.contrasena.length < 6) {
+      newErrors.contrasena = "La contraseña debe tener al menos 6 caracteres";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -34,29 +37,36 @@ export default function Registro() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMensaje("");  // Limpiar el mensaje de error previo
     if (validate()) {
-      
-      const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData), // Enviar los datos del formulario al backend
+        });
 
-      
-      const emailExists = storedUsers.some((user) => user.email === formData.email);
-      if (emailExists) {
-        setErrors({ email: "Este correo ya está registrado." });
-        return;
+        if (!response.ok) {
+          throw new Error("Hubo un error en el registro");
+        }
+
+        const data = await response.json();
+        console.log("Registro exitoso:", data);
+
+        // Mostrar el mensaje de éxito
+        setRegistroExitoso(true);
+        setTimeout(() => {
+          setRegistroExitoso(false);
+          navigate("/login"); // Redirigir al login
+        }, 2000);
+      } catch (error) {
+        console.error("Error en el registro:", error);
+        setErrorMensaje("Hubo un error al registrar el usuario. Intenta nuevamente.");
       }
-
-      
-      const newUser = { ...formData };
-      const updatedUsers = [...storedUsers, newUser];
-      localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-      setRegistroExitoso(true);
-      setTimeout(() => {
-        setRegistroExitoso(false);
-        navigate("/login"); 
-      }, 2000);
     }
   };
 
@@ -64,6 +74,10 @@ export default function Registro() {
     <div className="registro-container">
       <div className="registro-card">
         <h2 className="registro-title">Registro</h2>
+
+        {/* Mensaje de error general */}
+        {errorMensaje && <p className="error-text">{errorMensaje}</p>}
+
         <form onSubmit={handleSubmit} className="registro-form">
           <input
             type="text"
@@ -97,13 +111,13 @@ export default function Registro() {
 
           <input
             type="password"
-            name="password"
-            placeholder="Ingresa tu Contraseña"
-            value={formData.password}
+            name="contrasena"
+            placeholder="Contraseña"
+            value={formData.contrasena}
             onChange={handleChange}
-            className={errors.password ? "input-error" : "input"}
+            className={errors.contrasena ? "input-error" : "input"}
           />
-          {errors.password && <p className="error-text">{errors.password}</p>}
+          {errors.contrasena && <p className="error-text">{errors.contrasena}</p>}
 
           <button type="submit" className="registro-button">Registrarse</button>
 
@@ -115,3 +129,5 @@ export default function Registro() {
     </div>
   );
 }
+
+
