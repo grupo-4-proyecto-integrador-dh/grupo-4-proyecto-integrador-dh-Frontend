@@ -5,7 +5,7 @@ import "../Styles/Administracion.css";
 import axios from "axios"; 
 
 const api = axios.create({
-  baseURL: "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app", 
+  baseURL: "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/alojamientos", 
 });
 
 const PanelAdmin = () => {
@@ -35,15 +35,22 @@ const PanelAdmin = () => {
   }, []);
 
   // Carga de servicios desde el backend 
-  useEffect(() => {
-    api.get("/")
-      .then(response => {
-        setServicios(response.data);
+ useEffect(() => {
+      const token = localStorage.getItem("token");
+  
+      api.get("/servicios", {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+        withCredentials: true,
       })
-      .catch(error => {
-        console.error("Error al cargar los servicios:", error);
-      });
-  }, []);
+        .then(response => {
+          setServicios(response.data);
+        })
+        .catch(error => {
+          console.error("Error al cargar los servicios:", error);
+        });
+    }, []);
 
   //upload image
   const uploadImage = async (e) => {
