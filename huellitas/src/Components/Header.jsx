@@ -28,6 +28,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("userLoggedIn");
     window.dispatchEvent(new Event("storage")); // Notificar cambios globales
     navigate("/");
   };

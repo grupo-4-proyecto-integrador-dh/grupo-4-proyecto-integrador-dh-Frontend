@@ -120,6 +120,7 @@ const Login = () => {
       if (user) {
         console.log("Inicio de sesión exitoso", user);
         localStorage.setItem("user", JSON.stringify(user)); // Guardar en localStorage
+        localStorage.setItem("userLoggedIn", "true"); // Guardar variable en localStorage para la sesion
         window.dispatchEvent(new Event("storage")); //  cambio global
         navigate("/");
       } else {
