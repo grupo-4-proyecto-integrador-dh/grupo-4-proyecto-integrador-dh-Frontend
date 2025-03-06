@@ -10,7 +10,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Función para obtener el usuario desde localStorage
+  // obtener el usuario desde localStorage
   const fetchUser = () => {
     const storedUser = localStorage.getItem("user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
@@ -20,16 +20,20 @@ const Header = () => {
     fetchUser();
 
     const handleStorageChange = () => {
-      fetchUser(); // Actualizar usuario cuando hay cambios en localStorage
+      fetchUser(); // Actualizar usuario  en localStorage
     };
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  useEffect(() => {
+    console.log("Usuario cargado:", user); // Verificar  usuario
+  }, [user]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
+    window.dispatchEvent(new Event("storage")); 
     navigate("/");
   };
 
@@ -49,17 +53,19 @@ const Header = () => {
         </button>
 
         {/* Contenedor de enlaces y usuario */}
-        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>        
-           {user ? (
+        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>
+          {user ? (
             <div className="user-info">
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
-                {user.name ? user.name.charAt(0).toUpperCase() : ""}
-                {user.lastName ? user.lastName.charAt(0).toUpperCase() : ""}
+
+                {(user?.nombre?.trim().charAt(0)?.toUpperCase() || "") + 
+                (user?.apellido?.trim().charAt(0)?.toUpperCase() || "")}
               </div>
               {menuOpen && (
                 <div className="user-menu">
-                  <p>{user.name} {user.lastName}</p>
-                  <p>{user.email}</p>
+                  <p>{user?.nombre} {user?.apellido}</p>
+                  <p>{user?.email}</p>
+
                   <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               )}
@@ -67,14 +73,14 @@ const Header = () => {
           ) : (
             <div className="auth-buttons">
               <button
-              className="crear-cuenta-button"
-              onClick={() => {
-                console.log("Redirigiendo a /registro...");
-                navigate("/registro");
-              }}
-            >
-              Crear Cuenta
-            </button>
+                className="crear-cuenta-button"
+                onClick={() => {
+                  console.log("Redirigiendo a /registro...");
+                  navigate("/registro");
+                }}
+              >
+                Crear Cuenta
+              </button>
               <Link to="/login" className="btn">Iniciar Sesión</Link>
             </div>
           )}

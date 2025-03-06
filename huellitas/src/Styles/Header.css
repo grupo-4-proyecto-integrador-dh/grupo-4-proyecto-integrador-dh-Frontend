@@ -88,20 +88,21 @@
   align-items: center;
   cursor: pointer;
 }
-
 .avatar {
   width: 40px;
   height: 40px;
-  background-color: #e76f51;
-  color: white;
+  background-color:#e76f51 !important; 
+  color: white !important; 
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  font-size: 18px;
-  margin-left: 10px;
+  font-size: 18px ; 
+  text-transform: uppercase; 
+  overflow: visible !important; 
 }
+
 
 .user-menu {
   position: absolute;
@@ -115,7 +116,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 220px; /* Ajuste del ancho del menú */
+  width: 220px; 
   min-width: 180px;
   text-align: center;
 }
@@ -149,6 +150,7 @@
 .logout-btn:hover {
   background-color: #d65b3d;
 }
+/*****/
 
 @media (max-width: 768px) {
   .menu-toggle {
@@ -160,9 +162,10 @@
     top: 60px;
     left: 0;
     width: 100%;
-    background: #fffdf4;
+    background: transparent;
     flex-direction: column;
     display: none;
+    align-items: center;
   }
 
   .nav-links.open {
@@ -179,5 +182,27 @@
 
   .brand-link span {
     display: none;
+  }
+
+  /* Ajuste del avatar en mobile */
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    margin-left: 0; 
+    margin-top: 10px;
+  }
+
+  .user-menu {
+    position: relative;
+    top: 10px;
+    width: 200px;
+    text-align: center;
   }
 }
