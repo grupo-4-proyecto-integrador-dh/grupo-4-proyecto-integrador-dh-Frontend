@@ -29,12 +29,19 @@ const Alojamientos = () => {
     useEffect(() => {
         api.get("/alojamientos")
             .then((response) => {
-                setServicios(response.data);
+                console.log("Datos de la API:", response.data);
+                if (Array.isArray(response.data)) {
+                    setServicios(response.data);
+                } else {
+                    console.error("La API no devolvió un array:", response.data);
+                    setServicios([]); // Evita errores en el map
+                }
             })
             .catch((error) => {
                 console.error("Error al cargar los servicios:", error);
             });
     }, []);
+    
 
     useEffect(() => {
         api.get("/categorias")
@@ -127,7 +134,7 @@ const Alojamientos = () => {
             nombre,
             descripcion,
             precio,
-            imagenUrl: imagenes[0],
+            imagenesUrl: imagenes,
             categoriaId: categoriaId,
         };
     
@@ -266,7 +273,7 @@ const Alojamientos = () => {
                 setNombre(servicio.nombre || "");
                 setDescripcion(servicio.descripcion || "");
                 setPrecio(servicio.precio || 0);
-                setImagenes(servicio.imagenUrl ? [servicio.imagenUrl] : []); // Solo la primera imagen
+                setImagenes(servicio.imagenesUrl || []);
                 setServicioEditando(servicio.id || null);
                 setCategoria(servicio.categoriaNombre || "");
                 setModalAbierto(true);

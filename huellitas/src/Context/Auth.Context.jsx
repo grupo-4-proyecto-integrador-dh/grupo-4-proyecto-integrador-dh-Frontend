@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
             dispatch(setUser({ ...JSON.parse(storedUser), rol: storedRol }));
         }
 
-        setLoading(false); // 🔹 Una vez cargado el usuario, establecemos loading en false
+        setLoading(false);
     }, []);
 
     return (
