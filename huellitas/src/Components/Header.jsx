@@ -1,3 +1,4 @@
+
 import "../Styles/Header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -34,12 +35,16 @@ const Header = () => {
     fetchUser();
 
     const handleStorageChange = () => {
-      fetchUser(); // Actualizar usuario cuando hay cambios en localStorage
+      fetchUser(); // Actualizar usuario  en localStorage
     };
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  useEffect(() => {
+    console.log("Usuario cargado:", user); // Verificar  usuario
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -64,8 +69,8 @@ const Header = () => {
         </button>
 
         {/* Contenedor de enlaces y usuario */}
-        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>        
-           {user ? (
+        <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>
+          {user ? (
             <div className="user-info">
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
                 {user.nombre ? user.nombre.charAt(0).toUpperCase() : ""}
