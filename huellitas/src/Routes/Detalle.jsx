@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-//import AvailabilityTable from "../Components/AvailabilityTable";
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
 
@@ -44,20 +43,13 @@ const Detalle = () => {
               <div className="servicio-categoria">             
               </div>
             </div>
-            
-            
-
             <button className="reserve-button" onClick={makeReservation}>
                 Reservar ahora
             </button>
 
           </div>
         </div>
-
-        {/* <h2 className="table-title">Precios y Disponibilidad</h2>
-        <AvailabilityTable />*/}
-
-        
+      
       </div>
     </div>
   );

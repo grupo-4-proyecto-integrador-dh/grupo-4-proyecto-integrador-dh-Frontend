@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
-const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
+const API_URL = "http://localhost:8080/api/auth/registro"; // Asegúrate de que esta URL es correcta
 
 export default function Registro() {
   const [formData, setFormData] = useState({
@@ -39,36 +39,40 @@ export default function Registro() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMensaje("");  // Limpiar el mensaje de error previo
+    setErrorMensaje("");
     if (validate()) {
-      try {
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData), // Enviar los datos del formulario al backend
-        });
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
 
-        if (!response.ok) {
-          throw new Error("Hubo un error en el registro");
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (response.status === 409) { // Email ya registrado
+                    setErrorMensaje(errorData.message || "El email ya está registrado.");
+                } else {
+                    setErrorMensaje("Hubo un error en el registro: " + (errorData.message || "Intenta nuevamente."));
+                }
+                return;
+            }
+
+            const data = await response.json();
+            console.log("Registro exitoso:", data);
+            setRegistroExitoso(true);
+            setTimeout(() => {
+                setRegistroExitoso(false);
+                navigate("/login");
+            }, 2000);
+        } catch (error) {
+            console.error("Error en el registro:", error);
+            setErrorMensaje("Hubo un error al registrar el usuario. Intenta nuevamente.");
         }
-
-        const data = await response.json();
-        console.log("Registro exitoso:", data);
-
-        // Mostrar el mensaje de éxito
-        setRegistroExitoso(true);
-        setTimeout(() => {
-          setRegistroExitoso(false);
-          navigate("/login"); // Redirigir al login
-        }, 2000);
-      } catch (error) {
-        console.error("Error en el registro:", error);
-        setErrorMensaje("Hubo un error al registrar el usuario. Intenta nuevamente.");
-      }
     }
-  };
+};
 
   return (
     <div className="registro-container">
@@ -129,5 +133,4 @@ export default function Registro() {
     </div>
   );
 }
-
 
