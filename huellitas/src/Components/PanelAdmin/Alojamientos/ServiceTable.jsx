@@ -17,37 +17,43 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                     </tr>
                 </thead>
                 <tbody>
-    {servicios
-        .filter((servicio) =>
-            servicio.nombre.toLowerCase().includes(busqueda.toLowerCase())
-        )
-        .map((servicio) => {
-            const categoriaId = servicio.categoria ? servicio.categoria.id : null;
-            const categoriaNombre = servicio.categoria ? servicio.categoria.nombre : "Categoría no encontrada";
+                    {servicios
+                        .filter((servicio) =>
+                            servicio.nombre && servicio.nombre.toLowerCase().includes(busqueda.toLowerCase())
+                        )
+                        .map((servicio) => {
+                            const categoriaNombre = servicio.categoria?.nombre || "Categoría no encontrada";
 
-            return (
-                <tr key={servicio.id}>
-                    <td>{servicio.id}</td>
-                    <td>{servicio.nombre}</td>
-                    <td>{servicio.descripcion}</td>
-                    <td>${servicio.precio}</td>
-                    <td>{categoriaNombre}</td>
-                    <td>
-                        {servicio.imagenUrl ? (
-                            <img src={servicio.imagenUrl} alt="Servicio" className="preview-img-table" />
-                        ) : (
-                            "No hay imagen"
-                        )}
-                    </td>
-                    <td>
-                        <FaEdit className="edit-icon" onClick={() => handleEdit(servicio)} />
-                        <FaTrash className="delete-icon" onClick={() => handleDelete(servicio.id)} />
-                    </td>
-                </tr>
-            );
-        })}
-</tbody>
-
+                            return (
+                                <tr key={servicio.id}>
+                                    <td>{servicio.id}</td>
+                                    <td>{servicio.nombre}</td>
+                                    <td>{servicio.descripcion}</td>
+                                    <td>${servicio.precio}</td>
+                                    <td>{categoriaNombre}</td>
+                                    <td>
+                                        {servicio.imagenUrl ? (
+                                            <img src={servicio.imagenUrl} alt="Servicio" className="preview-img-table" />
+                                        ) : (
+                                            "No hay imagen"
+                                        )}
+                                    </td>
+                                    <td>
+                                        <FaEdit
+                                            className="edit-icon"
+                                            onClick={() => handleEdit(servicio)}
+                                            title="Editar"
+                                        />
+                                        <FaTrash
+                                            className="delete-icon"
+                                            onClick={() => handleDelete(servicio.id)}
+                                            title="Eliminar"
+                                        />
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                </tbody>
             </table>
         </div>
     );

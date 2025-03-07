@@ -6,7 +6,7 @@ import TopBar from "./TopBar";
 import "../../../Styles/Administracion.css";
 import axios from "axios";
 
-const API_URL = "https://insightful-patience-production.up.railway.app/usuarios";
+const API_URL = "http://localhost:8081/usuarios";
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
