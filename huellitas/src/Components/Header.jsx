@@ -20,7 +20,7 @@ const Header = () => {
       }
 
       const userData = JSON.parse(storedUser);
-      const response = await fetch(`https://insightful-patience-production.up.railway.app/usuarios/${userData.id}`);
+      const response = await fetch(`http://localhost:8080/usuarios/${userData.id}`);
       if (!response.ok) throw new Error("Error al obtener usuario");
       
       const data = await response.json();

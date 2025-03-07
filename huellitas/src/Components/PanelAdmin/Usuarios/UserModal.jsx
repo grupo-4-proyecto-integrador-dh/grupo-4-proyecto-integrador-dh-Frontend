@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://insightful-patience-production.up.railway.app",
+    baseURL: "http://localhost:8080",
 });
 
 const UserModal = ({

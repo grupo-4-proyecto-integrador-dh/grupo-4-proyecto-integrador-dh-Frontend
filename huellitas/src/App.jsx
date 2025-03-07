@@ -12,9 +12,11 @@ import "./Styles/index.css";
 
 
 function App() {
-  const [rolUsuario, setRolUsuario] = useState(null);
+    
+  const [rolUsuario, setRolUsuario] = useState();
+  const [user]= useState(localStorage.getItem("user"))
   const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
-  const ROL_URL = "https://insightful-patience-production.up.railway.app/usuarios/rol";
+  const ROL_URL = `http://localhost:8080/usuarios/rol/${user.id}`;
 
   useEffect(() => {
       if (token) {

@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
 import axios from "axios";
 
-const API_URL = "https://insightful-patience-production.up.railway.app/api/auth/login";
-const ROL_URL = "https://insightful-patience-production.up.railway.app/usuarios/rol";
+const API_URL = "http://localhost:8080/api/auth/login";
+const ROL_URL = "http://localhost:8080/usuarios/rol";
 
 const Login = ({ setToken }) => {
     const [email, setEmail] = useState("");
