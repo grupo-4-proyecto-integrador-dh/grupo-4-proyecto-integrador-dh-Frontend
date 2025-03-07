@@ -10,10 +10,25 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // obtener el usuario desde localStorage
-  const fetchUser = () => {
-    const storedUser = localStorage.getItem("user");
-    setUser(storedUser ? JSON.parse(storedUser) : null);
+  // Función para obtener el usuario desde la API
+  const fetchUser = async () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) {
+        setUser(null);
+        return;
+      }
+
+      const userData = JSON.parse(storedUser);
+      const response = await fetch(`https://insightful-patience-production.up.railway.app/usuarios/${userData.id}`);
+      if (!response.ok) throw new Error("Error al obtener usuario");
+      
+      const data = await response.json();
+      setUser(data); // Guardamos los datos actualizados
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+      setUser(null);
+    }
   };
 
   useEffect(() => {
@@ -33,7 +48,8 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("storage")); 
+    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
+    setUser(null);
     navigate("/");
   };
 
@@ -57,15 +73,13 @@ const Header = () => {
           {user ? (
             <div className="user-info">
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
-
-                {(user?.nombre?.trim().charAt(0)?.toUpperCase() || "") + 
-                (user?.apellido?.trim().charAt(0)?.toUpperCase() || "")}
+                {user.nombre ? user.nombre.charAt(0).toUpperCase() : ""}
+                {user.apellido ? user.apellido.charAt(0).toUpperCase() : ""}
               </div>
               {menuOpen && (
                 <div className="user-menu">
-                  <p>{user?.nombre} {user?.apellido}</p>
-                  <p>{user?.email}</p>
-
+                  <p>{user.nombre} {user.apellido}</p>
+                  <p>{user.email}</p>
                   <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               )}
@@ -74,10 +88,7 @@ const Header = () => {
             <div className="auth-buttons">
               <button
                 className="crear-cuenta-button"
-                onClick={() => {
-                  console.log("Redirigiendo a /registro...");
-                  navigate("/registro");
-                }}
+                onClick={() => navigate("/registro")}
               >
                 Crear Cuenta
               </button>

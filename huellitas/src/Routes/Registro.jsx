@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
-const API_URL = "https://grupo-4-proyecto-integrador-dh-b-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
+const API_URL = "https://insightful-patience-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
 
 export default function Registro() {
   const [formData, setFormData] = useState({
@@ -129,5 +129,4 @@ export default function Registro() {
     </div>
   );
 }
-
 
