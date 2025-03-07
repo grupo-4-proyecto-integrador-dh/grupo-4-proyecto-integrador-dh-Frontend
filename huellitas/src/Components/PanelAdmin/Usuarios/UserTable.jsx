@@ -9,6 +9,7 @@ const UserTable = ({ usuarios, handleEdit, handleDelete }) => {
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>Email</th>
                         <th>Rol</th>
                         <th>Acciones</th>
@@ -20,6 +21,7 @@ const UserTable = ({ usuarios, handleEdit, handleDelete }) => {
                             <tr key={usuario.id}>
                                 <td>{usuario.id}</td>
                                 <td>{usuario.nombre}</td>
+                                <td>{usuario.apellido}</td>
                                 <td>{usuario.email}</td>
                                 <td>{usuario.rol}</td>
                                 <td>
@@ -34,7 +36,7 @@ const UserTable = ({ usuarios, handleEdit, handleDelete }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5">No se encontraron usuarios.</td>
+                            <td colSpan="6">No se encontraron usuarios.</td>
                         </tr>
                     )}
                 </tbody>

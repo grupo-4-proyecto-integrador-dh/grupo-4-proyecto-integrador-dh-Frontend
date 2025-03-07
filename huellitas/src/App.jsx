@@ -5,51 +5,37 @@ import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
 import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
-import axios from "axios";
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
+import { useAuth } from "./Context/Auth.Context";
 import "./Styles/index.css";
 
 
 function App() {
-    
-  const [rolUsuario, setRolUsuario] = useState();
-  const [user]= useState(localStorage.getItem("user"))
-  const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
-  const ROL_URL = `http://localhost:8080/usuarios/rol/${user.id}`;
+    const { state } = useAuth();
 
-  useEffect(() => {
-      if (token) {
-          axios.get(ROL_URL, {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          })
-              .then((rolResponse) => {
-                  setRolUsuario(rolResponse.data);
-              })
-              .catch((rolError) => {
-                  console.error("Error al obtener el rol:", rolError);
-              });
-      }
-  }, [token]);
+    const ProtectedRoute = ({ element, ...rest }) => {
+        if (state.isAuthenticated && state.user?.rol === "ADMIN") {
+            return element;
+        }
 
+        return <Navigate to="/login" replace />;
+    };
 
-
-  return (
-      <>
-          <Routes>
-              <Route path="/" element={<Layout />}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/registro" element={<Registro />} />
-                  <Route path="/login" element={<Login setToken={setToken} />} />
-                  <Route path="/administracion" element={<PanelAdmin />} />
-                  <Route path="/alojamiento/:id" element={<Detalle />} />
-                  <Route path="*" element={<NotFoundPage />} />
-              </Route>
-          </Routes>
-      </>
-  );
+    return (
+        <>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/registro" element={<Registro />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/administracion" element={<ProtectedRoute element={<PanelAdmin />} />} />
+                    <Route path="/alojamiento/:id" element={<Detalle />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Route>
+            </Routes>
+        </>
+    );
 }
 
 export default App;

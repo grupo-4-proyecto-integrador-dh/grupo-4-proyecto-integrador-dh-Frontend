@@ -6,121 +6,46 @@ import TopBar from "./TopBar";
 import "../../../Styles/Administracion.css";
 import axios from "axios";
 
-const api = axios.create({
-    baseURL: "http://localhost:8080",
-});
+const API_URL = "https://insightful-patience-production.up.railway.app/usuarios";
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [usuarioEditando, setUsuarioEditando] = useState(null);
     const [modalUsuarioAbierto, setModalUsuarioAbierto] = useState(false);
     const [nombreUsuario, setNombreUsuario] = useState("");
+    const [apellidoUsuario, setApellidoUsuario] = useState("");
+    const [contrasenaUsuario, setContrasenaUsuario] = useState("");
     const [emailUsuario, setEmailUsuario] = useState("");
-    const [rolUsuario, setRolUsuario] = useState("");
+    const [rolUsuario, setRolUsuario] = useState("USER");
 
     useEffect(() => {
-        api.get("/usuarios")
-            .then((response) => {
-                setUsuarios(response.data);
-            })
-            .catch((error) => {
-                console.error("Error al cargar los usuarios:", error);
-            });
+        cargarUsuarios();
     }, []);
+
+    const cargarUsuarios = async () => {
+        try {
+            const response = await axios.get(API_URL);
+            setUsuarios(response.data);
+        } catch (error) {
+            console.error("Error al cargar los usuarios:", error);
+            Swal.fire("Error", "No se pudieron cargar los usuarios.", "error");
+        }
+    };
 
     const toggleModalUsuario = () => {
         if (modalUsuarioAbierto) {
-            setNombreUsuario("");
-            setEmailUsuario("");
-            setRolUsuario("");
-            setUsuarioEditando(null);
+            limpiarFormulario();
         }
         setModalUsuarioAbierto(!modalUsuarioAbierto);
     };
 
-    const agregarUsuario = () => {
-        const usuarioData = {
-            nombre: nombreUsuario,
-            email: emailUsuario,
-            rol: rolUsuario,
-        };
-
-        if (usuarioEditando) {
-            api.put(`/usuarios/${usuarioEditando}`, usuarioData) // Corregido
-                .then(() => {
-                    Swal.fire("Usuario Actualizado", "El usuario ha sido actualizado correctamente.", "success");
-                    api.get("/usuarios").then((response) => setUsuarios(response.data));
-                })
-                .catch((error) => {
-                    console.error("Error al actualizar el usuario:", error);
-                    console.log("Error Response:", error.response); // Agrega esta línea
-                    Swal.fire("Error", "No se pudo actualizar el usuario.", "error");
-                });
-        } else {
-            api.post("/usuarios", usuarioData)
-                .then(() => {
-                    Swal.fire("Usuario Agregado", "El usuario ha sido agregado correctamente.", "success");
-                    api.get("/usuarios").then((response) => setUsuarios(response.data));
-                })
-                .catch((error) => {
-                    console.error("Error al agregar el usuario:", error);
-                    console.log("Error Response:", error.response); // Agrega esta línea
-                    Swal.fire("Error", "No se pudo agregar el usuario.", "error");
-                });
-        }
-    };
-
-    const handleDeleteUsuario = (id) => {
-        Swal.fire({
-            title: "¿Estás seguro?",
-            text: "No podrás revertir esto.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "Cancelar",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                api.delete(`/usuarios/${id}`)
-                    .then(() => {
-                        Swal.fire("Eliminado", "El usuario ha sido eliminado correctamente.", "success");
-                        api.get("/usuarios").then((response) => setUsuarios(response.data));
-                    })
-                    .catch((error) => {
-                        console.error("Error al eliminar el usuario:", error);
-                        console.log("Error Response:", error.response); // Agrega esta línea
-                        Swal.fire("Error", "No se pudo eliminar el usuario.", "error");
-                    });
-            }
-        });
-    };
-
-    const handleEditUsuario = (usuario) => {
-        Swal.fire({
-            title: "¿Quieres editar este usuario?",
-            text: `Estás editando: ${usuario.nombre}`,
-            icon: "info",
-            iconColor: "#f4e3c1",
-            showCancelButton: true,
-            confirmButtonText: "Continuar",
-            cancelButtonText: "Cancelar",
-            customClass: {
-                popup: "mi-popup",
-                title: "mi-titulo",
-                content: "mi-contenido",
-                confirmButton: "mi-boton-confirmar",
-                cancelButton: "mi-boton-cancelar",
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setNombreUsuario(usuario.nombre || "");
-                setEmailUsuario(usuario.email || "");
-                setRolUsuario(usuario.rol || "");
-                setUsuarioEditando(usuario.id || null);
-                setModalUsuarioAbierto(true);
-            }
-        });
+    const limpiarFormulario = () => {
+        setNombreUsuario("");
+        setApellidoUsuario("");
+        setEmailUsuario("");
+        setRolUsuario("USER");
+        setContrasenaUsuario("");
+        setUsuarioEditando(null);
     };
 
     return (
@@ -128,21 +53,53 @@ const Usuarios = () => {
             <TopBar toggleModal={toggleModalUsuario} />
             <UserTable
                 usuarios={usuarios}
-                handleEdit={handleEditUsuario}
-                handleDelete={handleDeleteUsuario}
+                handleEdit={(usuario) => {
+                    setNombreUsuario(usuario.nombre);
+                    setApellidoUsuario(usuario.apellido);
+                    setEmailUsuario(usuario.email);
+                    setRolUsuario(usuario.rol || "USER");
+                    setUsuarioEditando(usuario.id);
+                    setModalUsuarioAbierto(true);
+                }}
+                handleDelete={async (id) => {
+                    const result = await Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "No podrás revertir esto.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Sí, eliminar",
+                        cancelButtonText: "Cancelar",
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            await axios.delete(`${API_URL}/${id}`);
+                            Swal.fire("Eliminado", "El usuario ha sido eliminado correctamente.", "success");
+                            cargarUsuarios();
+                        } catch (error) {
+                            console.error("Error al eliminar el usuario:", error);
+                            Swal.fire("Error", "No se pudo eliminar el usuario.", "error");
+                        }
+                    }
+                }}
             />
             <UserModal
                 modalAbierto={modalUsuarioAbierto}
                 toggleModal={toggleModalUsuario}
                 nombre={nombreUsuario}
                 setNombre={setNombreUsuario}
+                apellido={apellidoUsuario}
+                setApellido={setApellidoUsuario}
                 email={emailUsuario}
                 setEmail={setEmailUsuario}
                 rol={rolUsuario}
                 setRol={setRolUsuario}
-                agregarUsuario={agregarUsuario}
                 usuarioEditando={usuarioEditando}
                 setUsuarios={setUsuarios}
+                cargarUsuarios={cargarUsuarios}
+                limpiarFormulario={limpiarFormulario}
             />
         </div>
     );

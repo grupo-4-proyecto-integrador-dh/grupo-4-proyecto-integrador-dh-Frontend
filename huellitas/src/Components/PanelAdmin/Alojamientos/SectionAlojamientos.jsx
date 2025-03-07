@@ -22,19 +22,12 @@ const Alojamientos = () => {
     const [busqueda, setBusqueda] = useState("");
     const [modalAbierto, setModalAbierto] = useState(false);
     const [servicioEditando, setServicioEditando] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
     const [loading, setLoading] = useState(false);
     const [categoria, setCategoria] = useState("");
     const [categorias, setCategorias] = useState([]);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 1024);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    useEffect(() => {
-        api.get("/alojamientos/dashboard")
+        api.get("/alojamientos")
             .then((response) => {
                 setServicios(response.data);
             })
@@ -55,31 +48,36 @@ const Alojamientos = () => {
 
     const uploadImage = async (e) => {
         const files = e.target.files;
-        const newImageUrls = [];
-    
         setLoading(true);
-    
+
         try {
-            for (let i = 0; i < files.length; i++) {
+            const uploadPromises = Array.from(files).map(async (file) => {
                 const data = new FormData();
-                data.append("file", files[i]);
+                data.append("file", file);
                 data.append("upload_preset", preset_name);
-    
+
                 const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
                     method: "POST",
                     body: data,
                 });
-    
+
                 const result = await response.json();
-    
                 if (result.secure_url) {
-                    newImageUrls.push(result.secure_url);
+                    return result.secure_url;
                 }
-            }
-    
-            setImagenes((prevImagenes) => [...prevImagenes, ...newImageUrls]);
+                return null;
+            });
+
+            const results = await Promise.all(uploadPromises);
+            const validUrls = results.filter((url) => url !== null);
+            setImagenes((prevImagenes) => [...prevImagenes, ...validUrls]);
         } catch (error) {
             console.error("Error uploading images:", error);
+            Swal.fire({
+                title: "Error",
+                text: "Error al subir las imágenes. Inténtalo de nuevo.",
+                icon: "error",
+            });
         } finally {
             setLoading(false);
         }
@@ -284,7 +282,7 @@ const Alojamientos = () => {
     return (
         <div className="main-content">
             <TopBar busqueda={busqueda} setBusqueda={setBusqueda} toggleModal={toggleModal} />
-            <ServiceTable servicios={servicios} busqueda={busqueda} handleEdit={handleEdit} handleDelete={handleDelete} />
+            <ServiceTable servicios={servicios} busqueda={busqueda} handleEdit={handleEdit} handleDelete={handleDelete} categorias={categorias}/>
             <ServiceModal
                 modalAbierto={modalAbierto}
                 toggleModal={toggleModal}
