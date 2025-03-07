@@ -8,7 +8,11 @@ import axios from "axios";
 
 const api = axios.create({
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     baseURL: "http://localhost:8081",
+=======
+    baseURL: "https://insightful-patience-production.up.railway.app/",
+>>>>>>> Stashed changes
 =======
     baseURL: "https://insightful-patience-production.up.railway.app/",
 >>>>>>> Stashed changes

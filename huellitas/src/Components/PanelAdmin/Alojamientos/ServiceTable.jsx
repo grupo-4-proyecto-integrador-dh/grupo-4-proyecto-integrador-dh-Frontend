@@ -23,7 +23,11 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                     {servicios
                         .filter((servicio) =>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             servicio.nombre && servicio.nombre.toLowerCase().includes(busqueda.toLowerCase())
+=======
+                            servicio.nombre?.toLowerCase().includes(busquedaLimpia)
+>>>>>>> Stashed changes
 =======
                             servicio.nombre?.toLowerCase().includes(busquedaLimpia)
 >>>>>>> Stashed changes
@@ -35,6 +39,7 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                                 <tr key={servicio.id}>
                                     <td>{servicio.id}</td>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                     <td>{servicio.nombre}</td>
                                     <td>{servicio.descripcion}</td>
                                     <td>${servicio.precio}</td>
@@ -43,6 +48,8 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                                         {servicio.imagenUrl ? (
                                             <img src={servicio.imagenUrl} alt="Servicio" className="preview-img-table" />
 =======
+=======
+>>>>>>> Stashed changes
                                     <td>{servicio.nombre || "Nombre no disponible"}</td>
                                     <td>{servicio.descripcion || "Sin descripción"}</td>
                                     <td>${servicio.precio ?? "No especificado"}</td>
@@ -54,12 +61,16 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                                                 alt="Servicio"
                                                 className="preview-img-table"
                                             />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                                         ) : (
                                             "No hay imagen"
                                         )}
                                     </td>
                                     <td>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                                         <FaEdit
                                             className="edit-icon"
@@ -71,6 +82,10 @@ const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete, categoria
                                             onClick={() => handleDelete(servicio.id)}
                                             title="Eliminar"
                                         />
+=======
+                                        <FaEdit className="edit-icon" onClick={() => handleEdit(servicio)} />
+                                        <FaTrash className="delete-icon" onClick={() => handleDelete(servicio.id)} />
+>>>>>>> Stashed changes
 =======
                                         <FaEdit className="edit-icon" onClick={() => handleEdit(servicio)} />
                                         <FaTrash className="delete-icon" onClick={() => handleDelete(servicio.id)} />
