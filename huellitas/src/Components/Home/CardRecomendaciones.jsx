@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 
-const CardRecomendaciones = ({ id, title, description, imageUrl }) => {
+const CardRecomendaciones = ({ id, title, description, imageUrl , price}) => {
   return (
     <div>
       <Link to={"/alojamiento/" + id} className="card__recomendaciones">
@@ -19,6 +19,7 @@ const CardRecomendaciones = ({ id, title, description, imageUrl }) => {
       <div className="card__content">
         <h3 className="card__title">{title}</h3>
         <p className="card__description">{description}</p>
+        <p className="card__description">{price}</p>
       </div>
       </Link>
     </div>
