@@ -18,7 +18,9 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/registro" element={<Registro />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/administracion" element={<ProtectedRoute element={<PanelAdmin />} />} />
+                    <Route path="/administracion" element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+                        <Route index element={<PanelAdmin />} />
+                    </Route>
                     <Route path="/alojamiento/:id" element={<Detalle />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
