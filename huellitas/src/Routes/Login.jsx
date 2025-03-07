@@ -61,6 +61,7 @@ const Login = () => {
                     .then((rolResponse) => {
                         const rol = rolResponse.data;
                         dispatch(setRol(rol));
+                        localStorage.setItem("rol", rol);
                         if (rol === "ADMIN") {
                             navigate("/administracion");
                         } else {

@@ -10,26 +10,29 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Función para obtener el usuario desde la API
   const fetchUser = async () => {
     try {
       const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
+      const storedRol = localStorage.getItem("rol");
+  
+      if (!storedUser || !storedRol) {
         setUser(null);
         return;
       }
-
+  
       const userData = JSON.parse(storedUser);
       const response = await fetch(`https://insightful-patience-production.up.railway.app/usuarios/${userData.id}`);
-      if (!response.ok) throw new Error("Error al obtener usuario");
       
+      if (!response.ok) throw new Error("Error al obtener usuario");
+  
       const data = await response.json();
-      setUser(data); // Guardamos los datos actualizados
+      setUser({ ...data, rol: storedRol });
     } catch (error) {
       console.error("Error obteniendo usuario:", error);
       setUser(null);
     }
   };
+  
 
   useEffect(() => {
     fetchUser();
@@ -43,15 +46,17 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Usuario cargado:", user); // Verificar  usuario
+    console.log("Usuario cargado:", user);
   }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
+    localStorage.removeItem("rol");
+    window.dispatchEvent(new Event("storage"));
     setUser(null);
     navigate("/");
   };
+  
 
   return (
     <nav className="navbar">

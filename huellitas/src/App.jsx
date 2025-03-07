@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
@@ -7,21 +6,11 @@ import Layout from "./Layouts/Layout";
 import NotFoundPage from "./Components/NotFoundPage";
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
-import { useAuth } from "./Context/Auth.Context";
+import ProtectedRoute from "./Routes/ProtectedRoute";
 import "./Styles/index.css";
 
 
 function App() {
-    const { state } = useAuth();
-
-    const ProtectedRoute = ({ element, ...rest }) => {
-        if (state.isAuthenticated && state.user?.rol === "ADMIN") {
-            return element;
-        }
-
-        return <Navigate to="/login" replace />;
-    };
-
     return (
         <>
             <Routes>
