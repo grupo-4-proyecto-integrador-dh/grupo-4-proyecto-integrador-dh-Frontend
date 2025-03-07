@@ -6,7 +6,7 @@ const BarraBusqueda = (props) => {
   return (
     <div className="main__buscar__fields">
       <input
-        className="main__buscar__fields__texto form-control-sm "
+        className="main__buscar__fields__texto"
         type="text"
         name="buscar"
         id="buscar"

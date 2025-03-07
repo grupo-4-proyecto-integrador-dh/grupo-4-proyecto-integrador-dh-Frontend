@@ -200,6 +200,11 @@
 
     .main__buscar__fields__texto {
       font-weight: 600;
+      &:-webkit-autofill {
+        background-color: colors.$white !important;
+        color: colors.$black !important;
+        box-shadow: 0 0 0px 1000px white inset !important;
+      }
     }
     .main__buscar__fields__fecha {
       font-weight: 600;
