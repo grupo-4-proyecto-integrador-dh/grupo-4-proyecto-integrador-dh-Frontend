@@ -3,8 +3,13 @@ import { useState } from "react";
 const BarraBusqueda = (props) => {
   const [searchInput, setSearchInput] = useState("");
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    props.setSearchQuery(searchInput);
+  };
+
   return (
-    <div className="main__buscar__fields">
+    <form className="main__buscar__fields" onSubmit={handleSubmit}>
       <input
         className="main__buscar__fields__texto"
         type="text"
@@ -25,14 +30,12 @@ const BarraBusqueda = (props) => {
       />
       <button
         className="main__buscar__fields__submit"
-        onClick={(e) => {
-          e.preventDefault();
-          props.setSearchQuery(searchInput);
-        }}
+        type="submit"
+        onClick={handleSubmit}
       >
         Buscar
       </button>
-    </div>
+    </form>
   );
 };
 

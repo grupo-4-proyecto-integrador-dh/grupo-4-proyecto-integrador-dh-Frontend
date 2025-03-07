@@ -68,7 +68,13 @@ const RecomendacionesAlojamientos = (props) => {
 
   return (
     <main className="main__recomendaciones">
-      <section className="main__recomendaciones__grid">{renderCards()}</section>
+      <section className="main__recomendaciones__grid">
+        {filteredAlojamientos.length ? (
+          renderCards()
+        ) : (
+          <p>No se han encontrado resultados</p>
+        )}
+      </section>
       <div className="pagination">
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
           Previous
