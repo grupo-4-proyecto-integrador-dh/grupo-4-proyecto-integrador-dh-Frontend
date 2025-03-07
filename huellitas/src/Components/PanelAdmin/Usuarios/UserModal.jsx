@@ -1,86 +1,142 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const api = axios.create({
-    baseURL: "https://insightful-patience-production.up.railway.app",
-});
+const API_URL = "https://insightful-patience-production.up.railway.app/usuarios";
 
 const UserModal = ({
     modalAbierto,
     toggleModal,
     nombre,
     setNombre,
+    apellido,
+    setApellido,
     email,
     setEmail,
     rol,
     setRol,
-    agregarUsuario,
     usuarioEditando,
     setUsuarios,
+    cargarUsuarios,
+    limpiarFormulario
 }) => {
-    const [localNombre, setLocalNombre] = useState(nombre);
-    const [localEmail, setLocalEmail] = useState(email);
-    const [localRol, setLocalRol] = useState(rol);
+    const [loading, setLoading] = useState(false);
+    const [password, setPassword] = useState("");
+
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     useEffect(() => {
-        setLocalNombre(nombre);
-        setLocalEmail(email);
-        setLocalRol(rol);
-    }, [nombre, email, rol]);
+        console.log("🔍 Rol actual en el modal:", rol);
+    }, [rol]);
 
-    useEffect(() => {
-        if (modalAbierto) {
-            Swal.fire({
-                title: usuarioEditando ? "Editar Usuario" : "Agregar Usuario",
-                html: `
-                    <input id="swal-input-nombre" class="swal2-input" placeholder="Nombre" value="${localNombre}">
-                    <input id="swal-input-email" class="swal2-input" placeholder="Email" value="${localEmail}">
-                    <select id="swal-input-rol" class="swal2-input">
-                        <option value="USER" ${localRol === "USER" ? "selected" : ""}>Usuario</option>
-                        <option value="ADMIN" ${localRol === "ADMIN" ? "selected" : ""}>Administrador</option>
-                    </select>
-                `,
-                showCancelButton: true,
-                confirmButtonText: "Guardar",
-                cancelButtonText: "Cancelar",
-                preConfirm: () => {
-                    return {
-                        nombre: document.getElementById("swal-input-nombre").value,
-                        email: document.getElementById("swal-input-email").value,
-                        rol: document.getElementById("swal-input-rol").value,
-                    };
-                },
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const { nombre, email, rol } = result.value;
-                    if (usuarioEditando && rol !== localRol) {
-                        // Cambiar rol si es diferente
-                        api.put(`/usuarios/${usuarioEditando}/rol/${rol}`)
-                            .then(() => {
-                                Swal.fire("Rol Actualizado", "El rol del usuario ha sido actualizado correctamente.", "success");
-                                api.get("/usuarios").then((response) => setUsuarios(response.data)); // Actualiza la lista de usuarios
-                                toggleModal();
-                            })
-                            .catch((error) => {
-                                console.error("Error al actualizar el rol del usuario:", error);
-                                Swal.fire("Error", "No se pudo actualizar el rol del usuario.", "error");
-                            });
-                    } else {
-                        setNombre(nombre);
-                        setEmail(email);
-                        setRol(rol);
-                        agregarUsuario();
-                        toggleModal();
-                    }
-                } else {
-                    toggleModal();
-                }
-            });
+    const guardarUsuario = async () => {
+        const nombreTrim = nombre.trim();
+        const apellidoTrim = apellido.trim();
+        const emailTrim = email.trim();
+        const rolTrim = rol.trim();
+        console.log(nombreTrim, apellidoTrim, emailTrim, rolTrim);
+
+        if (!nombreTrim || !apellidoTrim || !emailTrim || !rolTrim) {
+            Swal.fire("Error", "Por favor, completa todos los campos.", "error");
+            return;
         }
-    }, [modalAbierto, toggleModal, agregarUsuario, usuarioEditando, localNombre, localEmail, localRol, setNombre, setEmail, setRol, setUsuarios]);
 
-    return null;
+        if (!isValidEmail(emailTrim)) {
+            Swal.fire("Error", "Por favor, introduce un email válido.", "error");
+            return;
+        }
+
+        if (!usuarioEditando && (!password || password.length < 6)) {
+            Swal.fire("Error", "La contraseña es obligatoria y debe tener al menos 6 caracteres.", "error");
+            return;
+        }
+
+        setLoading(true);
+    try {
+        let usuarioData = {
+            nombre: nombreTrim,
+            apellido: apellidoTrim,
+            email: emailTrim,
+            rol: rolTrim,
+            contrasena: password
+        };
+
+        if (usuarioEditando) {
+            await axios.put(`${API_URL}/${usuarioEditando}`, usuarioData, {
+                headers: { "Content-Type": "application/json" }
+            });
+            Swal.fire("Usuario Actualizado", "El usuario ha sido actualizado correctamente.", "success");
+        } else {
+            await axios.post(API_URL, usuarioData, {
+                headers: { "Content-Type": "application/json" }
+            });
+            Swal.fire("Usuario Agregado", "El usuario ha sido agregado correctamente.", "success");
+        }
+
+        cargarUsuarios();
+        limpiarFormulario();
+        setPassword("");
+        toggleModal();
+    } catch (error) {
+        console.error("❌ Error al guardar el usuario:", error);
+        Swal.fire("Error", `No se pudo guardar el usuario: ${error.response?.data?.message || error.message}`, "error");
+    } finally {
+        setLoading(false);
+    }
+    };
+
+    if (!modalAbierto) return null;
+
+    return (
+        <div className="modal">
+            <div className="modal-content">
+                <span className="close" onClick={toggleModal}>
+                    &times;
+                </span>
+                <h3>{usuarioEditando ? "Editar Usuario" : "Agregar Usuario"}</h3>
+                <input
+                    type="text"
+                    placeholder="Nombre"
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Apellido"
+                    value={apellido}
+                    onChange={(e) => setApellido(e.target.value)}
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <select value={rol} onChange={(e) => setRol(e.target.value)}>
+                    <option value="USER">Usuario</option>
+                    <option value="ADMIN">Administrador</option>
+                </select>
+                {!usuarioEditando && (
+                    <input
+                        type="password"
+                        placeholder="Contraseña"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                )}
+                {loading ? (
+                    <h3>Cargando...</h3>
+                ) : (
+                    <button className="btn-agregar" onClick={guardarUsuario}>
+                        Guardar Usuario
+                    </button>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default UserModal;

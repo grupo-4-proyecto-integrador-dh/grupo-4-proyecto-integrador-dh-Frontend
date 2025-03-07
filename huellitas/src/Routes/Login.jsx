@@ -2,16 +2,19 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Styles/Login.css";
 import axios from "axios";
+import { useAuth } from "../Context/Auth.Context";
+import { setToken, setUser, setRol } from "../Reducers/authReducer"
 
 const API_URL = "https://insightful-patience-production.up.railway.app/api/auth/login";
 const ROL_URL = "https://insightful-patience-production.up.railway.app/usuarios/rol";
 
-const Login = ({ setToken }) => {
+const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { dispatch } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,9 +38,9 @@ const Login = ({ setToken }) => {
 
             if (data.jwt && data.usuario) {
                 const { id, nombre, apellido, email } = data.usuario;
-
                 const user = { id, nombre, apellido, email };
-                setToken(data.jwt);
+                dispatch(setToken(data.jwt));
+                dispatch(setUser(user));
                 if (rememberMe) {
                     localStorage.setItem("token", data.jwt);
                     localStorage.setItem("user", JSON.stringify(user));
@@ -49,14 +52,15 @@ const Login = ({ setToken }) => {
                 console.log("Inicio de sesión exitoso:", user);
                 window.dispatchEvent(new Event("storage"));
 
-                // Obtener el rol del usuario
-                axios.get(`${ROL_URL}/${user.id}`, { // Usar user.id en lugar de id
+                
+                axios.get(`${ROL_URL}/${user.id}`, {
                     headers: {
                         Authorization: `Bearer ${data.jwt}`,
                     },
                 })
                     .then((rolResponse) => {
                         const rol = rolResponse.data;
+                        dispatch(setRol(rol));
                         if (rol === "ADMIN") {
                             navigate("/administracion");
                         } else {
