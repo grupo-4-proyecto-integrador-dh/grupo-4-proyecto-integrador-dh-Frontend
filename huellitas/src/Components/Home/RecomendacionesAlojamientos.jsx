@@ -10,7 +10,7 @@ const RecomendacionesAlojamientos = () => {
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
-      const response = await fetch("/imagenes.json"); 
+      const response = await fetch("https://insightful-patience-production.up.railway.app/alojamientos"); 
       const data = await response.json();
       
       const shuffledAlojamientos = data.map((a) => a).sort(() => Math.random() - 0.5);
@@ -42,7 +42,7 @@ const RecomendacionesAlojamientos = () => {
         title={alojamiento.nombre}
         description={alojamiento.descripcion}
         price={alojamiento.precio}
-        imageUrl={alojamiento.imagenes[0]} 
+        imageUrl={alojamiento.imagenUrl} 
       />
     ));
   };

@@ -133,6 +133,7 @@
   min-height: 10px; /* Tamaño inicial pequeño */
   max-height: 500px; /* Crece hasta un máximo de 500px */
   transition: height 0.3s ease-in-out; /* Transición suave */
+  overflow: scroll;
 }
 
 .table-container table {
