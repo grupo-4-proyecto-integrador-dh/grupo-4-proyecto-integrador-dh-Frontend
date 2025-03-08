@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
-const API_URL = "http://localhost:8081/api/auth/registro"; // Asegúrate de que esta URL es correcta
+const API_URL = "https://insightful-patience-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
 
 export default function Registro() {
   const [formData, setFormData] = useState({

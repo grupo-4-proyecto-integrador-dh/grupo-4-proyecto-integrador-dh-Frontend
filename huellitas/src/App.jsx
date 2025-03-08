@@ -12,17 +12,7 @@ import "./Styles/index.css";
 
 
 function App() {
-    const { state } = useAuth();
-
-    const ProtectedRoute = ({ element, ...rest }) => {
-        if (state.isAuthenticated && state.user?.rol === "ADMIN") {
-            return element;
-        }
-
-        return <Navigate to="/login" replace />;
-    };
-
-    return (
+      return (
         <>
             <Routes>
                 <Route path="/" element={<Layout />}>
