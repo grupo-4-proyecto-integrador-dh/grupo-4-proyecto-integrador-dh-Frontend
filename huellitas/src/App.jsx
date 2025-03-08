@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./Routes/Home";
 import PanelAdmin from "./Routes/PanelAdmin";
 import Detalle from "./Routes/Detalle";
@@ -8,7 +7,7 @@ import NotFoundPage from "./Components/NotFoundPage";
 
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
-import { useAuth } from "./Context/Auth.Context";
+import ProtectedRoute from "./Routes/ProtectedRoute";
 import "./Styles/index.css";
 
 
@@ -30,7 +29,9 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/registro" element={<Registro />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/administracion" element={<ProtectedRoute element={<PanelAdmin />} />} />
+                    <Route path="/administracion" element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+                        <Route index element={<PanelAdmin />} />
+                    </Route>
                     <Route path="/alojamiento/:id" element={<Detalle />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
