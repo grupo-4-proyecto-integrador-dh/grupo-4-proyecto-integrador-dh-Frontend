@@ -45,6 +45,7 @@ const authReducer = (state = initialState, action) => {
     case REMOVE_TOKEN:
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("rol"); // ✅ Asegurar que se borre el rol
       return {
         ...state,
         token: null,
@@ -64,9 +65,10 @@ const authReducer = (state = initialState, action) => {
         user: null,
       };
     case SET_ROL:
+      localStorage.setItem("rol", action.payload); // ✅ Guardar el rol correctamente
       return {
         ...state,
-        user: { ...state.user, rol: action.payload },
+        user: { ...state.user, rol: action.payload }, // ✅ Asegurar que el usuario tenga el rol
       };
     default:
       return state;

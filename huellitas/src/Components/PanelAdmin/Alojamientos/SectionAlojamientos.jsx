@@ -29,12 +29,19 @@ const Alojamientos = () => {
     useEffect(() => {
         api.get("/alojamientos")
             .then((response) => {
-                setServicios(response.data);
+                console.log("Datos de la API:", response.data);
+                if (Array.isArray(response.data)) {
+                    setServicios(response.data);
+                } else {
+                    console.error("La API no devolvió un array:", response.data);
+                    setServicios([]); // Evita errores en el map
+                }
             })
             .catch((error) => {
                 console.error("Error al cargar los servicios:", error);
             });
     }, []);
+    
 
     useEffect(() => {
         api.get("/categorias")
@@ -108,6 +115,18 @@ const Alojamientos = () => {
             });
             return;
         }
+
+        if (isNaN(precio) || precio <= 0) {
+            Swal.fire({
+                title: "Error",
+                text: "El precio debe ser un número válido y mayor que 0.",
+                icon: "error",
+                customClass: {
+                    confirmButton: "mi-boton-ok",
+                },
+            });
+            return;
+        }
     
         const categoriaId = categorias.find(cat => cat.nombre === categoria)?.id;
     
@@ -126,46 +145,34 @@ const Alojamientos = () => {
         const nuevoServicio = {
             nombre,
             descripcion,
-            precio,
-            imagenUrl: imagenes[0],
+            precio: parseFloat(precio),
+            imagenesUrl: imagenes,
             categoriaId: categoriaId,
         };
     
         if (servicioEditando) {
-            api.put(`/alojamientos/${servicioEditando}`, nuevoServicio)
-                .then(response => {
-                    setServicios(prev => prev.map(servicio => servicio.id === servicioEditando ? response.data : servicio));
-                    Swal.fire({
-                        title: "Éxito",
-                        text: "Servicio editado correctamente",
-                        icon: "success",
-                        customClass: {
-                            confirmButton: "mi-boton-ok",
-                        },
-                    });
-                })
-                .catch(error => {
-                    console.error("Error al editar el servicio:", error);
-                    if (error.response && error.response.status === 409) {
-                        Swal.fire({
-                            title: "Error",
-                            text: "El nombre del servicio ya está en uso. Por favor, elige otro.",
-                            icon: "error",
-                            customClass: {
-                                confirmButton: "mi-boton-ok",
-                            }
-                        });
-                        return;
-                    }
-                    Swal.fire({
-                        title: "Error",
-                        text: "Ocurrió un error al editar el servicio. Inténtalo nuevamente.",
-                        icon: "error",
-                        customClass: {
-                            confirmButton: "mi-boton-ok",
-                        }
-                    });
+            api.put(`/alojamientos/${servicioEditando}`, nuevoServicio, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                setServicios(prev => prev.map(servicio => servicio.id === servicioEditando ? response.data : servicio));
+                Swal.fire({
+                    title: "Éxito",
+                    text: "Servicio editado correctamente",
+                    icon: "success",
                 });
+            })
+            .catch(error => {
+                console.error("Error al editar el servicio:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: error.response?.data?.message || "Ocurrió un error al editar el servicio.",
+                    icon: "error",
+                });
+            });
+
         } else {
             api.post("/alojamientos", nuevoServicio)
                 .then(response => {
@@ -266,13 +273,14 @@ const Alojamientos = () => {
                 setNombre(servicio.nombre || "");
                 setDescripcion(servicio.descripcion || "");
                 setPrecio(servicio.precio || 0);
-                setImagenes(servicio.imagenUrl ? [servicio.imagenUrl] : []); // Solo la primera imagen
-                setServicioEditando(servicio.id || null);
+                setImagenes(servicio.imagenesUrl || []);
+                setServicioEditando(servicio.id);
                 setCategoria(servicio.categoriaNombre || "");
                 setModalAbierto(true);
             }
         });
     };
+    
     
     const eliminarImagen = (index) => {
       setImagenes((prev) => prev.filter((_, i) => i !== index));
