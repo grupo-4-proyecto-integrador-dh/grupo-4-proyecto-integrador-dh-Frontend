@@ -42,10 +42,11 @@ const Detalle = () => {
         <div className="content">
           <div className="service-container">
             <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
-            <Galeria imagenes={alojamiento.imagenUrl} /> 
+            <Galeria imagenes={alojamiento.imagenes} /> 
             <div className="servicio-detalle">
               <h4>Descripción:</h4>
               <p>{alojamiento.descripcion}</p>
+              <p>{alojamiento.precio}</p>
               <div className="servicio-categoria">             
               </div>
             </div>
