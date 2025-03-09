@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 const CardRecomendaciones = ({ id, title, description, imagenes , price}) => {
   return (
-    <div>
-      <Link to={"/alojamiento/" + id} className="card__recomendaciones">
+    <div className="card__recomendaciones" >
+      <Link to={"/alojamiento/" + id}>
       {imagenes ? (
         <img loading="lazy" 
         src={imagenes.length > 0 ? imagenes[0].urlImagen : "/ruta/imagen-por-defecto.jpg"} 
@@ -23,7 +23,7 @@ const CardRecomendaciones = ({ id, title, description, imagenes , price}) => {
       <div className="card__content">
         <h3 className="card__title">{title}</h3>
         <p className="card__description">{description}</p>
-        <p className="card__description">{price}</p>
+        <p className="card__price">${price}</p>
       </div>
       </Link>
     </div>
