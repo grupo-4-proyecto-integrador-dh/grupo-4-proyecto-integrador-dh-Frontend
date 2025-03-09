@@ -15,6 +15,7 @@ function Galeria({ imagenes }) {
             key={index}
             tipoFoto={index === 0 ? "imagen_principal" : "imagen_secundaria"}
             imagen={imagen.urlImagen} 
+            alt={`Imagen ${index + 1}`}
           />
         ))} 
         {!show && ( <Button className="boton_vermas_galeria" variant="primary"
