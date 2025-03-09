@@ -59,7 +59,7 @@ const RecomendacionesAlojamientos = (props) => {
         title={alojamiento.nombre}
         description={alojamiento.descripcion}
         price={alojamiento.precio}
-        imageUrl={alojamiento.imagenUrl} 
+        imagenes={alojamiento.imagenes} 
       />
     ));
   };
