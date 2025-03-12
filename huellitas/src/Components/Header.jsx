@@ -40,7 +40,8 @@ const Header = () => {
 
   useEffect(() => {
     fetchUser();
-  }, [localStorage.getItem("user")]); // Se ejecuta cada vez que cambia el usuario en localStorage
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localStorage.getItem("user")]); 
   
 
   useEffect(() => {
