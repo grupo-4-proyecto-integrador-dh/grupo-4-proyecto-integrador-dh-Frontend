@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Registro.scss";
 
-const API_URL = "http://localhost:8080/api/auth/registro"; // Asegúrate de que esta URL es correcta
+const API_URL = "https://insightful-patience-production.up.railway.app/api/auth/registro"; // Asegúrate de que esta URL es correcta
 
 export default function Registro() {
   const [formData, setFormData] = useState({
@@ -126,7 +126,8 @@ export default function Registro() {
           <button type="submit" className="registro-button">Registrarse</button>
 
           {registroExitoso && (
-            <p className="success-message">✅ Registro exitoso. Redirigiendo...</p>
+            <div class="alert alert-success" role="alert">
+            ✅ Registro exitoso. Redirigiendo... </div> 
           )}
         </form>
       </div>

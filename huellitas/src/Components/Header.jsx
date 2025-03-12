@@ -5,54 +5,56 @@ import { useState, useEffect } from "react";
 import logo from "/media/svg/logo-svg.svg";
 
 const Header = () => {
+  
+
+ 
+    console.log("Header renderizado");
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Función para obtener el usuario desde la API
   const fetchUser = async () => {
     try {
       const storedUser = localStorage.getItem("user");
-      if (!storedUser) {
+      const storedRol = localStorage.getItem("rol");
+  
+      if (!storedUser || !storedRol) {
         setUser(null);
         return;
       }
-
+  
       const userData = JSON.parse(storedUser);
-      const response = await fetch(`http://localhost:8080/usuarios/${userData.id}`);
-      if (!response.ok) throw new Error("Error al obtener usuario");
+      const response = await fetch(`https://insightful-patience-production.up.railway.app/usuarios/${userData.id}`);
       
+      if (!response.ok) throw new Error("Error al obtener usuario");
+  
       const data = await response.json();
-      setUser(data); // Guardamos los datos actualizados
+      setUser({ ...data, rol: storedRol });
     } catch (error) {
       console.error("Error obteniendo usuario:", error);
       setUser(null);
     }
   };
+  
 
   useEffect(() => {
     fetchUser();
-
-    const handleStorageChange = () => {
-      fetchUser(); // Actualizar usuario  en localStorage
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  }, [localStorage.getItem("user")]); // Se ejecuta cada vez que cambia el usuario en localStorage
+  
 
   useEffect(() => {
-    console.log("Usuario cargado:", user); // Verificar  usuario
+    console.log("Usuario cargado:", user);
   }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("userLoggedIn");
-    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
+    localStorage.removeItem("rol");
+    window.dispatchEvent(new Event("storage"));
     setUser(null);
     navigate("/");
   };
+  
 
   return (
     <nav className="navbar">
@@ -85,7 +87,7 @@ const Header = () => {
                 </div>
               )}
             </div>
-          ) : (
+          ):(
             <div className="auth-buttons">
               <button
                 className="crear-cuenta-button"
