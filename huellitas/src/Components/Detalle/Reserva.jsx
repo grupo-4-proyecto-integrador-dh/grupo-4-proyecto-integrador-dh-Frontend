@@ -29,10 +29,6 @@ function Reserva() {
             <form>
               <input type="text"  placeholder="Nombre de tu mascota" />
               <input type="text" placeholder="Tipo de mascota"/>
-              <label for="story">Tell us your story:</label>
-    
-              <textarea id="story" name="story" rows="5" cols="33">
-              </textarea>
            </form>
         </div>
 
