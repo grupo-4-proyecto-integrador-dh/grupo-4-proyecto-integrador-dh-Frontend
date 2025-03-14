@@ -12,7 +12,7 @@ const RecomendacionesAlojamientos = (props) => {
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
-      const response = await fetch("https://insightful-patience-production.up.railway.app/alojamientos"); 
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/alojamientos"); 
       const data = await response.json();
 
       const shuffledAlojamientos = data

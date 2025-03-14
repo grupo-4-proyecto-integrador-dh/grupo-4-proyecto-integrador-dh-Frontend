@@ -11,7 +11,7 @@ const Detalle = () => {
   const { id } = useParams();
   const [alojamiento, setAlojamiento] = useState(null);  
 
-  const url = `https://insightful-patience-production.up.railway.app/alojamientos/${id}`;
+  const url = import.meta.env.VITE_BACKEND_URL + `/alojamientos/${id}`;
 
   useEffect(() => {
     if (!location.state) {
@@ -25,10 +25,35 @@ const Detalle = () => {
     }
   }, [id, location.state]);
 
+<<<<<<< Updated upstream
   const makeReservation = () => {
     <>
     
     </>
+=======
+  const handleReservarClick = () => {
+    setMostrarCalendario(true); 
+  };
+
+  const confirmarReserva = () => {
+    if (!fechaSeleccionada) {
+      alert("Por favor, selecciona una fecha antes de confirmar la reserva.");
+      return;
+    }
+
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/reservas", {
+      alojamientoId: id,
+      fecha: fechaSeleccionada.toISOString().split("T")[0], 
+    })
+    .then(() => {
+      alert(`¡Reserva confirmada para el ${fechaSeleccionada.toDateString()}!`);
+      setMostrarCalendario(false);
+    })
+    .catch(error => {
+      console.error("Error al realizar la reserva:", error);
+      alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
+    });
+>>>>>>> Stashed changes
   };
 
   if (!alojamiento) {

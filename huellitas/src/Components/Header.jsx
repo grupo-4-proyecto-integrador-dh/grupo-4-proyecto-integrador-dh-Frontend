@@ -25,7 +25,7 @@ const Header = () => {
       }
   
       const userData = JSON.parse(storedUser);
-      const response = await fetch(`https://insightful-patience-production.up.railway.app/usuarios/${userData.id}`);
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + `/usuarios/${userData.id}`);
       
       if (!response.ok) throw new Error("Error al obtener usuario");
   
