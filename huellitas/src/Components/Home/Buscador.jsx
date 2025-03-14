@@ -5,7 +5,7 @@ const Buscador = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
   
-    console.log("🔍 Sugerencias en Buscador.jsx:", suggestions); // 👀 Ver qué datos recibe
+    console.log(" Sugerencias en Buscador.jsx:", suggestions); 
   
     return (
       <div>

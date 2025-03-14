@@ -29,7 +29,7 @@ const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
 useEffect(() => {
   if (!searchQuery) {
     setFilteredAlojamientos(alojamientos);
-    setSuggestions([]);  // 🔹 Esto limpia las sugerencias cuando no hay búsqueda
+    setSuggestions([]);  
     return;
   }
 
@@ -40,7 +40,7 @@ useEffect(() => {
   console.log("🚀 Sugerencias filtradas:", filtered.map(a => a.nombre));
 
   setFilteredAlojamientos(filtered);
-  setSuggestions(filtered.map((alojamiento) => alojamiento.nombre));  // 🔹 Esto actualiza suggestions
+  setSuggestions(filtered.map((alojamiento) => alojamiento.nombre));  
 }, [searchQuery, alojamientos, setSuggestions]);
 
   const handleNextPage = () => {
@@ -94,16 +94,16 @@ useEffect(() => {
   );
 };
 
-// Definir PropTypes
+
 RecomendacionesAlojamientos.propTypes = {
   searchQuery: PropTypes.string,
   setSuggestions: PropTypes.func.isRequired,
 };
 
-// Definir valores por defecto para las props
+
 RecomendacionesAlojamientos.defaultProps = {
   searchQuery: "",
-  setSuggestions: () => {}, // Evita errores si no se pasa la prop
+  setSuggestions: () => {}, 
 };
 
 export default RecomendacionesAlojamientos;
