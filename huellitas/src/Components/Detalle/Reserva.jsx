@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Calendario from "./Calendario";
 import "../../Styles/Detalle/Reserva.css"
+import { Button } from "react-bootstrap";
 
 function Reserva() {
   const [today, setToday] = useState("");
@@ -21,6 +22,18 @@ function Reserva() {
         <div className="disponibilidad">
           <Calendario mensaje="Elige fecha de ingreso"/>
           <Calendario mensaje="Elige fecha de salida"/>
+          <div class="alert alert-danger" role="alert">
+            Debes iniciar sesion para poder realizar la reserva. 
+          </div>
+          <button>Añadir mascota</button>
+            <form>
+              <input type="text"  placeholder="Nombre de tu mascota" />
+              <input type="text" placeholder="Tipo de mascota"/>
+              <label for="story">Tell us your story:</label>
+    
+              <textarea id="story" name="story" rows="5" cols="33">
+              </textarea>
+           </form>
         </div>
 
       </div>
