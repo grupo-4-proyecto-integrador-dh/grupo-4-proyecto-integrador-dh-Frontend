@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Calendario from "./Calendario";
+import "../../Styles/Detalle/Reserva.css"
 
 function Reserva() {
   const [today, setToday] = useState("");
@@ -13,14 +14,15 @@ function Reserva() {
     <div>
       <p className="d-inline-flex gap-1">
         <a className="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-          Reserva ahora
+          Ver disponibilidad
         </a>
       </p>
       <div className="collapse" id="collapseExample">
         <div className="disponibilidad">
-          <Calendario />
-          <Calendario />
+          <Calendario mensaje="Elige fecha de ingreso"/>
+          <Calendario mensaje="Elige fecha de salida"/>
         </div>
+
       </div>
     </div>
   );
