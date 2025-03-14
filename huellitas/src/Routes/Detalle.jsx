@@ -39,7 +39,7 @@ const Detalle = () => {
       return;
     }
 
-    axios.post("https://insightful-patience-production.up.railway.app/reservas", {
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/reservas", {
       alojamientoId: id,
       fecha: fechaSeleccionada.toISOString().split("T")[0], 
     })
