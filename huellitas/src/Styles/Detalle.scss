@@ -182,5 +182,43 @@
     .reserve-button {
       margin-top: 30px;
     }
+
+    /* Ocupa una fecha en rojo */
+.ocupada {
+  background-color: #ffcccc !important; /* Rojo claro */
+  color: red !important;
+  font-weight: bold;
+  pointer-events: none; /* Evita que se pueda seleccionar */
+}
+
+/* Fechas disponibles en verde */
+.disponible {
+  background-color: #ccffcc !important; /* Verde claro */
+  color: green !important;
+  font-weight: bold;
+}
+
+/* Contenedor del calendario */
+.contenedor-calendario {
+  text-align: center;
+}
+
+/* Botones */
+.botones {
+  margin-top: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #e76f51;
+  cursor: not-allowed;
+}
+
   }
 }
