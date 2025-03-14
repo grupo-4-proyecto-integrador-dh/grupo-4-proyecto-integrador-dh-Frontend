@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
+import Reserva from "../Components/Detalle/Reserva";
 
 const Detalle = () => {
   const location = useLocation();
@@ -25,7 +26,9 @@ const Detalle = () => {
   }, [id, location.state]);
 
   const makeReservation = () => {
-    alert("¡Reserva solicitada! Nos pondremos en contacto contigo.");
+    <>
+    
+    </>
   };
 
   if (!alojamiento) {
@@ -50,10 +53,7 @@ const Detalle = () => {
               <div className="servicio-categoria">             
               </div>
             </div>
-            <button className="reserve-button" onClick={makeReservation}>
-                Reservar ahora
-            </button>
-
+            <Reserva />
           </div>
         </div>
       </div>
