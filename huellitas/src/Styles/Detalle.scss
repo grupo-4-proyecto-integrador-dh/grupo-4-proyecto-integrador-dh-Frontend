@@ -199,9 +199,22 @@
 }
 
 /* Contenedor del calendario */
+.calendario-disponibilidad{
+  display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(auto auto, 1fr);
+    gap: 8px;
+  .calendario-titulo{
+    grid-column: span 2 / span 2;
+    height: fit-content;
+  }  
+}
 .contenedor-calendario {
   text-align: center;
 }
+
+
+
 
 /* Botones */
 .botones {

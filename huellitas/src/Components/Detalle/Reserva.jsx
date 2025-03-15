@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Calendario from "./Calendario";
 import "../../Styles/Detalle/Reserva.css"
-import { Button } from "react-bootstrap";
 
 function Reserva() {
   const [today, setToday] = useState("");

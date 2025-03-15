@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; 
 import "../Styles/Detalle.scss";
+import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
-import Reserva from "../Components/Detalle/Reserva";
+
 
 const Detalle = () => {
   const location = useLocation();
@@ -80,13 +80,21 @@ const Detalle = () => {
 
             {mostrarCalendario && (
               <div className="calendario-wrapper">
-                <Calendar onClickDay={setFechaSeleccionada} />
+                <Calendario mensaje="Elige fecha de ingreso"/>
                 <button onClick={confirmarReserva} className="confirm-button">
                   Confirmar reserva
                 </button>
                 <button onClick={() => setMostrarCalendario(false)} className="cancel-button">
                   Cancelar
                 </button>
+                <div className="formulario-mascota-reserva">
+                  <form action="">
+                    <select name="" id="">
+                      <option value=""></option>
+                    </select>
+                    <input type="text" placeholder="Nombre mascota"/>
+                  </form>
+                </div>
               </div>
             )}
           </div>
