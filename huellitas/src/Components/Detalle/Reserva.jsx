@@ -27,7 +27,6 @@ function Reserva() {
           <button>Añadir mascota</button>
             <form>
               <input type="text"  placeholder="Nombre de tu mascota" />
-              <input type="text" placeholder="Tipo de mascota"/>
            </form>
         </div>
 
