@@ -37,7 +37,7 @@ useEffect(() => {
     alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log("🚀 Sugerencias filtradas:", filtered.map(a => a.nombre));
+  console.log(" Sugerencias filtradas:", filtered.map(a => a.nombre));
 
   setFilteredAlojamientos(filtered);
   setSuggestions(filtered.map((alojamiento) => alojamiento.nombre));  
@@ -107,5 +107,5 @@ RecomendacionesAlojamientos.defaultProps = {
 };
 
 export default RecomendacionesAlojamientos;
- /*********** */
+  
  
