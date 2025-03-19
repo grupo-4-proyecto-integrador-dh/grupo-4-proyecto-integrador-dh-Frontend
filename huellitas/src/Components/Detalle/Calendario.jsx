@@ -5,7 +5,7 @@ import "react-calendar/dist/Calendar.css";
 const Calendario = ({mensaje}) => {
   const [date1, setDate1] = useState(new Date());
   const [date2, setDate2] = useState(new Date());
-  date2.setMonth(date2.getMonth() + 1);
+  date2.setMonth(date1.getMonth() + 1);
  
   return (
     <div className="calendario-disponibilidad">
