@@ -1,15 +1,15 @@
-import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css"; 
+import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
 
 const Detalle = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams();  // ID extraído de la URL
   const [alojamiento, setAlojamiento] = useState(null);
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
@@ -18,18 +18,23 @@ const Detalle = () => {
 
   useEffect(() => {
     if (!location.state) {
-      axios.get(url)
-        .then(response => {
+      // Si no hay "state", cargar los detalles del alojamiento desde la API
+      axios
+        .get(url)
+        .then((response) => {
           setAlojamiento(response.data);
         })
-        .catch(error => console.error("Error cargando los detalles:", error));
+        .catch((error) => {
+          console.error("Error cargando los detalles:", error);
+        });
     } else {
+      // Si hay "state", usar los datos pasados a través de la navegación
       setAlojamiento(location.state);
     }
-  }, [id, location.state]);
+  }, [id, location.state]);  // El useEffect se ejecutará cada vez que cambie el id o el estado
 
   const handleReservarClick = () => {
-    setMostrarCalendario(true); 
+    setMostrarCalendario(true);
   };
 
   const confirmarReserva = () => {
@@ -38,18 +43,19 @@ const Detalle = () => {
       return;
     }
 
-    axios.post("https://insightful-patience-production.up.railway.app/reservas", {
-      alojamientoId: id,
-      fecha: fechaSeleccionada.toISOString().split("T")[0], 
-    })
-    .then(() => {
-      alert(`¡Reserva confirmada para el ${fechaSeleccionada.toDateString()}!`);
-      setMostrarCalendario(false);
-    })
-    .catch(error => {
-      console.error("Error al realizar la reserva:", error);
-      alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
-    });
+    axios
+      .post("https://insightful-patience-production.up.railway.app/reservas", {
+        alojamientoId: id,
+        fecha: fechaSeleccionada.toISOString().split("T")[0],
+      })
+      .then(() => {
+        alert(`¡Reserva confirmada para el ${fechaSeleccionada.toDateString()}!`);
+        setMostrarCalendario(false);
+      })
+      .catch((error) => {
+        console.error("Error al realizar la reserva:", error);
+        alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
+      });
   };
 
   if (!alojamiento) {
