@@ -4,9 +4,6 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 const CategoriaTable = ({ categorias, handleEditCategory, handleDeleteCategory }) => {
     return (
         <div className="table-container">
-            <div className="table-header">
-                <h2>Categorías</h2>
-            </div>
             <table>
                 <thead>
                     <tr>

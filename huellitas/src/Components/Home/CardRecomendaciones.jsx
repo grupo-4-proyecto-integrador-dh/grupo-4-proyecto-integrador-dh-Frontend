@@ -5,20 +5,17 @@ const CardRecomendaciones = ({ id, title, description, imagenes, price, alojamie
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    // Navegar a la página de detalles
     navigate(`/alojamiento/${id}`, { state: alojamiento });
-
-    // Forzar una recarga de la página para asegurarse de que el contenido se actualice
     window.location.reload();
   };
 
   return (
-    <div className="card__recomendaciones" onClick={handleCardClick}>
+    <div className="card__recomendaciones">
       {imagenes ? (
         <img
           loading="lazy"
           src={imagenes.length > 0 ? imagenes[0].urlImagen : "/ruta/imagen-por-defecto.jpg"}
-          alt="Comfort perruno"
+          alt={title}
           className="card__image"
         />
       ) : (
@@ -32,7 +29,12 @@ const CardRecomendaciones = ({ id, title, description, imagenes, price, alojamie
       <div className="card__content">
         <h3 className="card__title">{title}</h3>
         <p className="card__description">{description}</p>
-        <p className="card__price">${price}</p>
+        <div className="card__price-details">
+          <span className="card__price">${price}</span>
+          <button className="card__details-button" onClick={handleCardClick}>
+            Ver detalles
+          </button>
+        </div>
       </div>
     </div>
   );

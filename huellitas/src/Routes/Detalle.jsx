@@ -18,7 +18,6 @@ const Detalle = () => {
 
   useEffect(() => {
     if (!location.state) {
-      // Si no hay "state", cargar los detalles del alojamiento desde la API
       axios
         .get(url)
         .then((response) => {
@@ -28,10 +27,9 @@ const Detalle = () => {
           console.error("Error cargando los detalles:", error);
         });
     } else {
-      // Si hay "state", usar los datos pasados a través de la navegación
       setAlojamiento(location.state);
     }
-  }, [id, location.state]);  // El useEffect se ejecutará cada vez que cambie el id o el estado
+  }, [id, location.state]);
 
   const handleReservarClick = () => {
     setMostrarCalendario(true);
