@@ -40,7 +40,7 @@ const Home = () => {
     const fetchAlojamientos = async () => {
       try {
         const response = await fetch(
-          "https://insightful-patience-production.up.railway.app/alojamientos"
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
         );
         const data = await response.json();
         setAlojamientos(data); // 🔹 Guardar alojamientos en el estado

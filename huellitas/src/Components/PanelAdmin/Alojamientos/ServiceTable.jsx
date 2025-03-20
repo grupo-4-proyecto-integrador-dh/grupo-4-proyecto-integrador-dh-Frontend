@@ -3,7 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaSquarePlus } from "react-icons/fa6";
 import Swal from "sweetalert2";
 
-const API_URL = "https://insightful-patience-production.up.railway.app/categorias";
+const API_URL = import.meta.env.VITE_BACKEND_URL + "/categorias";
 
 const ServiceTable = ({ servicios, busqueda, handleEdit, handleDelete }) => {
     const [categorias, setCategorias] = useState([]);

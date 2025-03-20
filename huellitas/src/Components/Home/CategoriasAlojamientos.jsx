@@ -14,7 +14,7 @@ const CategoriasCarousel = () => {
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const response = await axios.get("https://insightful-patience-production.up.railway.app/categorias");
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/categorias");
                 setCategorias(response.data);
             } catch (error) {
                 console.error("Error al cargar las categorías:", error);
@@ -23,7 +23,7 @@ const CategoriasCarousel = () => {
 
         const fetchAlojamientos = async () => {
             try {
-                const response = await axios.get("https://insightful-patience-production.up.railway.app/alojamientos"); // Reemplaza con la URL correcta
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos"); // Reemplaza con la URL correcta
                 setAlojamientos(response.data);
             } catch (error) {
                 console.error("Error al cargar los alojamientos:", error);
