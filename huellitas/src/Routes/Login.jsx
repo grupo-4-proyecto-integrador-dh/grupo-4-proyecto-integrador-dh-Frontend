@@ -129,7 +129,7 @@ const Login = () => {
                         <label htmlFor="rememberMe">Recordarme</label>
                     </div>
                     <button type="submit" className="login-button">Iniciar Sesión</button>
-                    {inicioExitoso && (<div class="alert alert-success" role="alert">
+                    {inicioExitoso && (<div className="alert alert-success" role="alert">
                          ✅ Inicio de sesíon exitoso. Redirigiendo...
                     </div>)} 
                 </form>

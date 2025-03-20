@@ -34,7 +34,7 @@ const Alojamientos = () => {
                     setServicios(response.data);
                 } else {
                     console.error("La API no devolvió un array:", response.data);
-                    setServicios([]); // Evita errores en el map
+                    setServicios([]);
                 }
             })
             .catch((error) => {

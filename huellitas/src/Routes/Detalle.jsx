@@ -1,6 +1,7 @@
-import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Calendario from "../Components/Detalle/Calendario";
@@ -9,7 +10,7 @@ import Galeria from "../Components/Detalle/Galeria";
 const Detalle = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id } = useParams();  // ID extraído de la URL
   const [alojamiento, setAlojamiento] = useState(null);
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
@@ -73,11 +74,14 @@ const Detalle = () => {
         .then((response) => {
           setAlojamiento(response.data);
         })
-        .catch((error) => console.error("Error cargando los detalles:", error));
+        .catch((error) => {
+          console.error("Error cargando los detalles:", error);
+        });
     } else {
+      // Si hay "state", usar los datos pasados a través de la navegación
       setAlojamiento(location.state);
     }
-  }, [id, location.state]);
+  }, [id, location.state]);  // El useEffect se ejecutará cada vez que cambie el id o el estado
 
   // Función para agregar una nueva mascota
   const agregarMascota = async () => {
