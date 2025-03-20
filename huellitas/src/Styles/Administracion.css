@@ -1,24 +1,9 @@
-/* Estilos generales */
-/* body {
-  font-family: "Poppins", sans-serif;
-  background-color: #faf3e0;
-  text-align: center;
-  padding: 20px;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-} */
-
-/* 🔹 Contenedor Principal */
 .admin-container {
   display: flex;
   height: 100vh;
   width: 100%;
 }
 
-/* 🔹 Sidebar */
 .sidebar {
   width: 300px;
   background-color: #f4e3c1;
@@ -68,7 +53,6 @@
   margin-top: auto;
 }
 
-/* 🔹 Contenido Principal */
 .main-content {
   padding: 10px;
   flex-grow: 1;
@@ -76,7 +60,6 @@
   flex-direction: column;
 }
 
-/* 🔹 Barra Superior */
 .top-bar {
   width: 100%;
   display: flex;
@@ -95,7 +78,6 @@
   border: 1px solid #ccc;
 }
 
-/* 🔹 Botón Agregar */
 .btn-agregar {
   background-color: #f4e3c1;
   color: #6d4c41;
@@ -116,16 +98,15 @@
   background-color: #d19a6c;
 }
 
-/* 🔹 Tabla de Servicios */
 .table-container {
   flex-grow: 1;
   background-color: white;
   padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
-  min-height: 10px; /* Tamaño inicial pequeño */
-  max-height: 500px; /* Crece hasta un máximo de 500px */
-  transition: height 0.3s ease-in-out; /* Transición suave */
+  min-height: 10px;
+  max-height: 500px;
+  transition: height 0.3s ease-in-out;
   overflow: scroll;
   margin-top: 10px;
 }
@@ -178,33 +159,29 @@ th {
   margin: 2px;
 }
 
-/* Contenedor de imágenes: las coloca en una fila */
 .image-preview {
   display: flex;
-  flex-wrap: wrap; /* Permite que las imágenes bajen de línea si no caben */
-  gap: 10px; /* Espacio entre imágenes */
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 10px;
 }
 
-/* Contenedor individual de cada imagen */
 .image-container {
   position: relative;
   display: inline-block;
-  width: 100px; /* Tamaño fijo para las imágenes */
+  width: 100px;
   height: 100px;
   border-radius: 5px;
   overflow: hidden;
 }
 
-/* Estilo de la imagen */
 .preview-img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Evita que las imágenes se deformen */
+  object-fit: cover;
   border-radius: 5px;
 }
 
-/* Botón de eliminar */
 .delete-img-btn {
   position: absolute;
   top: 5px;
@@ -216,20 +193,17 @@ th {
   width: 20px;
   height: 20px;
   font-size: 14px;
-  display: none; /* Ocultar por defecto */
+  display: none;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 }
 
-/* Mostrar la X solo al pasar el mouse */
 .image-container:hover .delete-img-btn {
   display: flex;
   background-color: #d19a6c;
   color: #6d4c41;
 }
-
-/* Íconos de Acción */
 
 .edit-icon {
   color: #6d4c41;
@@ -245,7 +219,6 @@ th {
   cursor: pointer;
 }
 
-/* Modal */
 .modal {
   display: flex !important;
   position: fixed;
@@ -279,7 +252,6 @@ th {
   text-align: right;
 }
 
-/* Estilos para los inputs dentro del modal */
 .modal-content input {
   width: 100%;
   padding: 10px;
@@ -302,13 +274,11 @@ th {
   transition: border-color 0.3s;
 }
 
-/* Efecto al hacer foco en el input */
 .modal-content input:focus {
   border-color: #e3b085;
   box-shadow: 0 0 5px rgba(227, 176, 133, 0.5);
 }
 
-/* Botón dentro del modal */
 .modal-content .btn-agregar {
   width: 100%;
   padding: 12px;
@@ -334,7 +304,6 @@ th {
   color: #6d4c41;
 }
 
-/* Oculta el contenido si la pantalla es menor a 1024px */
 @media (max-width: 1024px) {
   .admin-container {
     display: none;

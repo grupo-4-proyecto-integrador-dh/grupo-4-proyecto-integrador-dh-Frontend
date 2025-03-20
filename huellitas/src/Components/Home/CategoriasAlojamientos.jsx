@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 import CategoriaCard from "./CategoriaCard";
 import "../../Styles/Home.scss";
 
-const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, totalProducts, filteredProducts }) => {
+const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, selectedCategory }) => {
   const [categorias, setCategorias] = useState([]);
   const [alojamientos, setAlojamientos] = useState([]);
+  const [categoriasConCantidad, setCategoriasConCantidad] = useState([]);
   const sliderRef = useRef(null);
   const [index, setIndex] = useState(0);
   const itemsPerPage = 3;
   const cardWidthWithGap = 196;
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -35,17 +37,26 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, totalP
     fetchAlojamientos();
   }, []);
 
+
   useEffect(() => {
     if (categorias.length > 0 && alojamientos.length > 0) {
-      const categoriasConCantidad = categorias.map((categoria) => {
-        const cantidad = alojamientos.filter(
-          (alojamiento) => alojamiento.categoria.id === categoria.id
-        ).length;
-        return { ...categoria, alojamientosCount: cantidad };
-      });
-      setCategorias(categoriasConCantidad);
+      const conteoAlojamientos = alojamientos.reduce((acc, alojamiento) => {
+        if (alojamiento.categoria && alojamiento.categoria.id) {
+          const categoriaId = alojamiento.categoria.id;
+          acc[categoriaId] = (acc[categoriaId] || 0) + 1;
+        }
+        return acc;
+      }, {});
+  
+      const nuevasCategorias = categorias.map((categoria) => ({
+        ...categoria,
+        alojamientosCount: conteoAlojamientos[categoria.id] || 0,
+      }));
+  
+      setCategoriasConCantidad(nuevasCategorias);
     }
   }, [categorias, alojamientos]);
+
 
   const nextSlide = () => {
     if (index < categorias.length - itemsPerPage) {
@@ -59,13 +70,13 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, totalP
     }
   };
 
+
   const handleCardClick = (categoryId) => {
-    setSelectedCategory(categoryId);
     onCategoryClick(categoryId);
   };
+  
 
   const handleClearLocalFilter = () => {
-    setSelectedCategory(null);
     onClearCategoryFilter();
   };
 
@@ -79,18 +90,13 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, totalP
           </button>
         )}
       </div>
-
+  
       <div className="carousel-container">
-        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>
-          ‹
-        </button>
-
+        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>‹</button>
+  
         <div className="carousel-slider" ref={sliderRef}>
-          <div
-            className="carousel-track"
-            style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}
-          >
-            {categorias.map((categoria) => (
+          <div className="carousel-track" style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}>
+            {categoriasConCantidad.map((categoria) => (
               <CategoriaCard
                 key={categoria.id}
                 nombre={categoria.nombre}
@@ -98,21 +104,23 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, totalP
                 alt={`Imagen de ${categoria.nombre}`}
                 cantidad={categoria.alojamientosCount}
                 onClick={() => handleCardClick(categoria.id)}
+                isSelected={selectedCategory?.id === categoria.id}
               />
             ))}
           </div>
         </div>
-
-        <button
-          className="next-btn"
-          onClick={nextSlide}
-          disabled={index >= categorias.length - itemsPerPage}
-        >
-          ›
-        </button>
+  
+        <button className="next-btn" onClick={nextSlide} disabled={index >= categorias.length - itemsPerPage}>›</button>
       </div>
     </section>
   );
+};
+
+
+CategoriasAlojamientos.propTypes = {
+  onCategoryClick: PropTypes.func.isRequired,
+  onClearCategoryFilter: PropTypes.func.isRequired,
+  selectedCategory: PropTypes.object,
 };
 
 export default CategoriasAlojamientos;

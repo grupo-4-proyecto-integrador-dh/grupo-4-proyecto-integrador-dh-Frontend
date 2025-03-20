@@ -1,7 +1,8 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ApartadoBusqueda from "../Components/Home/ApartadoBusqueda";
 import CategoriasAlojamientos from "../Components/Home/CategoriasAlojamientos";
 import RecomendacionesAlojamientos from "../Components/Home/RecomendacionesAlojamientos";
-import { useState, useEffect } from "react";
 import "../Styles/App.css";
 import "../Styles/Home.scss";
 
@@ -10,19 +11,18 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para la carga
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
-      setLoading(true); // Inicia la carga
+      setLoading(true);
       try {
         const response = await axios.get("https://insightful-patience-production.up.railway.app/alojamientos");
         setAlojamientos(response.data);
-        setFilteredAlojamientos(response.data);
       } catch (error) {
         console.error("Error al cargar los alojamientos:", error);
       } finally {
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
 
@@ -32,20 +32,22 @@ const Home = () => {
   useEffect(() => {
     let filtered = alojamientos;
 
-    if (searchQuery && searchQuery.length > 0) {
-      filtered = alojamientos.filter((alojamiento) =>
+
+    if (searchQuery) {
+      filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
+
     if (selectedCategory) {
       filtered = filtered.filter((alojamiento) =>
-        alojamiento.categoria.id === selectedCategory
+        alojamiento.categoria.id === selectedCategory.id
       );
     }
 
     setFilteredAlojamientos(filtered);
-    console.log("Alojamiento filtrados", filtered.length); // Verifico los alojamientos filtrados
+    console.log("Alojamientos filtrados", filtered.length);
   }, [searchQuery, selectedCategory, alojamientos]);
 
   const handleCategoryClick = (category) => {
@@ -57,7 +59,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return <p>Cargando alojamientos...</p>; // Mensaje de carga
+    return <p>Cargando alojamientos...</p>;
   }
 
   return (
@@ -69,12 +71,11 @@ const Home = () => {
       <CategoriasAlojamientos
         onCategoryClick={handleCategoryClick}
         onClearCategoryFilter={handleClearCategoryFilter}
-        totalProducts={alojamientos.length}
-        filteredProducts={filteredAlojamientos.length}
+        selectedCategory={selectedCategory}
       />
       <RecomendacionesAlojamientos
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
+        filteredAlojamientos={filteredAlojamientos}
+        selectedCategories={selectedCategory ? [selectedCategory] : []}
       />
     </div>
   );

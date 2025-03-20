@@ -38,12 +38,6 @@
     }
   }
 
-  .products-count {
-    font-size: 0.9rem;
-    color: #777;
-    margin-bottom: 1rem;
-  }
-
   .carousel-container {
     display: flex;
     align-items: center;
@@ -53,13 +47,11 @@
     position: relative;
   }
 
-
   .carousel-slider {
     overflow: hidden;
     width: 80%;
     max-width: 1000px;
   }
-
 
   .carousel-track {
     display: flex;
@@ -67,7 +59,6 @@
     transition: transform 0.5s ease-in-out;
     width: fit-content;
   }
-
 
   .card__container {
     display: flex;
@@ -134,7 +125,6 @@
     }
   }
 
-
   .prev-btn, .next-btn {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -163,11 +153,67 @@
 
   @media (max-width: 768px) {
     .carousel-slider {
-      width: 90%;
+      width: 100%; 
+    }
+
+    .card__container {
+      width: 150px; 
+      height: 200px; 
+    }
+
+    .categorias__card {
+      width: 80px; 
+      height: 80px;
+    }
+
+    .categorias__card__info p {
+      font-size: 0.9rem; 
+    }
+
+    .categorias__card__info .cantidad {
+      font-size: 0.8rem;  
+    }
+
+    .prev-btn, .next-btn {
+      font-size: 1.2rem; 
+      padding: 8px 12px;
+    }
+
+    .carousel-container {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .categorias__header h2 {
+      font-size: 1.3rem;  
+    }
+
+    .clear-filter-btn {
+      padding: 8px 12px;  
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card__container {
+      width: 130px; 
+      height: 180px;
+    }
+
+    .categorias__card {
+      width: 70px; 
+      height: 70px;
+    }
+
+    .prev-btn, .next-btn {
+      font-size: 1rem; 
+      padding: 6px 10px;
+    }
+
+    .categorias__header h2 {
+      font-size: 1.2rem;
     }
   }
 }
-
 
 
 

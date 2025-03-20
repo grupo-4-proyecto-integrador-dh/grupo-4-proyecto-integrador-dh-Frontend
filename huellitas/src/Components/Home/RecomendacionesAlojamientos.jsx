@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 
-const RecomendacionesAlojamientos = (props) => {
+const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
+  const [totalAlojamientos, setTotalAlojamientos] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const cardsPerPage = 5;
+
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
@@ -21,7 +23,7 @@ const RecomendacionesAlojamientos = (props) => {
         const data = await response.json();
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
-        setFilteredAlojamientos(shuffledAlojamientos);
+        setTotalAlojamientos(shuffledAlojamientos.length);
       } catch (err) {
         setError(err.message);
         console.error("Error al obtener los alojamientos:", err);
@@ -33,24 +35,28 @@ const RecomendacionesAlojamientos = (props) => {
     fetchAlojamientos();
   }, []);
 
+
   useEffect(() => {
     let filtered = alojamientos;
 
-    if (props.searchQuery && props.searchQuery.length > 0) {
-      filtered = alojamientos.filter((alojamiento) =>
-        alojamiento.nombre.toLowerCase().includes(props.searchQuery.toLowerCase())
+
+    if (searchQuery && searchQuery.length > 0) {
+      filtered = filtered.filter((alojamiento) =>
+        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    if (props.selectedCategory) {
+
+    if (selectedCategories && selectedCategories.length > 0) {
       filtered = filtered.filter((alojamiento) =>
-        alojamiento.categoria.id === props.selectedCategory
+        alojamiento.categoria && selectedCategories.includes(alojamiento.categoria.id)
       );
     }
+
 
     setFilteredAlojamientos(filtered);
     setCurrentPage(1);
-  }, [props.searchQuery, props.selectedCategory, alojamientos]);
+  }, [searchQuery, selectedCategories, alojamientos]);
 
   const totalPages = Math.ceil(filteredAlojamientos.length / cardsPerPage);
 
@@ -89,6 +95,9 @@ const RecomendacionesAlojamientos = (props) => {
   return (
     <main className="main__recomendaciones">
       <h1>Recomendaciones</h1>
+      <p>
+        Mostrando {filteredAlojamientos.length} de {totalAlojamientos} alojamientos
+      </p>
       <section className="main__recomendaciones__grid">
         {filteredAlojamientos.length ? renderCards() : <p>No se han encontrado resultados</p>}
       </section>
@@ -96,13 +105,13 @@ const RecomendacionesAlojamientos = (props) => {
       {totalPages > 1 && (
         <div className="pagination">
           <button onClick={handlePrevPage} disabled={currentPage === 1}>
-            Previous
+            Anterior
           </button>
           <span>
             Página {currentPage} de {totalPages}
           </span>
           <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-            Next
+            Siguiente
           </button>
         </div>
       )}
