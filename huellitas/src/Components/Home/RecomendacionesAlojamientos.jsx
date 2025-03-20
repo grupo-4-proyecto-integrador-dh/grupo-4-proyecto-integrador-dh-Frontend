@@ -6,10 +6,8 @@ import PropTypes from "prop-types";
 const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
-  const cardsPerPage = 10;
-  const totalCards = 19;
-  const totalPages = Math.ceil(totalCards / cardsPerPage);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
+  const cardsPerPage = 5;
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
@@ -19,40 +17,35 @@ const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
 
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
+        setFilteredAlojamientos(shuffledAlojamientos);
       } catch (error) {
-        console.error("Error fetching alojamientos:", error);
+        console.error("Error al obtener los alojamientos:", error);
       }
     };
+
     fetchAlojamientos();
   }, []);
 
-useEffect(() => {
-  if (!searchQuery) {
-    setFilteredAlojamientos(alojamientos);
-    setSuggestions([]);  
-    return;
-  }
+  useEffect(() => {
+    if (props.searchQuery && props.searchQuery.length > 0) {
+      const filtered = alojamientos.filter((alojamiento) =>
+        alojamiento.nombre.toLowerCase().includes(props.searchQuery.toLowerCase())
+      );
+      setFilteredAlojamientos(filtered);
+    } else {
+      setFilteredAlojamientos(alojamientos);
+    }
+    setCurrentPage(1);
+  }, [props.searchQuery, alojamientos]);
 
-  const filtered = alojamientos.filter((alojamiento) =>
-    alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  console.log(" Sugerencias filtradas:", filtered.map(a => a.nombre));
-
-  setFilteredAlojamientos(filtered);
-  setSuggestions(filtered.map((alojamiento) => alojamiento.nombre));  
-}, [searchQuery, alojamientos, setSuggestions]);
+  const totalPages = Math.ceil(filteredAlojamientos.length / cardsPerPage);
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+    setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
   const renderCards = () => {
@@ -66,30 +59,31 @@ useEffect(() => {
         description={alojamiento.descripcion}
         price={alojamiento.precio}
         imagenes={alojamiento.imagenes}
+        alojamiento={alojamiento} // Pasa el objeto alojamiento completo
       />
     ));
   };
 
   return (
     <main className="main__recomendaciones">
+      <h1>Recomendaciones</h1>
       <section className="main__recomendaciones__grid">
-        {filteredAlojamientos.length ? (
-          renderCards()
-        ) : (
-          <p>No se han encontrado resultados</p>
-        )}
+        {filteredAlojamientos.length ? renderCards() : <p>No se han encontrado resultados</p>}
       </section>
-      <div className="pagination">
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button onClick={handlePrevPage} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Página {currentPage} de {totalPages}
+          </span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+            Next
+          </button>
+        </div>
+      )}
     </main>
   );
 };
@@ -107,5 +101,3 @@ RecomendacionesAlojamientos.defaultProps = {
 };
 
 export default RecomendacionesAlojamientos;
-  
- 
