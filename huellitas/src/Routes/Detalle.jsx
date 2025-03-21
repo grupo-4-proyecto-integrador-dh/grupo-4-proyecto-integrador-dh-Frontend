@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css"; 
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
+import CalendarioReserva from "./CalendarioReserva"; 
 
 const Detalle = () => {
   const location = useLocation();
@@ -29,27 +28,12 @@ const Detalle = () => {
   }, [id, location.state]);
 
   const handleReservarClick = () => {
-    setMostrarCalendario(true); 
+    setMostrarCalendario(true);
   };
 
-  const confirmarReserva = () => {
-    if (!fechaSeleccionada) {
-      alert("Por favor, selecciona una fecha antes de confirmar la reserva.");
-      return;
-    }
-
-    axios.post("https://insightful-patience-production.up.railway.app/reservas", {
-      alojamientoId: id,
-      fecha: fechaSeleccionada.toISOString().split("T")[0], 
-    })
-    .then(() => {
-      alert(`¡Reserva confirmada para el ${fechaSeleccionada.toDateString()}!`);
-      setMostrarCalendario(false);
-    })
-    .catch(error => {
-      console.error("Error al realizar la reserva:", error);
-      alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
-    });
+  const handleFechaSeleccionada = (fecha) => {
+    setFechaSeleccionada(fecha);
+    setMostrarCalendario(false);
   };
 
   if (!alojamiento) {
@@ -78,15 +62,11 @@ const Detalle = () => {
             </button>
 
             {mostrarCalendario && (
-              <div className="calendario-wrapper">
-                <Calendar onClickDay={setFechaSeleccionada} />
-                <button onClick={confirmarReserva} className="confirm-button">
-                  Confirmar reserva
-                </button>
-                <button onClick={() => setMostrarCalendario(false)} className="cancel-button">
-                  Cancelar
-                </button>
-              </div>
+              <CalendarioReserva 
+                alojamientoId={id} 
+                onFechaSeleccionada={handleFechaSeleccionada} 
+                onClose={() => setMostrarCalendario(false)} 
+              />
             )}
           </div>
         </div>
