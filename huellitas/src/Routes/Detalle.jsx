@@ -229,7 +229,7 @@ const Detalle = () => {
                 <div className="formulario-mascota-reserva">
                   {/* Lista de mascotas existentes */}
                   <form>
-                    <select
+                    <select class="form-select" aria-label="Default select example"
                       value={mascotaSeleccionada}
                       onChange={(e) => setMascotaSeleccionada(e.target.value)}
                     >
@@ -248,7 +248,7 @@ const Detalle = () => {
                   {!mostrarInputNuevaMascota && (
                     <button
                       onClick={() => setMostrarInputNuevaMascota(true)}
-                      className="confirm-button"
+                      className="reserve-button"
                     >
                       ➕ Agregar nueva mascota
                     </button>
@@ -256,19 +256,19 @@ const Detalle = () => {
 
                   {/* Input para agregar una nueva mascota (solo se muestra si mostrarInputNuevaMascota es true) */}
                   {mostrarInputNuevaMascota && (
-                    <form onSubmit={(e) => e.preventDefault()}>
-                      <input
+                    <form  onSubmit={(e) => e.preventDefault()}>
+                      <input className="mascota_nueva"
                         type="text"
                         placeholder="Nombre de la mascota"
                         value={nuevaMascotaNombre}
                         onChange={(e) => setNuevaMascotaNombre(e.target.value)}
                       />
-                      <button onClick={agregarMascota} className="confirm-button">
+                      <button onClick={agregarMascota} className="reserve-button">
                         Agregar mascota
                       </button>
                       <button
                         onClick={() => setMostrarInputNuevaMascota(false)}
-                        className="cancel-button-mascota"
+                        className="reserve-button"
                       >
                         X
                       </button>
@@ -276,12 +276,12 @@ const Detalle = () => {
                   )}
 
                   {/* Botones para confirmar o cancelar la reserva */}
-                  <button onClick={confirmarReserva} className="confirm-button">
+                  <button onClick={confirmarReserva} className="reserve-button">
                     Confirmar reserva
                   </button>
                   <button
                     onClick={() => setMostrarCalendario(false)}
-                    className="cancel-button"
+                    className="reserve-button"
                   >
                     Cancelar
                   </button>

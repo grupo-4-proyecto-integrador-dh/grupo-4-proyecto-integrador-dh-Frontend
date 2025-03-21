@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "../../Styles/Detalle/Calendario.css"; // Archivo CSS para estilos personalizados
+import "../../Styles/Detalle/Calendario.scss"; // Archivo CSS para estilos personalizados
 
 const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
   const [fechas, setFechas] = useState([null, null]); // [fechaInicio, fechaFin]
@@ -43,7 +43,7 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
   const tileClassName = ({ date, view }) => {
     if (view === "month") {
       // Deshabilitar y colorear fechas anteriores a hoy
-      if (date < hoy) {
+      if (date <= hoy) {
         return "fecha-pasada"; // Clase CSS para fechas pasadas
       }
       // Colorear el rango seleccionado
@@ -64,7 +64,6 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
       <h3 className="calendario-titulo">{mensaje}</h3>
       <div className="calendario-disponibilidad-a" style={{ display: "flex", gap: "20px" }}>
         <div>
-          <h4>{mesActual.toLocaleString("es-ES", { month: "long", year: "numeric" })}</h4>
           <Calendar
             onChange={handleDateChange}
             value={fechaTemporal}
@@ -72,11 +71,11 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
             tileDisabled={isFechaReservada}
             tileClassName={tileClassName} // Aplicar estilos personalizados
             minDate={hoy} // Restringir fechas anteriores a hoy
-            defaultActiveStartDate={mesActual} // Mostrar el mes actual
+            defaultActiveStartDate={mesActual}
+            showFixedNumberOfWeeks 
           />
         </div>
         <div>
-          <h4>{mesSiguiente.toLocaleString("es-ES", { month: "long", year: "numeric" })}</h4>
           <Calendar
             onChange={handleDateChange}
             value={fechaTemporal}
@@ -84,7 +83,8 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
             tileDisabled={isFechaReservada}
             tileClassName={tileClassName} // Aplicar estilos personalizados
             minDate={hoy} // Restringir fechas anteriores a hoy
-            defaultActiveStartDate={mesSiguiente} // Mostrar el mes siguiente
+            defaultActiveStartDate={mesSiguiente}
+            showFixedNumberOfWeeks
           />
         </div>
       </div>
