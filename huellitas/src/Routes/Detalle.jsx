@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import "../Styles/Detalle.scss";
 import Galeria from "../Components/Detalle/Galeria";
 
