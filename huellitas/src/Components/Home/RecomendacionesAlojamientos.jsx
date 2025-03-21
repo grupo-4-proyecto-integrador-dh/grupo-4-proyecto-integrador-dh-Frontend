@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 import PropTypes from "prop-types";
 
-const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
+const RecomendacionesAlojamientos = ({ searchQuery = "", setSuggestions = () => {} }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
@@ -27,16 +26,17 @@ const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
   }, []);
 
   useEffect(() => {
-    if (props.searchQuery && props.searchQuery.length > 0) {
+    if (searchQuery && searchQuery.length > 0) {
       const filtered = alojamientos.filter((alojamiento) =>
-        alojamiento.nombre.toLowerCase().includes(props.searchQuery.toLowerCase())
+        alojamiento.nombre && searchQuery &&
+        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredAlojamientos(filtered);
     } else {
       setFilteredAlojamientos(alojamientos);
     }
     setCurrentPage(1);
-  }, [props.searchQuery, alojamientos]);
+  }, [searchQuery, alojamientos]);
 
   const totalPages = Math.ceil(filteredAlojamientos.length / cardsPerPage);
 
@@ -59,7 +59,7 @@ const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
         description={alojamiento.descripcion}
         price={alojamiento.precio}
         imagenes={alojamiento.imagenes}
-        alojamiento={alojamiento} // Pasa el objeto alojamiento completo
+        alojamiento={alojamiento}
       />
     ));
   };
@@ -88,16 +88,14 @@ const RecomendacionesAlojamientos = ({ searchQuery, setSuggestions }) => {
   );
 };
 
-
 RecomendacionesAlojamientos.propTypes = {
   searchQuery: PropTypes.string,
-  setSuggestions: PropTypes.func.isRequired,
+  setSuggestions: PropTypes.func, // Cambia a no requerido
 };
-
 
 RecomendacionesAlojamientos.defaultProps = {
   searchQuery: "",
-  setSuggestions: () => {}, 
+  setSuggestions: () => {}, // Define un valor por defecto
 };
 
 export default RecomendacionesAlojamientos;

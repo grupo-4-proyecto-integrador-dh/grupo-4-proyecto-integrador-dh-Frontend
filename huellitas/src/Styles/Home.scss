@@ -189,7 +189,7 @@
       transition: background 0.3s ease;
 
       &:hover {
-        background-color: darken(colors.$primary, 10%);
+        background-color: color.adjust(colors.$primary, $lightness: -10%)
       }
 
       &:disabled {

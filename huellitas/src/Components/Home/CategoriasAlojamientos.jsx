@@ -6,10 +6,11 @@ import "../../Styles/Home.scss";
 const CategoriasCarousel = () => {
     const [categorias, setCategorias] = useState([]);
     const [alojamientos, setAlojamientos] = useState([]);
+    const [categoriasConCantidad, setCategoriasConCantidad] = useState([]); // Nuevo estado
     const sliderRef = useRef(null);
     const [index, setIndex] = useState(0);
     const itemsPerPage = 3;
-    const cardWidthWithGap = 196;
+    const cardWidthWithGap = 200;
 
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -23,7 +24,7 @@ const CategoriasCarousel = () => {
 
         const fetchAlojamientos = async () => {
             try {
-                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos"); // Reemplaza con la URL correcta
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
                 setAlojamientos(response.data);
             } catch (error) {
                 console.error("Error al cargar los alojamientos:", error);
@@ -36,18 +37,18 @@ const CategoriasCarousel = () => {
 
     useEffect(() => {
         if (categorias.length > 0 && alojamientos.length > 0) {
-            const categoriasConCantidad = categorias.map((categoria) => {
+            const nuevasCategorias = categorias.map((categoria) => {
                 const cantidad = alojamientos.filter(
-                    (alojamiento) => alojamiento.categoria.id === categoria.id
+                    (alojamiento) => alojamiento.categoria && alojamiento.categoria.id === categoria.id
                 ).length;
                 return { ...categoria, alojamientosCount: cantidad };
             });
-            setCategorias(categoriasConCantidad);
+            setCategoriasConCantidad(nuevasCategorias); // Actualiza el nuevo estado
         }
-    }, [categorias, alojamientos]);
+    }, [categorias, alojamientos]); // Dependencias: categorias y alojamientos
 
     const nextSlide = () => {
-        if (index < categorias.length - itemsPerPage) {
+        if (index < categoriasConCantidad.length - itemsPerPage) {
             setIndex(index + 1);
         }
     };
@@ -58,6 +59,8 @@ const CategoriasCarousel = () => {
         }
     };
 
+    const translateValue = index * (cardWidthWithGap * itemsPerPage);
+
     return (
         <section className="main__categorias">
             <h2>Categorías de Alojamientos</h2>
@@ -67,9 +70,9 @@ const CategoriasCarousel = () => {
                 <div className="carousel-slider" ref={sliderRef}>
                     <div
                         className="carousel-track"
-                        style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}
+                        style={{ transform: `translateX(-${translateValue}px)` }}
                     >
-                        {categorias.map((categoria) => (
+                        {categoriasConCantidad.map((categoria) => (
                             <CategoriaCard
                                 key={categoria.id}
                                 nombre={categoria.nombre}
@@ -81,7 +84,7 @@ const CategoriasCarousel = () => {
                     </div>
                 </div>
 
-                <button className="next-btn" onClick={nextSlide} disabled={index >= categorias.length - itemsPerPage}>›</button>
+                <button className="next-btn" onClick={nextSlide} disabled={index >= categoriasConCantidad.length - itemsPerPage}>›</button>
             </div>
         </section>
     );
