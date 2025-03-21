@@ -1,0 +1,48 @@
+// Estilos generales del contenedor
+.reserva-calendario {
+  text-align: center;
+  margin: 20px;
+  font-family: "Arial", sans-serif;
+
+  h3 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  h4 {
+    color: #555;
+    margin: 5px 0;
+  }
+
+  // Estilos del contenedor del calendario
+  .rdrCalendarWrapper {
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  // Estilos de los días seleccionados
+  .rdrSelected {
+    background-color: #3d91ff !important;
+  }
+
+  // Botón de confirmar reserva
+  .confirmar-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    cursor: pointer;
+    background-color: #3d91ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s ease;
+
+    &:hover {
+      background-color: #2b6ecb;
+    }
+  }
+}
