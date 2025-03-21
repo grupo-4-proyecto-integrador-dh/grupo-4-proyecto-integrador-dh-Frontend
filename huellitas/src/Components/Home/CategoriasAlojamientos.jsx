@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 import CategoriaCard from "./CategoriaCard";
 import "../../Styles/Home.scss";
 
-const CategoriasCarousel = () => {
-    const [categorias, setCategorias] = useState([]);
-    const [alojamientos, setAlojamientos] = useState([]);
-    const [categoriasConCantidad, setCategoriasConCantidad] = useState([]); // Nuevo estado
-    const sliderRef = useRef(null);
-    const [index, setIndex] = useState(0);
-    const itemsPerPage = 3;
-    const cardWidthWithGap = 200;
+const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, selectedCategory }) => {
+  const [categorias, setCategorias] = useState([]);
+  const [alojamientos, setAlojamientos] = useState([]);
+  const [categoriasConCantidad, setCategoriasConCantidad] = useState([]);
+  const sliderRef = useRef(null);
+  const [index, setIndex] = useState(0);
+  const itemsPerPage = 3;
+  const cardWidthWithGap = 196;
+
 
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -31,63 +33,94 @@ const CategoriasCarousel = () => {
             }
         };
 
-        fetchCategorias();
-        fetchAlojamientos();
-    }, []);
+    fetchCategorias();
+    fetchAlojamientos();
+  }, []);
 
-    useEffect(() => {
-        if (categorias.length > 0 && alojamientos.length > 0) {
-            const nuevasCategorias = categorias.map((categoria) => {
-                const cantidad = alojamientos.filter(
-                    (alojamiento) => alojamiento.categoria && alojamiento.categoria.id === categoria.id
-                ).length;
-                return { ...categoria, alojamientosCount: cantidad };
-            });
-            setCategoriasConCantidad(nuevasCategorias); // Actualiza el nuevo estado
+
+  useEffect(() => {
+    if (categorias.length > 0 && alojamientos.length > 0) {
+      const conteoAlojamientos = alojamientos.reduce((acc, alojamiento) => {
+        if (alojamiento.categoria && alojamiento.categoria.id) {
+          const categoriaId = alojamiento.categoria.id;
+          acc[categoriaId] = (acc[categoriaId] || 0) + 1;
         }
-    }, [categorias, alojamientos]); // Dependencias: categorias y alojamientos
+        return acc;
+      }, {});
+  
+      const nuevasCategorias = categorias.map((categoria) => ({
+        ...categoria,
+        alojamientosCount: conteoAlojamientos[categoria.id] || 0,
+      }));
+  
+      setCategoriasConCantidad(nuevasCategorias);
+    }
+  }, [categorias, alojamientos]);
 
-    const nextSlide = () => {
-        if (index < categoriasConCantidad.length - itemsPerPage) {
-            setIndex(index + 1);
-        }
-    };
 
-    const prevSlide = () => {
-        if (index > 0) {
-            setIndex(index - 1);
-        }
-    };
+  const nextSlide = () => {
+    if (index < categorias.length - itemsPerPage) {
+      setIndex(index + 1);
+    }
+  };
 
-    const translateValue = index * (cardWidthWithGap * itemsPerPage);
+  const prevSlide = () => {
+    if (index > 0) {
+      setIndex(index - 1);
+    }
+  };
 
-    return (
-        <section className="main__categorias">
-            <h2>Categorías de Alojamientos</h2>
-            <div className="carousel-container">
-                <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>‹</button>
-                
-                <div className="carousel-slider" ref={sliderRef}>
-                    <div
-                        className="carousel-track"
-                        style={{ transform: `translateX(-${translateValue}px)` }}
-                    >
-                        {categoriasConCantidad.map((categoria) => (
-                            <CategoriaCard
-                                key={categoria.id}
-                                nombre={categoria.nombre}
-                                imagen={categoria.imagenUrl || "/imagenes/default.jpg"}
-                                alt={`Imagen de ${categoria.nombre}`}
-                                cantidad={categoria.alojamientosCount}
-                            />
-                        ))}
-                    </div>
-                </div>
 
-                <button className="next-btn" onClick={nextSlide} disabled={index >= categoriasConCantidad.length - itemsPerPage}>›</button>
-            </div>
-        </section>
-    );
+  const handleCardClick = (categoryId) => {
+    onCategoryClick(categoryId);
+  };
+  
+
+  const handleClearLocalFilter = () => {
+    onClearCategoryFilter();
+  };
+
+  return (
+    <section className="main__categorias">
+      <div className="categorias__header">
+        <h2>Categorías</h2>
+        {selectedCategory && (
+          <button className="clear-filter-btn" onClick={handleClearLocalFilter}>
+            Borrar Filtros
+          </button>
+        )}
+      </div>
+  
+      <div className="carousel-container">
+        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>‹</button>
+  
+        <div className="carousel-slider" ref={sliderRef}>
+          <div className="carousel-track" style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}>
+            {categoriasConCantidad.map((categoria) => (
+              <CategoriaCard
+                key={categoria.id}
+                nombre={categoria.nombre}
+                imagen={categoria.imagenUrl || "/imagenes/default.jpg"}
+                alt={`Imagen de ${categoria.nombre}`}
+                cantidad={categoria.alojamientosCount}
+                onClick={() => handleCardClick(categoria.id)}
+                isSelected={selectedCategory?.id === categoria.id}
+              />
+            ))}
+          </div>
+        </div>
+  
+        <button className="next-btn" onClick={nextSlide} disabled={index >= categorias.length - itemsPerPage}>›</button>
+      </div>
+    </section>
+  );
 };
 
-export default CategoriasCarousel;
+
+CategoriasAlojamientos.propTypes = {
+  onCategoryClick: PropTypes.func.isRequired,
+  onClearCategoryFilter: PropTypes.func.isRequired,
+  selectedCategory: PropTypes.object,
+};
+
+export default CategoriasAlojamientos;

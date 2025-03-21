@@ -1,29 +1,5 @@
-/*
-import ApartadoBusqueda from "../Components/Home/ApartadoBusqueda";
-import CategoriasAlojamientos from "../Components/Home/CategoriasAlojamientos";
-import RecomendacionesAlojamientos from "../Components/Home/RecomendacionesAlojamientos";
-import { useState } from "react";
-import "../Styles/App.css";
-import "../Styles/Home.scss";
-
-const Home = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  return (
-    <div className="w-100">
-      <ApartadoBusqueda
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      <CategoriasAlojamientos />
-      <RecomendacionesAlojamientos searchQuery={searchQuery} />
-    </div>
-  );
-};
-
-export default Home;
-*/
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ApartadoBusqueda from "../Components/Home/ApartadoBusqueda";
 import CategoriasAlojamientos from "../Components/Home/CategoriasAlojamientos";
 import RecomendacionesAlojamientos from "../Components/Home/RecomendacionesAlojamientos";
@@ -32,38 +8,74 @@ import "../Styles/Home.scss";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [suggestions, setSuggestions] = useState([]);
-  const [alojamientos, setAlojamientos] = useState([]); // 🔹 Agregar estado para alojamientos
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [alojamientos, setAlojamientos] = useState([]);
+  const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
-        );
-        const data = await response.json();
-        setAlojamientos(data); // 🔹 Guardar alojamientos en el estado
+        const response = await axios.get("https://insightful-patience-production.up.railway.app/alojamientos");
+        setAlojamientos(response.data);
       } catch (error) {
-        console.error("Error fetching alojamientos:", error);
+        console.error("Error al cargar los alojamientos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchAlojamientos();
   }, []);
 
+  useEffect(() => {
+    let filtered = alojamientos;
+
+
+    if (searchQuery) {
+      filtered = filtered.filter((alojamiento) =>
+        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+
+    if (selectedCategory) {
+      filtered = filtered.filter((alojamiento) =>
+        alojamiento.categoria.id === selectedCategory.id
+      );
+    }
+
+    setFilteredAlojamientos(filtered);
+    console.log("Alojamientos filtrados", filtered.length);
+  }, [searchQuery, selectedCategory, alojamientos]);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const handleClearCategoryFilter = () => {
+    setSelectedCategory(null);
+  };
+
+  if (loading) {
+    return <p>Cargando alojamientos...</p>;
+  }
+
   return (
     <div className="w-100">
       <ApartadoBusqueda
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        alojamientos={alojamientos} // 🔹 Pasar alojamientos si es requerido
       />
-      <CategoriasAlojamientos />
+      <CategoriasAlojamientos
+        onCategoryClick={handleCategoryClick}
+        onClearCategoryFilter={handleClearCategoryFilter}
+        selectedCategory={selectedCategory}
+      />
       <RecomendacionesAlojamientos
-        searchQuery={searchQuery}
-        setSuggestions={setSuggestions}
-        alojamientos={alojamientos} // 🔹 Pasar alojamientos si es requerido
+        filteredAlojamientos={filteredAlojamientos}
+        selectedCategories={selectedCategory ? [selectedCategory] : []}
       />
     </div>
   );
