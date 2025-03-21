@@ -41,12 +41,12 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
 
   const handleSearch = () => {
     if (searchQuery.trim() === "") {
-      setShowEmptySearchMessage(true); // Mostrar el mensaje de búsqueda vacía
+      setShowEmptySearchMessage(true); 
     } else if (selectedSuggestion) {
       navigate(`/alojamiento/${selectedSuggestion.id}`);
     } else {
-      // Realizar una búsqueda general
-      // ...
+      // Realizar una búsqueda 
+      
     }
   };
 
