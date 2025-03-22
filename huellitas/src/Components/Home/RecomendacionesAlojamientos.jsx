@@ -64,7 +64,7 @@ useEffect(() => {
         id={alojamiento.id}
         title={alojamiento.nombre}
         description={alojamiento.descripcion}
-        price={alojamiento.precio}
+        price={alojamiento.precio}git branc
         imagenes={alojamiento.imagenes}
       />
     ));
