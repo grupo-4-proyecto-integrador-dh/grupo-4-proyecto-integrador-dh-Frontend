@@ -147,20 +147,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Espacio entre el icono y el texto */
+  gap: 8px; 
   font-size: 16px;
   color: #8c1212;
-  background-color: #fff3f0; /* Un fondo suave para destacar */
+  background-color: #fff3f0; 
   border: 1px solid #e76f51;
   padding: 10px;
   border-radius: 4px;
   width: 100%;
   text-align: center;
-  margin-top: 5px; /* Espacio con respecto al input */
+  margin-top: 5px; 
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Animación de aparición */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -172,7 +172,7 @@
   }
 }
 
-/* Ícono dentro del mensaje */
+
 .empty-search-message::before {
   content: "⚠️";
   font-size: 40px;
