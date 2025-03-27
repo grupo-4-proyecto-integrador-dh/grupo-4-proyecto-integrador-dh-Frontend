@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,24 +8,24 @@ import { FaPaw } from "react-icons/fa";
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
-  const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
 
-  useEffect(() => {
+  // Filtrar sugerencias usando useMemo para optimizar el cálculo
+  const sugerencias = useMemo(() => {
     if (searchQuery.length > 1) {
-      const nuevasSugerencias = Array.isArray(alojamientos)
-        ? alojamientos.filter((alojamiento) =>
-            alojamiento.nombre && searchQuery &&
-            alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
-      setSugerencias(nuevasSugerencias);
-      setMostrarSugerencias(nuevasSugerencias.length > 0);
-    } else {
-      setSugerencias([]);
-      setMostrarSugerencias(false);
+      return alojamientos.filter((alojamiento) =>
+        alojamiento.nombre &&
+        searchQuery &&
+        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
+    return [];
   }, [searchQuery, alojamientos]);
+
+  // Solo actualizar mostrarSugerencias si hay sugerencias
+  useEffect(() => {
+    setMostrarSugerencias(sugerencias.length > 0);
+  }, [sugerencias]);
 
   return (
     <div className="busqueda-container">
@@ -43,7 +43,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-              <li key={index} onClick={() => setSearchQuery(sugerencia.nombre)}>
+              <li key={index} onMouseDown={() => setSearchQuery(sugerencia.nombre)}>
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
@@ -92,3 +92,4 @@ ApartadoBusqueda.propTypes = {
 };
 
 export default ApartadoBusqueda;
+

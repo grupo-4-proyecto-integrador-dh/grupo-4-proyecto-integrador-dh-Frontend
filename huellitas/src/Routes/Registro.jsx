@@ -83,6 +83,7 @@ export default function Registro() {
         {errorMensaje && <p className="error-text">{errorMensaje}</p>}
 
         <form onSubmit={handleSubmit} className="registro-form">
+          <label htmlFor="nombre">Nombre</label>
           <input
             type="text"
             name="nombre"
@@ -93,6 +94,7 @@ export default function Registro() {
           />
           {errors.nombre && <p className="error-text">{errors.nombre}</p>}
 
+          <label htmlFor="apellido">Apellido</label>
           <input
             type="text"
             name="apellido"
@@ -103,6 +105,7 @@ export default function Registro() {
           />
           {errors.apellido && <p className="error-text">{errors.apellido}</p>}
 
+          <label htmlFor="email">Correo Electrónico</label>
           <input
             type="email"
             name="email"
@@ -113,6 +116,7 @@ export default function Registro() {
           />
           {errors.email && <p className="error-text">{errors.email}</p>}
 
+          <label htmlFor="contrasena">Contraseña</label>
           <input
             type="password"
             name="contrasena"

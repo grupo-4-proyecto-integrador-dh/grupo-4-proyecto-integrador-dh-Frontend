@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation} from "react-router-dom";
+import {React, useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
+import Swal from "sweetalert2";
 import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
 
@@ -14,6 +15,7 @@ const Detalle = () => {
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState([null, null]);
   const [mascotas, setMascotas] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
   const [userID, setUserID] = useState(null);
   const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -31,12 +33,13 @@ const Detalle = () => {
 
     if (token) {
       setToken(token);
+      setIsLogin(true)
     }
 
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setUserID(4); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
+        setUserID(userData.id); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
       } catch (error) {
         console.error("Error al parsear el usuario:", error);
       }
@@ -49,7 +52,7 @@ const Detalle = () => {
       const obtenerMascotas = async () => {
         try {
           setCargando(true);
-          const response = await axios.get(`${url_base}/clientes/4`, {
+          const response = await axios.get(`${url_base}/clientes/${userID}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -103,6 +106,25 @@ const Detalle = () => {
         .catch((error) => console.error("Error al obtener las reservas:", error));
     }
   }, [alojamiento, id]);
+
+  const handleReserveClick = () => {
+    if (!isLogin) {
+      Swal.fire({
+        title: '¿Quién está ahí?',
+        text: 'Para poder realizar reservas, debes iniciar sesión con tu usuario.',
+        icon: 'question',
+        confirmButtonText: 'Iniciar sesión',
+        showCancelButton: true,
+        cancelButtonText: 'Por ahora no',
+        preConfirm: () => {
+          // Redirigir al login
+          navigate('/login?from=reservation');  // Usar navigate para redirigir
+        }
+      });
+    } else {
+      setMostrarCalendario(true);
+    }
+  };
 
   // Función para agregar una nueva mascota
   const agregarMascota = async () => {
@@ -174,7 +196,7 @@ const Detalle = () => {
           fechaDesde: fechaDesdeFormateada,
           fechaHasta: fechaHastaFormateada,
           mascotaId: mascotaSeleccionada,
-          clienteId: 4,
+          clienteId: userID,
         },
         {
           headers: {
@@ -214,7 +236,7 @@ const Detalle = () => {
             </div>
 
             {!mostrarCalendario && (
-              <button className="reserve-button" onClick={() => setMostrarCalendario(true)}>
+              <button className="reserve-button" onClick={handleReserveClick}>
                 Reservar ahora
               </button>
             )}
