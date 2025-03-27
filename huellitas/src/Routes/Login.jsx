@@ -21,11 +21,18 @@ const Login = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const fromReservation = queryParams.get('from') === 'reservation';
+    const from = location.state?.from?.pathname || '/'
 
 
     const handleRedirect = () => {
-        navigate('/registro'); // Redirige a la página de registro
+        navigate('/registro?from=reservation'); // Redirige a la página de registro
       };
+
+    const handleLogin = () => {
+        // Lógica de inicio de sesión
+        // Si el inicio de sesión es exitoso, redirige al usuario a la página anterior
+        navigate(from, { replace: true });
+    };  
 
 
     useEffect(() => {
@@ -82,8 +89,12 @@ const Login = () => {
                         localStorage.setItem("rol", rol);
                         if (rol === "ADMIN") {
                             navigate("/administracion");
-                        } else {
-                            navigate("/");
+                        } else{
+                            if (fromReservation) {
+                                navigate(from, { replace: true }); // Redirigir a la página de reserva original
+                            } else {
+                                navigate("/"); // Redirigir al home si no venía de una reserva
+                            }
                         }
                     })
                     .catch((rolError) => {

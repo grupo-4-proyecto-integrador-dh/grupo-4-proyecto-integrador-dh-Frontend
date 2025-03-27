@@ -118,7 +118,7 @@ const Detalle = () => {
         cancelButtonText: 'Por ahora no',
         preConfirm: () => {
           // Redirigir al login
-          navigate('/login?from=reservation');  // Usar navigate para redirigir
+          navigate('/login?from=reservation', { state: { from: location } });  // Usar navigate para redirigir
         }
       });
     } else {
@@ -151,7 +151,7 @@ const Detalle = () => {
       );
 
       // Obtener la lista actualizada de mascotas desde el servidor
-      const response = await axios.get(`${url_base}/clientes/4`, {
+      const response = await axios.get(`${url_base}/clientes/${userID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
