@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+      {
+        "source": "/alojamiento/:id",
+        "destination": "/index.html"
+      }
+    ]
+  }

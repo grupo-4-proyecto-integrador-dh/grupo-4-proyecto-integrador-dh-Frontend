@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
@@ -20,6 +19,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>
+            alojamiento.nombre && searchQuery &&
             alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
           )
         : [];
