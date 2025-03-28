@@ -4,11 +4,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../Styles/ApartadoBusqueda.css";
 import { FaPaw } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
+  const navigate = useNavigate();
 
   // Filtrar sugerencias usando useMemo para optimizar el cálculo
   const sugerencias = useMemo(() => {
@@ -52,10 +56,13 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
             ))}
           </ul>
         )}
+        {showEmptySearchMessage && (
+          <div className="empty-search-message">Por favor, ingrese un alojamiento a buscar.</div>
+        )}
       </div>
 
       <div className="busqueda-fechas">
-        <DatePicker
+      <DatePicker
           selected={fechaInicio}
           onChange={(date) => setFechaInicio(date)}
           selectsStart
@@ -80,7 +87,9 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         />
       </div>
 
-      <button className="busqueda-boton">Busqueda</button>
+      <button className="busqueda-boton" onClick={handleSearch}>
+        Búsqueda
+      </button>
     </div>
   );
 };

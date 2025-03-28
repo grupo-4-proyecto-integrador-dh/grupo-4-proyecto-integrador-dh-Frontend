@@ -6,6 +6,7 @@ import "../Styles/Detalle.scss";
 import Swal from "sweetalert2";
 import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
+import CalendarioReserva from "./CalendarioReserva"; 
 
 const Detalle = () => {
   const location = useLocation();
@@ -170,10 +171,8 @@ const Detalle = () => {
 
   // Confirmar la reserva
   const confirmarReserva = () => {
-    const [fechaInicio, fechaFin] = fechasSeleccionadas;
-
-    if (!fechaInicio || !fechaFin || !mascotaSeleccionada) {
-      alert("Por favor, selecciona las fechas y una mascota antes de confirmar la reserva.");
+    if (!fechaSeleccionada) {
+      alert("Por favor, selecciona una fecha antes de confirmar la reserva.");
       return;
     }
 
@@ -243,71 +242,13 @@ const Detalle = () => {
 
             {mostrarCalendario && (
               <div className="calendario-wrapper">
-                <Calendario
-                  mensaje="Elige fechas de estadía"
-                  onChange={(fechas) => setFechasSeleccionadas(fechas)}
-                  fechasReservadas={fechasReservadas} // Pasa las fechas reservadas
-                />
-                <div className="formulario-mascota-reserva">
-                  {/* Lista de mascotas existentes */}
-                  <form>
-                    <select class="form-select" aria-label="Default select example"
-                      value={mascotaSeleccionada}
-                      onChange={(e) => setMascotaSeleccionada(e.target.value)}
-                    >
-                      <option value="">Selecciona una mascota</option>
-                      {mascotas && Array.isArray(mascotas) && mascotas
-                        .filter((mascota) => mascota != null) // Filtra elementos null o undefined
-                        .map((mascota) => (
-                          <option key={mascota.id} value={mascota.id}>
-                            {mascota.nombre}
-                          </option>
-                        ))}
-                    </select>
-                  </form>
-
-                  {/* Botón para mostrar el input de nueva mascota */}
-                  {!mostrarInputNuevaMascota && (
-                    <button
-                      onClick={() => setMostrarInputNuevaMascota(true)}
-                      className="reserve-button"
-                    >
-                      ➕ Agregar nueva mascota
-                    </button>
-                  )}
-
-                  {/* Input para agregar una nueva mascota (solo se muestra si mostrarInputNuevaMascota es true) */}
-                  {mostrarInputNuevaMascota && (
-                    <form  onSubmit={(e) => e.preventDefault()}>
-                      <input className="mascota_nueva"
-                        type="text"
-                        placeholder="Nombre de la mascota"
-                        value={nuevaMascotaNombre}
-                        onChange={(e) => setNuevaMascotaNombre(e.target.value)}
-                      />
-                      <button onClick={agregarMascota} className="reserve-button">
-                        Agregar mascota
-                      </button>
-                      <button
-                        onClick={() => setMostrarInputNuevaMascota(false)}
-                        className="reserve-button"
-                      >
-                        X
-                      </button>
-                    </form>
-                  )}
-
-                  {/* Botones para confirmar o cancelar la reserva */}
-                  <button onClick={confirmarReserva} className="reserve-button">
-                    Confirmar reserva
-                  </button>
-                  <button
-                    onClick={() => setMostrarCalendario(false)}
-                    className="reserve-button"
-                  >
-                    Cancelar
-                  </button>
-                </div>
+                <Calendar onClickDay={setFechaSeleccionada} />
+                <button onClick={confirmarReserva} className="confirm-button">
+                  Confirmar reserva
+                </button>
+                <button onClick={() => setMostrarCalendario(false)} className="cancel-button">
+                  Cancelar
+                </button>
               </div>
             )}
           </div>
