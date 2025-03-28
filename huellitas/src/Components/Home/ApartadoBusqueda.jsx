@@ -4,12 +4,16 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../Styles/ApartadoBusqueda.css";
 import { FaPaw } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
   const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchQuery.length > 1) {
@@ -21,11 +25,30 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         : [];
       setSugerencias(nuevasSugerencias);
       setMostrarSugerencias(nuevasSugerencias.length > 0);
+      setShowEmptySearchMessage(false); 
     } else {
       setSugerencias([]);
       setMostrarSugerencias(false);
+      setShowEmptySearchMessage(false); 
     }
   }, [searchQuery, alojamientos]);
+
+  const handleSuggestionClick = (sugerencia) => {
+    setSearchQuery(sugerencia.nombre);
+    setSelectedSuggestion(sugerencia);
+    setMostrarSugerencias(false);
+  };
+
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") {
+      setShowEmptySearchMessage(true); 
+    } else if (selectedSuggestion) {
+      navigate(`/alojamiento/${selectedSuggestion.id}`);
+    } else {
+      // Realizar una búsqueda 
+      
+    }
+  };
 
   return (
     <div className="busqueda-container">
@@ -43,7 +66,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-              <li key={index} onClick={() => setSearchQuery(sugerencia.nombre)}>
+              <li key={index} onClick={() => handleSuggestionClick(sugerencia)}>
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
@@ -52,10 +75,13 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
             ))}
           </ul>
         )}
+        {showEmptySearchMessage && (
+          <div className="empty-search-message">Por favor, ingrese un alojamiento a buscar.</div>
+        )}
       </div>
 
       <div className="busqueda-fechas">
-        <DatePicker
+      <DatePicker
           selected={fechaInicio}
           onChange={(date) => setFechaInicio(date)}
           selectsStart
@@ -80,7 +106,9 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         />
       </div>
 
-      <button className="busqueda-boton">Busqueda</button>
+      <button className="busqueda-boton" onClick={handleSearch}>
+        Búsqueda
+      </button>
     </div>
   );
 };

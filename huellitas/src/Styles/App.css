@@ -1,17 +1,37 @@
-* {
-  box-sizing: border-box;
-  max-width: 100%;
+.card__image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-html,
-body {
+.card__image {
+  width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  object-fit: cover;
+  display: block;
+}
+
+.card__favorite-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+  color: red; /* color base */
+  background: rgba(14, 12, 14, 0.5);
+  padding: 8px;
+  border-radius: 50%;
+  z-index: 5;
+  transition: all 0.3s ease;
+}
+
+.card__favorite-icon.active {
+  color: orange;
+}
+
+.card__favorite-icon:hover {
+  transform: scale(1.2);
 }
