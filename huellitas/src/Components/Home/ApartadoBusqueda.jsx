@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,27 +9,45 @@ import { useNavigate } from "react-router-dom";
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
+  const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
   const navigate = useNavigate();
 
-  // Filtrar sugerencias usando useMemo para optimizar el cálculo
-  const sugerencias = useMemo(() => {
+  useEffect(() => {
     if (searchQuery.length > 1) {
-      return alojamientos.filter((alojamiento) =>
-        alojamiento.nombre &&
-        searchQuery &&
-        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const nuevasSugerencias = Array.isArray(alojamientos)
+        ? alojamientos.filter((alojamiento) =>
+            alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : [];
+      setSugerencias(nuevasSugerencias);
+      setMostrarSugerencias(nuevasSugerencias.length > 0);
+      setShowEmptySearchMessage(false); 
+    } else {
+      setSugerencias([]);
+      setMostrarSugerencias(false);
+      setShowEmptySearchMessage(false); 
     }
-    return [];
   }, [searchQuery, alojamientos]);
 
-  // Solo actualizar mostrarSugerencias si hay sugerencias
-  useEffect(() => {
-    setMostrarSugerencias(sugerencias.length > 0);
-  }, [sugerencias]);
+  const handleSuggestionClick = (sugerencia) => {
+    setSearchQuery(sugerencia.nombre);
+    setSelectedSuggestion(sugerencia);
+    setMostrarSugerencias(false);
+  };
+
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") {
+      setShowEmptySearchMessage(true); 
+    } else if (selectedSuggestion) {
+      navigate(`/alojamiento/${selectedSuggestion.id}`);
+    } else {
+      // Realizar una búsqueda 
+      
+    }
+  };
 
   return (
     <div className="busqueda-container">
@@ -47,7 +65,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-              <li key={index} onMouseDown={() => setSearchQuery(sugerencia.nombre)}>
+              <li key={index} onClick={() => handleSuggestionClick(sugerencia)}>
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
@@ -101,4 +119,3 @@ ApartadoBusqueda.propTypes = {
 };
 
 export default ApartadoBusqueda;
-
