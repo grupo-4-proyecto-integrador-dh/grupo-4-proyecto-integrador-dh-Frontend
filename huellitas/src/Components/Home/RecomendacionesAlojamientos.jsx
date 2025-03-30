@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 import PropTypes from "prop-types";
@@ -21,12 +22,14 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
+        setFilteredAlojamientos(shuffledAlojamientos);
         setTotalAlojamientos(shuffledAlojamientos.length);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error al obtener los alojamientos:", err);
+      } catch (error) {
+        setError(error.message);
+        console.error("Error al obtener los alojamientos:", error);
       } finally {
         setLoading(false);
       }
@@ -35,7 +38,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
     fetchAlojamientos();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     let filtered = alojamientos;
 
     if (searchQuery && searchQuery.length > 0) {

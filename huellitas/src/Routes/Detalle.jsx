@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+
 import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";

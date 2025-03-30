@@ -1,31 +1,52 @@
-import { useState, useEffect, useMemo } from "react";
+import  { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../Styles/ApartadoBusqueda.css";
 import { FaPaw } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [sugerencias, setSugerencias] = useState([]); // 🔹 ¡Aquí está la solución!
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
+  const navigate = useNavigate();
 
-  // Filtrar sugerencias usando useMemo para optimizar el cálculo
-  const sugerencias = useMemo(() => {
+  // Actualizar sugerencias cuando cambia searchQuery o alojamientos
+  useEffect(() => {
     if (searchQuery.length > 1) {
-      return alojamientos.filter((alojamiento) =>
-        alojamiento.nombre &&
-        searchQuery &&
-        alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+      const nuevasSugerencias = alojamientos.filter(
+        (alojamiento) =>
+          alojamiento.nombre &&
+          alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
+      setSugerencias(nuevasSugerencias);
+      setMostrarSugerencias(nuevasSugerencias.length > 0);
+    } else {
+      setSugerencias([]); // 🔹 También corregido aquí
+      setMostrarSugerencias(false);
     }
-    return [];
+    setShowEmptySearchMessage(false);
   }, [searchQuery, alojamientos]);
 
-  // Solo actualizar mostrarSugerencias si hay sugerencias
-  useEffect(() => {
-    setMostrarSugerencias(sugerencias.length > 0);
-  }, [sugerencias]);
+  // Manejar selección de sugerencia
+  const handleSuggestionClick = (sugerencia) => {
+    setSearchQuery(sugerencia.nombre);
+    setSelectedSuggestion(sugerencia);
+    setMostrarSugerencias(false);
+  };
+
+  // Manejar búsqueda
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") {
+      setShowEmptySearchMessage(true);
+    } else if (selectedSuggestion) {
+      navigate(`/alojamiento/${selectedSuggestion.id}`);
+    }
+  };
 
   return (
     <div className="busqueda-container">
@@ -43,7 +64,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-              <li key={index} onMouseDown={() => setSearchQuery(sugerencia.nombre)}>
+              <li key={index} onMouseDown={() => handleSuggestionClick(sugerencia)}>
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
@@ -51,6 +72,9 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
               </li>
             ))}
           </ul>
+        )}
+        {showEmptySearchMessage && (
+          <div className="empty-search-message">Por favor, ingrese un alojamiento a buscar.</div>
         )}
       </div>
 
@@ -80,7 +104,9 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         />
       </div>
 
-      <button className="busqueda-boton">Busqueda</button>
+      <button className="busqueda-boton" onClick={handleSearch}>
+        Búsqueda
+      </button>
     </div>
   );
 };
@@ -92,4 +118,3 @@ ApartadoBusqueda.propTypes = {
 };
 
 export default ApartadoBusqueda;
-
