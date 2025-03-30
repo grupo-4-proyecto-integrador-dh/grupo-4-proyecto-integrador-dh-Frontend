@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -15,7 +15,6 @@ const ApartadoBusqueda = ({
   const [fechaFin, setFechaFin] = useState(null);
   const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
-  const [sugerencias, setSugerencias] = useState([]); // 🔹 ¡Aquí está la solución!
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
   const navigate = useNavigate();
@@ -50,11 +49,6 @@ const ApartadoBusqueda = ({
       setShowEmptySearchMessage(true);
     } else if (selectedSuggestion) {
       navigate(`/alojamiento/${selectedSuggestion.id}`);
-<<<<<<< HEAD
-=======
-    } else {
-      // Realizar una búsqueda
->>>>>>> #31-reservas__visualizar-detalles
     }
   };
 
@@ -74,11 +68,10 @@ const ApartadoBusqueda = ({
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-<<<<<<< HEAD
-              <li key={index} onMouseDown={() => handleSuggestionClick(sugerencia)}>
-=======
-              <li key={index} onClick={() => handleSuggestionClick(sugerencia)}>
->>>>>>> #31-reservas__visualizar-detalles
+              <li
+                key={index}
+                onMouseDown={() => handleSuggestionClick(sugerencia)}
+              >
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
