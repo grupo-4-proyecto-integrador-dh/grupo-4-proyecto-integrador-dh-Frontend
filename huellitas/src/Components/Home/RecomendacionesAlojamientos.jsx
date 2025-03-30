@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 import PropTypes from "prop-types";
 
-const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
+const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSuggestions }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
@@ -10,7 +10,6 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const cardsPerPage = 5;
-
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
@@ -36,10 +35,8 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
     fetchAlojamientos();
   }, []);
 
-
   useEffect(() => {
     let filtered = alojamientos;
-
 
     if (searchQuery && searchQuery.length > 0) {
       filtered = filtered.filter((alojamiento) =>
@@ -47,17 +44,19 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
       );
     }
 
-
     if (selectedCategories && selectedCategories.length > 0) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.categoria && selectedCategories.includes(alojamiento.categoria.id)
       );
     }
 
-
     setFilteredAlojamientos(filtered);
     setCurrentPage(1);
-  }, [searchQuery, selectedCategories, alojamientos]);
+
+    if (setSuggestions) {
+      setSuggestions(filtered.map((alojamiento) => alojamiento.nombre));
+    }
+  }, [searchQuery, alojamientos, selectedCategories, setSuggestions]);
 
   const totalPages = Math.ceil(filteredAlojamientos.length / cardsPerPage);
 
@@ -121,13 +120,15 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
 };
 
 RecomendacionesAlojamientos.propTypes = {
+  selectedCategories: PropTypes.array,
   searchQuery: PropTypes.string,
-  setSuggestions: PropTypes.func, // Cambia a no requerido
+  setSuggestions: PropTypes.func,
 };
 
 RecomendacionesAlojamientos.defaultProps = {
+  selectedCategories: [],
   searchQuery: "",
-  setSuggestions: () => {}, // Define un valor por defecto
+  setSuggestions: () => {},
 };
 
 export default RecomendacionesAlojamientos;

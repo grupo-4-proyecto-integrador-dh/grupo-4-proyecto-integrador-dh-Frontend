@@ -1,52 +1,53 @@
+
+
 import axios from "axios";
-import { useNavigate, useParams, useLocation} from "react-router-dom";
-import {React, useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Swal from "sweetalert2";
-import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
+import Calendario from "../Components/Detalle/Calendario";
 
 const Detalle = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+
   const [alojamiento, setAlojamiento] = useState(null);
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState([null, null]);
   const [mascotas, setMascotas] = useState([]);
-  const [isLogin, setIsLogin] = useState(false);
-  const [userID, setUserID] = useState(null);
+  const [fechasReservadas, setFechasReservadas] = useState([]);
   const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
-  const [cargando, setCargando] = useState(true);
-  const [token, setToken] = useState(null);
   const [nuevaMascotaNombre, setNuevaMascotaNombre] = useState("");
   const [mostrarInputNuevaMascota, setMostrarInputNuevaMascota] = useState(false);
-  const [fechasReservadas, setFechasReservadas] = useState([]); // Estado para las fechas reservadas
+  const [isLogin, setIsLogin] = useState(false);
+  const [userID, setUserID] = useState(null);
+  const [token, setToken] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
   const url_base = import.meta.env.VITE_BACKEND_URL;
 
-  // Obtener el token y el usuario al cargar el componente
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
 
     if (token) {
       setToken(token);
-      setIsLogin(true)
+      setIsLogin(true);
     }
 
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setUserID(userData.id); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
+        setUserID(userData.id);
       } catch (error) {
         console.error("Error al parsear el usuario:", error);
       }
     }
   }, []);
 
-  // Obtener las mascotas cuando el token o el userID cambien
   useEffect(() => {
     if (token && userID) {
       const obtenerMascotas = async () => {
@@ -67,9 +68,8 @@ const Detalle = () => {
 
       obtenerMascotas();
     }
-  }, [token, userID]);
+  }, [token, url_base, userID]);
 
-  // Obtener los detalles del alojamiento
   useEffect(() => {
     if (!location.state) {
       axios
@@ -81,52 +81,45 @@ const Detalle = () => {
     } else {
       setAlojamiento(location.state);
     }
-  }, [id, location.state]);
+  }, [id, location.state, url_base]);
 
-  // Obtener las reservas del alojamiento
   useEffect(() => {
     if (alojamiento) {
       axios
         .get(`${url_base}/alojamientos/${id}`)
         .then((response) => {
-          console.log("Respuesta del backend:", response.data); // Inspecciona la respuesta
-  
-          // Verifica si response.data.reservas es un array
           if (response.data.reservas && Array.isArray(response.data.reservas)) {
-            const fechasReservadas = response.data.reservas.map((reserva) => ({
+            const fechas = response.data.reservas.map((reserva) => ({
               fechaInicio: new Date(reserva.fechaDesde),
               fechaFin: new Date(reserva.fechaHasta),
             }));
-            setFechasReservadas(fechasReservadas);
+            setFechasReservadas(fechas);
           } else {
-            console.warn("No hay reservas para este alojamiento.");
-            setFechasReservadas([]); // Inicializa con un array vacío
+            setFechasReservadas([]);
           }
         })
         .catch((error) => console.error("Error al obtener las reservas:", error));
     }
-  }, [alojamiento, id]);
+  }, [alojamiento, id, url_base]);
 
   const handleReserveClick = () => {
     if (!isLogin) {
       Swal.fire({
-        title: '¿Quién está ahí?',
-        text: 'Para poder realizar reservas, debes iniciar sesión con tu usuario.',
-        icon: 'question',
-        confirmButtonText: 'Iniciar sesión',
+        title: "¿Quién está ahí?",
+        text: "Para poder realizar reservas, debes iniciar sesión con tu usuario.",
+        icon: "question",
+        confirmButtonText: "Iniciar sesión",
         showCancelButton: true,
-        cancelButtonText: 'Por ahora no',
+        cancelButtonText: "Por ahora no",
         preConfirm: () => {
-          // Redirigir al login
-          navigate('/login?from=reservation', { state: { from: location } });  // Usar navigate para redirigir
-        }
+          navigate("/login?from=reservation", { state: { from: location } });
+        },
       });
     } else {
       setMostrarCalendario(true);
     }
   };
 
-  // Función para agregar una nueva mascota
   const agregarMascota = async () => {
     if (nuevaMascotaNombre.trim() === "") {
       alert("Por favor, ingresa un nombre para la mascota.");
@@ -135,8 +128,6 @@ const Detalle = () => {
 
     try {
       setCargando(true);
-
-      // Agregar la nueva mascota
       await axios.post(
         `${url_base}/mascotas`,
         {
@@ -150,17 +141,15 @@ const Detalle = () => {
         }
       );
 
-      // Obtener la lista actualizada de mascotas desde el servidor
       const response = await axios.get(`${url_base}/clientes/${userID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // Actualizar el estado local con las mascotas actualizadas
       setMascotas(response.data.mascotas);
-      setNuevaMascotaNombre(""); // Limpiar el input
-      setMostrarInputNuevaMascota(false); // Ocultar el input después de agregar la mascota
+      setNuevaMascotaNombre("");
+      setMostrarInputNuevaMascota(false);
     } catch (error) {
       console.error("Error al agregar la mascota:", error);
     } finally {
@@ -168,7 +157,6 @@ const Detalle = () => {
     }
   };
 
-  // Confirmar la reserva
   const confirmarReserva = () => {
     const [fechaInicio, fechaFin] = fechasSeleccionadas;
 
@@ -177,17 +165,9 @@ const Detalle = () => {
       return;
     }
 
-    // Verifica que las fechas sean válidas
-    if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
-      alert("Las fechas seleccionadas no son válidas.");
-      return;
-    }
-
-    // Formatea las fechas
     const fechaDesdeFormateada = fechaInicio.toISOString().split("T")[0];
     const fechaHastaFormateada = fechaFin.toISOString().split("T")[0];
 
-    // Envía la solicitud al backend
     axios
       .post(
         `${url_base}/reservas`,
@@ -246,18 +226,18 @@ const Detalle = () => {
                 <Calendario
                   mensaje="Elige fechas de estadía"
                   onChange={(fechas) => setFechasSeleccionadas(fechas)}
-                  fechasReservadas={fechasReservadas} // Pasa las fechas reservadas
+                  fechasReservadas={fechasReservadas}
                 />
                 <div className="formulario-mascota-reserva">
-                  {/* Lista de mascotas existentes */}
                   <form>
-                    <select class="form-select" aria-label="Default select example"
+                    <select
+                      className="form-select"
                       value={mascotaSeleccionada}
                       onChange={(e) => setMascotaSeleccionada(e.target.value)}
                     >
                       <option value="">Selecciona una mascota</option>
-                      {mascotas && Array.isArray(mascotas) && mascotas
-                        .filter((mascota) => mascota != null) // Filtra elementos null o undefined
+                      {mascotas
+                        .filter((m) => m != null)
                         .map((mascota) => (
                           <option key={mascota.id} value={mascota.id}>
                             {mascota.nombre}
@@ -266,7 +246,6 @@ const Detalle = () => {
                     </select>
                   </form>
 
-                  {/* Botón para mostrar el input de nueva mascota */}
                   {!mostrarInputNuevaMascota && (
                     <button
                       onClick={() => setMostrarInputNuevaMascota(true)}
@@ -276,10 +255,10 @@ const Detalle = () => {
                     </button>
                   )}
 
-                  {/* Input para agregar una nueva mascota (solo se muestra si mostrarInputNuevaMascota es true) */}
                   {mostrarInputNuevaMascota && (
-                    <form  onSubmit={(e) => e.preventDefault()}>
-                      <input className="mascota_nueva"
+                    <form onSubmit={(e) => e.preventDefault()}>
+                      <input
+                        className="mascota_nueva"
                         type="text"
                         placeholder="Nombre de la mascota"
                         value={nuevaMascotaNombre}
@@ -290,22 +269,15 @@ const Detalle = () => {
                       </button>
                       <button
                         onClick={() => setMostrarInputNuevaMascota(false)}
-                        className="reserve-button"
+                        className="cancel-button"
                       >
-                        X
+                        Cancelar
                       </button>
                     </form>
                   )}
 
-                  {/* Botones para confirmar o cancelar la reserva */}
-                  <button onClick={confirmarReserva} className="reserve-button">
+                  <button onClick={confirmarReserva} className="confirm-button">
                     Confirmar reserva
-                  </button>
-                  <button
-                    onClick={() => setMostrarCalendario(false)}
-                    className="reserve-button"
-                  >
-                    Cancelar
                   </button>
                 </div>
               </div>

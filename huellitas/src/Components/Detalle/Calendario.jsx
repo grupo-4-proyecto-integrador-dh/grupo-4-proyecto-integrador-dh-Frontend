@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../../Styles/Detalle/Calendario.scss"; // Archivo CSS para estilos personalizados
+import PropTypes from 'prop-types';
 
 const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
   const [fechas, setFechas] = useState([null, null]); // [fechaInicio, fechaFin]
@@ -91,6 +92,13 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
       
     </div>
   );
+  // eslint-disable-next-line no-unreachable
+  Calendario.propTypes = {
+    mensaje: PropTypes.string,
+    onChange: PropTypes.func,
+    fechasReservadas: PropTypes.arrayOf(PropTypes.string),
+  };
+  
 };
 
 export default Calendario;
