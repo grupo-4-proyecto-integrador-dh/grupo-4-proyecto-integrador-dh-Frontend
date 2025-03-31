@@ -19,8 +19,8 @@ function GaleriaModal({ show, alt, setShow, foto = [] }) {
         </div>
 
         <div className="grid_layout_modal">
-          {foto.map((foto, index) => (
-            <Foto key={index} imagen={foto.urlImagen} tipoFoto="imagen_modal" alt={alt}/>
+          {foto.map((url, index) => (
+            <Foto key={index} imagen={url} tipoFoto="imagen_modal" alt={alt}/>
           ))}
         </div>
       </div>

@@ -17,7 +17,7 @@ const Home = () => {
     const fetchAlojamientos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("https://insightful-patience-production.up.railway.app/alojamientos");
+        const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
         setAlojamientos(response.data);
       } catch (error) {
         console.error("Error al cargar los alojamientos:", error);
@@ -31,25 +31,30 @@ const Home = () => {
 
   useEffect(() => {
     let filtered = alojamientos;
-
-
+  
     if (searchQuery) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
-
+  
     if (selectedCategory) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.categoria.id === selectedCategory.id
       );
     }
-
-    setFilteredAlojamientos(filtered);
+  
+    // 🚀 Evitar actualizaciones innecesarias
+    setFilteredAlojamientos((prevFiltered) => {
+      if (JSON.stringify(prevFiltered) !== JSON.stringify(filtered)) {
+        return filtered;
+      }
+      return prevFiltered;
+    });
+  
     console.log("Alojamientos filtrados", filtered.length);
   }, [searchQuery, selectedCategory, alojamientos]);
-
+  
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
@@ -67,6 +72,7 @@ const Home = () => {
       <ApartadoBusqueda
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        alojamientos={alojamientos}
       />
       <CategoriasAlojamientos
         onCategoryClick={handleCategoryClick}

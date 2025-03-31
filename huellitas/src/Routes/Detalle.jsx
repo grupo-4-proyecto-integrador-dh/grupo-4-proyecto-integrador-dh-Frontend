@@ -1,9 +1,9 @@
 import axios from "axios";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css"; 
+import { useNavigate, useParams, useLocation} from "react-router-dom";
+import {React, useEffect, useState } from "react";
+import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
+import Swal from "sweetalert2";
 import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
 import CalendarioReserva from "./CalendarioReserva"; 
@@ -16,6 +16,7 @@ const Detalle = () => {
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState([null, null]);
   const [mascotas, setMascotas] = useState([]);
+  const [isLogin, setIsLogin] = useState(false);
   const [userID, setUserID] = useState(null);
   const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -33,12 +34,13 @@ const Detalle = () => {
 
     if (token) {
       setToken(token);
+      setIsLogin(true)
     }
 
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setUserID(4); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
+        setUserID(userData.id); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
       } catch (error) {
         console.error("Error al parsear el usuario:", error);
       }
@@ -51,7 +53,7 @@ const Detalle = () => {
       const obtenerMascotas = async () => {
         try {
           setCargando(true);
-          const response = await axios.get(`${url_base}/clientes/4`, {
+          const response = await axios.get(`${url_base}/clientes/${userID}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -82,28 +84,133 @@ const Detalle = () => {
     }
   }, [id, location.state]);
 
-  const handleReservarClick = () => {
-    setMostrarCalendario(true); 
+  // Obtener las reservas del alojamiento
+  useEffect(() => {
+    if (alojamiento) {
+      axios
+        .get(`${url_base}/alojamientos/${id}`)
+        .then((response) => {
+          console.log("Respuesta del backend:", response.data); // Inspecciona la respuesta
+  
+          // Verifica si response.data.reservas es un array
+          if (response.data.reservas && Array.isArray(response.data.reservas)) {
+            const fechasReservadas = response.data.reservas.map((reserva) => ({
+              fechaInicio: new Date(reserva.fechaDesde),
+              fechaFin: new Date(reserva.fechaHasta),
+            }));
+            setFechasReservadas(fechasReservadas);
+          } else {
+            console.warn("No hay reservas para este alojamiento.");
+            setFechasReservadas([]); // Inicializa con un array vacío
+          }
+        })
+        .catch((error) => console.error("Error al obtener las reservas:", error));
+    }
+  }, [alojamiento, id]);
+
+  const handleReserveClick = () => {
+    if (!isLogin) {
+      Swal.fire({
+        title: '¿Quién está ahí?',
+        text: 'Para poder realizar reservas, debes iniciar sesión con tu usuario.',
+        icon: 'question',
+        confirmButtonText: 'Iniciar sesión',
+        showCancelButton: true,
+        cancelButtonText: 'Por ahora no',
+        preConfirm: () => {
+          // Redirigir al login
+          navigate('/login?from=reservation', { state: { from: location } });  // Usar navigate para redirigir
+        }
+      });
+    } else {
+      setMostrarCalendario(true);
+    }
   };
 
+  // Función para agregar una nueva mascota
+  const agregarMascota = async () => {
+    if (nuevaMascotaNombre.trim() === "") {
+      alert("Por favor, ingresa un nombre para la mascota.");
+      return;
+    }
+
+    try {
+      setCargando(true);
+
+      // Agregar la nueva mascota
+      await axios.post(
+        `${url_base}/mascotas`,
+        {
+          nombre: nuevaMascotaNombre,
+          clienteId: userID,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Obtener la lista actualizada de mascotas desde el servidor
+      const response = await axios.get(`${url_base}/clientes/${userID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Actualizar el estado local con las mascotas actualizadas
+      setMascotas(response.data.mascotas);
+      setNuevaMascotaNombre(""); // Limpiar el input
+      setMostrarInputNuevaMascota(false); // Ocultar el input después de agregar la mascota
+    } catch (error) {
+      console.error("Error al agregar la mascota:", error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  // Confirmar la reserva
   const confirmarReserva = () => {
     if (!fechaSeleccionada) {
       alert("Por favor, selecciona una fecha antes de confirmar la reserva.");
       return;
     }
 
-    axios.post("https://insightful-patience-production.up.railway.app/reservas", {
-      alojamientoId: id,
-      fecha: fechaSeleccionada.toISOString().split("T")[0], 
-    })
-    .then(() => {
-      alert(`¡Reserva confirmada para el ${fechaSeleccionada.toDateString()}!`);
-      setMostrarCalendario(false);
-    })
-    .catch(error => {
-      console.error("Error al realizar la reserva:", error);
-      alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
-    });
+    // Verifica que las fechas sean válidas
+    if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+      alert("Las fechas seleccionadas no son válidas.");
+      return;
+    }
+
+    // Formatea las fechas
+    const fechaDesdeFormateada = fechaInicio.toISOString().split("T")[0];
+    const fechaHastaFormateada = fechaFin.toISOString().split("T")[0];
+
+    // Envía la solicitud al backend
+    axios
+      .post(
+        `${url_base}/reservas`,
+        {
+          alojamientoId: id,
+          fechaDesde: fechaDesdeFormateada,
+          fechaHasta: fechaHastaFormateada,
+          mascotaId: mascotaSeleccionada,
+          clienteId: userID,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => {
+        alert(`¡Reserva confirmada del ${fechaInicio.toLocaleDateString("es-ES")} al ${fechaFin.toLocaleDateString("es-ES")}!`);
+        setMostrarCalendario(false);
+      })
+      .catch((error) => {
+        console.error("Error al realizar la reserva:", error);
+        alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
+      });
   };
 
   if (!alojamiento) {
@@ -128,7 +235,7 @@ const Detalle = () => {
             </div>
 
             {!mostrarCalendario && (
-              <button className="reserve-button" onClick={() => setMostrarCalendario(true)}>
+              <button className="reserve-button" onClick={handleReserveClick}>
                 Reservar ahora
               </button>
             )}

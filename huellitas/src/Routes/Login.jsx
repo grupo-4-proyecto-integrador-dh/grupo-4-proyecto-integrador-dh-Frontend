@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../Styles/Login.css";
 import axios from "axios";
 import { useAuth } from "../Context/Auth.Context";
@@ -18,6 +18,29 @@ const Login = () => {
     const navigate = useNavigate();
     const { dispatch } = useAuth();
     const [inicioExitoso, setInicioExitoso] = useState("")
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const fromReservation = queryParams.get('from') === 'reservation';
+    const from = location.state?.from?.pathname || '/'
+
+
+    const handleRedirect = () => {
+        navigate('/registro?from=reservation'); // Redirige a la página de registro
+      };
+
+    const handleLogin = () => {
+        // Lógica de inicio de sesión
+        // Si el inicio de sesión es exitoso, redirige al usuario a la página anterior
+        navigate(from, { replace: true });
+    };  
+
+
+    useEffect(() => {
+        if (fromReservation) {
+          console.log('Redirigido desde la reserva');
+        }
+      }, [fromReservation]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,8 +89,12 @@ const Login = () => {
                         localStorage.setItem("rol", rol);
                         if (rol === "ADMIN") {
                             navigate("/administracion");
-                        } else {
-                            navigate("/");
+                        } else{
+                            if (fromReservation) {
+                                navigate(from, { replace: true }); // Redirigir a la página de reserva original
+                            } else {
+                                navigate("/"); // Redirigir al home si no venía de una reserva
+                            }
                         }
                     })
                     .catch((rolError) => {
@@ -85,7 +112,20 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            
             <div className="login-box">
+                {fromReservation && (
+                    <div className="alert alert-success" role="alert">
+                            <p>
+                             Es obligatorio el inicio de sesíon para poder reservar, si aun no tienes cuenta puedes registrarte {' '}
+                              <span 
+                                onClick={handleRedirect} 
+                                style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+                                    aquí.
+                              </span>
+                            </p>
+                    </div>
+                )}
                 <h2>Iniciar Sesión</h2>
 
                 {error && (
