@@ -1,4 +1,93 @@
-.crear-cuenta-button {
+
+.registro-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: auto;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    z-index: 1000;
+    padding:0 0 50px;
+    
+  }
+  
+  
+  .registro-card {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+    border: 2px solid #e76f51;
+  }
+  
+
+  .registro-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+
+  .registro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+  
+ 
+  .input {
+    width: 100%;
+    padding: 10px;
+    background-color: hsl(36, 51%, 84%);
+    border: 1px solid #e76f51;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
+  
+    &:focus {
+      background-color: hsl(36, 100%, 85%);
+      border-color: hsl(11, 87%, 65%);
+     outline: none;
+    }
+  }
+  
+ 
+  .input-error {
+    border: 1px solid red;
+  }
+  
+  .error-text {
+    color: red;
+    font-size: 12px;
+    margin-top: -8px;
+    margin-bottom: 8px;
+  }
+  
+
+  .registro-button {
+    background-color: #e76f51;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+  
+    &:hover {
+      background-color: #e76f51;
+    }
+  }
+  
+
+  .crear-cuenta-button {
 
   background-color: #e76f51;
   color: #e76f51;

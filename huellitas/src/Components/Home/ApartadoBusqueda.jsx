@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,13 +9,13 @@ import { useNavigate } from "react-router-dom";
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
-  const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // Filtrar sugerencias usando useMemo para optimizar el cálculo
+  const sugerencias = useMemo(() => {
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>
@@ -120,3 +120,4 @@ ApartadoBusqueda.propTypes = {
 };
 
 export default ApartadoBusqueda;
+

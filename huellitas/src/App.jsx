@@ -7,6 +7,7 @@ import NotFoundPage from "./Components/NotFoundPage";
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
 import ProtectedRoute from "./Routes/ProtectedRoute";
+import RegistroReserva from "./Routes/RegistroReserva";
 import "./Styles/index.css";
 
 
@@ -23,6 +24,7 @@ function App() {
                     </Route>
                     <Route path="/alojamiento/:id" element={<Detalle />} />
                     <Route path="*" element={<NotFoundPage />} />
+                    <Route path="/registro-reserva" element={<RegistroReserva />} />
                 </Route>
             </Routes>
         </>
