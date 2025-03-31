@@ -72,6 +72,7 @@ const Home = () => {
       <ApartadoBusqueda
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        alojamientos={alojamientos}
       />
       <CategoriasAlojamientos
         onCategoryClick={handleCategoryClick}

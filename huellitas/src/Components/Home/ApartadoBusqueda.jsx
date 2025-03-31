@@ -12,10 +12,11 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
+  const [sugerencias, setSugerencias] = useState([]);
   const navigate = useNavigate();
 
   // Filtrar sugerencias usando useMemo para optimizar el cálculo
-  const sugerencias = useMemo(() => {
+  const sugerenciasMemo = useMemo(() => {
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>
