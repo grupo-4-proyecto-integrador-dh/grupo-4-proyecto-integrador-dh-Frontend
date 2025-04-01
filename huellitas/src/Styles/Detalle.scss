@@ -1,12 +1,14 @@
 @use "colors";
 @use "sass:color";
-
+.reserva-container {
+  color: colors.$black;
+}
 .back-button {
   position: fixed;
   top: 90px;
   right: 20px;
   background: #e76f51;
-  color: white;
+  color: colors.$white;
   font-size: 16px;
   padding: 12px 16px;
   border: none;
@@ -38,7 +40,7 @@
   }
 
   .hospedaje-premium,
-  .service-container{
+  .service-container {
     text-align: left;
   }
 
@@ -57,7 +59,7 @@
 
   .reserve-button {
     background-color: #ffd166;
-    color: #6d4c41;
+    color: colors.$black;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
@@ -134,7 +136,7 @@
       max-width: 80%;
     }
 
-     .reserve-button {
+    .reserve-button {
       width: 60%;
       font-size: 16px;
       padding: 12px 18px;
@@ -162,7 +164,6 @@
       gap: 20px;
     }
 
-
     .reserve-button {
       width: 80%;
       font-size: 16px;
@@ -188,114 +189,107 @@
 
     /* Ocupa una fecha en rojo */
 
+    /* Fechas disponibles en verde */
+    .disponible {
+      background-color: #ccffcc !important; /* Verde claro */
+      color: green !important;
+      font-weight: bold;
+    }
 
-/* Fechas disponibles en verde */
-.disponible {
-  background-color: #ccffcc !important; /* Verde claro */
-  color: green !important;
-  font-weight: bold;
-}
+    /* Contenedor del calendario */
+    .calendario-disponibilidad {
+      display: grid;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(auto auto auto, 1fr);
+      gap: 8px;
+      .calendario-titulo {
+        grid-column: span 2 / span 2;
+        height: fit-content;
+      }
+    }
+    .contenedor-calendario {
+      text-align: center;
+    }
 
-/* Contenedor del calendario */
-.calendario-disponibilidad{
-  display: grid;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(auto auto auto, 1fr);
-  gap: 8px;
-  .calendario-titulo{
-    grid-column: span 2 / span 2;
-    height: fit-content;
-  }  
-}
-.contenedor-calendario {
-  text-align: center;
-}
-
-
-.calendario-wrapper{
-  border: 2px solid colors.$primary;
-  border-radius: 20px;
-  padding: 10px;
-
-
-  .formulario-mascota-reserva{
-    margin: 10px;
-    width: 600px;
-  }
-
-  .mascota_nueva{
-      width: 100%;
-      padding: .375rem 2.25rem .375rem .75rem;
-      font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.5;
-      color: var(--bs-body-color);
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background-color: var(--bs-body-bg);
-      background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
-      background-repeat: no-repeat;
-      background-position: right .75rem center;
-      background-size: 16px 12px;
+    .calendario-wrapper {
       border: 2px solid colors.$primary;
-      border-radius: var(--bs-border-radius);
-      transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      border-radius: 20px;
+      padding: 10px;
+
+      .formulario-mascota-reserva {
+        margin: 10px;
+        width: 600px;
+      }
+
+      .mascota_nueva {
+        width: 100%;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img),
+          var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        border: 2px solid colors.$primary;
+        border-radius: var(--bs-border-radius);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        margin-top: 10px;
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-image: var(--bs-form-select-bg-img),
+          var(--bs-form-select-bg-icon, none);
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        border: 2px solid colors.$primary;
+        border-radius: var(--bs-border-radius);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        margin-top: 10px;
+      }
+      .fechas_elegidas {
+        font-size: clamp(8px, 1.5vw, 20px);
+        font-weight: 630;
+        margin: 10px;
+        gap: 10px;
+
+        span {
+          border: 2px solid colors.$primary;
+          border-radius: 5px;
+          padding: 5px;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    /* Botones */
+    .botones {
       margin-top: 10px;
-  }
-  
-  .form-select{
-  width: 100%;
-  padding: .375rem 2.25rem .375rem .75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--bs-body-color);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: var(--bs-body-bg);
-  background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
-  background-repeat: no-repeat;
-  background-position: right .75rem center;
-  background-size: 16px 12px;
-  border: 2px solid colors.$primary;
-  border-radius: var(--bs-border-radius);
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  margin-top: 10px;
-  }
-  .fechas_elegidas{
-    font-size: clamp(8px, 1.5vw, 20px);
-    font-weight: 630;
-    margin: 10px;
-    gap: 10px;
+    }
 
-    span{
-      border: 2px solid colors.$primary;
-      border-radius: 5px;
-      padding: 5px;
-      margin-right: 5px;
+    button {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
     }
   }
-
-
-}
-
-
-
-
-
-/* Botones */
-.botones {
-  margin-top: 10px;
-}
-
-button {
-  margin: 5px;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-}
-}
 }
