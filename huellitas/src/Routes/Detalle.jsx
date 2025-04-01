@@ -1,8 +1,7 @@
 
 
-import axios from "axios";
+import axios from "axios"; 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-
 import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
@@ -186,8 +185,7 @@ const Detalle = () => {
         }
       )
       .then(() => {
-        alert(`¡Reserva confirmada del ${fechaInicio.toLocaleDateString("es-ES")} al ${fechaFin.toLocaleDateString("es-ES")}!`);
-        setMostrarCalendario(false);
+        navigate("/reserva");
       })
       .catch((error) => {
         console.error("Error al realizar la reserva:", error);

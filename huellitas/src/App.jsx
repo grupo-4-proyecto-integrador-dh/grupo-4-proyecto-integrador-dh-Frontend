@@ -7,7 +7,9 @@ import NotFoundPage from "./Components/NotFoundPage";
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
 import ProtectedRoute from "./Routes/ProtectedRoute";
+import ReservaPage from "./Routes/ReservaPage";
 import "./Styles/index.css";
+
 
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
                         <Route index element={<PanelAdmin />} />
                     </Route>
                     <Route path="/alojamiento/:id" element={<Detalle />} />
+                    <Route path="/reserva" element={<ReservaPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Route>
             </Routes>

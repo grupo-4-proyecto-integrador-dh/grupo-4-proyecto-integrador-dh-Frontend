@@ -1,0 +1,121 @@
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  border: 0.7px solid #e76f51;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-content {
+  margin-bottom: 15px;
+  
+}
+
+.imagenes-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  gap: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.imagenes-container img {
+  width: 20%;
+  max-width: 120px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.imagenes-container img:hover {
+  transform: scale(1.05);
+}
+
+.submit-button{
+  flex-shrink: 0;
+  padding: 10px 15px;
+  background-color: #e76f51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s; 
+}
+
+.submit-button:hover {
+  background-color: white;
+  color: #e76f51;
+  border: 1px solid #e76f51;
+}
+/*por si deseo cambiar el color de fondo del checkbox*/
+/* 
+input[type="checkbox"] {
+  display: none;
+}
+
+
+input[type="checkbox"] + label {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+}
+
+
+input[type="checkbox"] + label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: #e74c3c; 
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+
+input[type="checkbox"]:checked + label::before {
+  background-color: #27ae60; 
+  content: "✔";
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
