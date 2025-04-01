@@ -214,6 +214,11 @@
 
 
 .calendario-wrapper{
+  border: 2px solid colors.$primary;
+  border-radius: 20px;
+  padding: 10px;
+
+
   .formulario-mascota-reserva{
     margin: 10px;
     width: 600px;
@@ -234,11 +239,47 @@
       background-repeat: no-repeat;
       background-position: right .75rem center;
       background-size: 16px 12px;
-      border: var(--bs-border-width) solid var(--bs-border-color);
+      border: 2px solid colors.$primary;
       border-radius: var(--bs-border-radius);
       transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
       margin-top: 10px;
-}
+  }
+  
+  .form-select{
+  width: 100%;
+  padding: .375rem 2.25rem .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg-icon, none);
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 16px 12px;
+  border: 2px solid colors.$primary;
+  border-radius: var(--bs-border-radius);
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  margin-top: 10px;
+  }
+  .fechas_elegidas{
+    font-size: clamp(8px, 1.5vw, 20px);
+    font-weight: 630;
+    margin: 10px;
+    gap: 10px;
+
+    span{
+      border: 2px solid colors.$primary;
+      border-radius: 5px;
+      padding: 5px;
+      margin-right: 5px;
+    }
+  }
+
+
 }
 
 

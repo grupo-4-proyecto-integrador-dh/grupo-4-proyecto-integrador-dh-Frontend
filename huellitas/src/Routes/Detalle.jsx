@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Calendario from "../Components/Detalle/Calendario";
@@ -8,6 +8,8 @@ import Galeria from "../Components/Detalle/Galeria";
 
 const Detalle = () => {
   const location = useLocation();
+  const { alojamientoId, fechaDesde, fechaHasta, mascotaId, usuario } =
+    location.state || {};
   const navigate = useNavigate();
   const { id } = useParams();
   const [alojamiento, setAlojamiento] = useState(null);
@@ -149,56 +151,114 @@ const Detalle = () => {
     }
   };
 
+  const handleFechaSeleccionada = (fechas) => {
+    if (!fechas || fechas.length < 2) return;
+
+    const [fechaInicio, fechaFin] = fechas;
+
+    // Convertir las fechas reservadas a timestamps para comparar fácilmente
+    const fechasReservadasTimestamps = fechasReservadas.flatMap(
+      ({ fechaInicio, fechaFin }) => {
+        const rango = [];
+        let actual = new Date(fechaInicio);
+        const final = new Date(fechaFin);
+
+        while (actual <= final) {
+          rango.push(actual.getTime()); // Guardamos cada día como timestamp
+          actual.setDate(actual.getDate() + 1);
+        }
+        return rango;
+      }
+    );
+
+    // Verificar si alguna fecha en el rango seleccionado está reservada
+    let actual = new Date(fechaInicio);
+    let invalida = false;
+
+    while (actual <= fechaFin) {
+      if (fechasReservadasTimestamps.includes(actual.getTime())) {
+        invalida = true;
+        break;
+      }
+      actual.setDate(actual.getDate() + 1);
+    }
+
+    if (invalida) {
+      Swal.fire({
+        title: "Rango no disponible",
+        text: "El rango seleccionado incluye fechas reservadas. Por favor, elige otro período.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+      });
+    } else {
+      setFechasSeleccionadas(fechas);
+    }
+  };
+
   // Confirmar la reserva
-  const confirmarReserva = () => {
+  const finalizarReserva = () => {
     const [fechaInicio, fechaFin] = fechasSeleccionadas;
 
-    if (!fechaInicio || !fechaFin || !mascotaSeleccionada) {
-      alert(
-        "Por favor, selecciona las fechas y una mascota antes de confirmar la reserva."
-      );
+    if (!fechaInicio && !fechaFin && !mascotaSeleccionada) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor, selecciona las fechas y una mascota antes de confirmar la reserva.",
+        icon: "error",
+      });
       return;
     }
 
-    // Verifica que las fechas sean válidas
-    if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
-      alert("Las fechas seleccionadas no son válidas.");
+    if (!mascotaSeleccionada) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor, selecciona una mascota antes de confirmar la reserva.",
+        icon: "error",
+      });
       return;
     }
 
-    // Formatea las fechas
+    if (!fechaInicio || !fechaFin) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor, selecciona las fechas de inicio y fin de estadia antes de confirmar la reserva.",
+        icon: "error",
+      });
+      return;
+    }
+
+    // ✅ Convertir fechas reservadas a rangos de tiempo
+    const hayConflicto = fechasReservadas.some(
+      ({ fechaInicio: inicioReservada, fechaFin: finReservada }) => {
+        return (
+          (fechaInicio >= inicioReservada && fechaInicio <= finReservada) || // Si el inicio está dentro de un rango reservado
+          (fechaFin >= inicioReservada && fechaFin <= finReservada) || // Si el fin está dentro de un rango reservado
+          (fechaInicio <= inicioReservada && fechaFin >= finReservada) // Si el rango cubre toda la reserva
+        );
+      }
+    );
+
+    if (hayConflicto) {
+      Swal.fire({
+        title: "Error",
+        text: "El rango de fechas seleccionado incluye una fecha ya reservada. Por favor, elige otro rango.",
+        icon: "error",
+      });
+      return;
+    }
+
+    // ✅ Formatear fechas antes de enviarlas
     const fechaDesdeFormateada = fechaInicio.toISOString().split("T")[0];
     const fechaHastaFormateada = fechaFin.toISOString().split("T")[0];
 
-    // Envía la solicitud al backend
-    axios
-      .post(
-        `${url_base}/reservas`,
-        {
-          alojamientoId: id,
-          fechaDesde: fechaDesdeFormateada,
-          fechaHasta: fechaHastaFormateada,
-          mascotaId: mascotaSeleccionada,
-          clienteId: 4,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => {
-        alert(
-          `¡Reserva confirmada del ${fechaInicio.toLocaleDateString(
-            "es-ES"
-          )} al ${fechaFin.toLocaleDateString("es-ES")}!`
-        );
-        setMostrarCalendario(false);
-      })
-      .catch((error) => {
-        console.error("Error al realizar la reserva:", error);
-        alert("Hubo un problema al realizar la reserva. Intenta de nuevo.");
-      });
+    navigate("/registro-reserva", {
+      state: {
+        alojamientoId: id,
+        fechaDesde: fechaDesdeFormateada,
+        fechaHasta: fechaHastaFormateada,
+        mascotaId: mascotaSeleccionada,
+        usuario: userID,
+      },
+    });
   };
 
   if (!alojamiento) {
@@ -217,9 +277,9 @@ const Detalle = () => {
             <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
             <Galeria imagenes={alojamiento.imagenes} />
             <div className="servicio-detalle">
-              <h4>Descripción:</h4>
+              <h3>Descripción:</h3>
               <p>{alojamiento.descripcion}</p>
-              <p>{alojamiento.precio}</p>
+              <h3>{`$ ${alojamiento.precio}`}</h3>
             </div>
 
             {!mostrarCalendario && (
@@ -235,9 +295,18 @@ const Detalle = () => {
               <div className="calendario-wrapper">
                 <Calendario
                   mensaje="Elige fechas de estadía"
-                  onChange={(fechas) => setFechasSeleccionadas(fechas)}
+                  onChange={handleFechaSeleccionada}
                   fechasReservadas={fechasReservadas} // Pasa las fechas reservadas
                 />
+                <div className="fechas_elegidas">
+                  <p>Fechas elegidas</p>
+                  <span>
+                    Inicio: {fechasSeleccionadas[0]?.toLocaleDateString()}
+                  </span>
+                  <span>
+                    Final: {fechasSeleccionadas[1]?.toLocaleDateString()}
+                  </span>
+                </div>
                 <div className="formulario-mascota-reserva">
                   {/* Lista de mascotas existentes */}
                   <form>
@@ -251,7 +320,7 @@ const Detalle = () => {
                       {mascotas &&
                         Array.isArray(mascotas) &&
                         mascotas
-                          .filter((mascota) => mascota != null) // Filtra elementos null o undefined
+                          .filter((mascota) => mascota != null)
                           .map((mascota) => (
                             <option key={mascota.id} value={mascota.id}>
                               {mascota.nombre}
@@ -259,8 +328,6 @@ const Detalle = () => {
                           ))}
                     </select>
                   </form>
-
-                  {/* Botón para mostrar el input de nueva mascota */}
                   {!mostrarInputNuevaMascota && (
                     <button
                       onClick={() => setMostrarInputNuevaMascota(true)}
@@ -296,8 +363,8 @@ const Detalle = () => {
                   )}
 
                   {/* Botones para confirmar o cancelar la reserva */}
-                  <button onClick={confirmarReserva} className="reserve-button">
-                    Confirmar reserva
+                  <button onClick={finalizarReserva} className="reserve-button">
+                    Finalizar reserva
                   </button>
                   <button
                     onClick={() => setMostrarCalendario(false)}

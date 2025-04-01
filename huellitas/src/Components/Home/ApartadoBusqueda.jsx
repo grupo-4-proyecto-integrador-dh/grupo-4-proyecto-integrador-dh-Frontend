@@ -6,16 +6,22 @@ import "../../Styles/ApartadoBusqueda.css";
 import { FaPaw } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) => {
+const ApartadoBusqueda = ({
+  searchQuery,
+  setSearchQuery,
+  alojamientos = [],
+}) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
   const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
+  const [sugerencias, setSugerencias] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // Filtrar sugerencias usando useMemo para optimizar el cálculo
+  const sugerenciasMemo = useMemo(() => {
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>
@@ -24,11 +30,11 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
         : [];
       setSugerencias(nuevasSugerencias);
       setMostrarSugerencias(nuevasSugerencias.length > 0);
-      setShowEmptySearchMessage(false); 
+      setShowEmptySearchMessage(false);
     } else {
       setSugerencias([]);
       setMostrarSugerencias(false);
-      setShowEmptySearchMessage(false); 
+      setShowEmptySearchMessage(false);
     }
   }, [searchQuery, alojamientos]);
 
@@ -40,12 +46,11 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
 
   const handleSearch = () => {
     if (searchQuery.trim() === "") {
-      setShowEmptySearchMessage(true); 
+      setShowEmptySearchMessage(true);
     } else if (selectedSuggestion) {
       navigate(`/alojamiento/${selectedSuggestion.id}`);
     } else {
-      // Realizar una búsqueda 
-      
+      // Realizar una búsqueda
     }
   };
 
@@ -75,12 +80,14 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
           </ul>
         )}
         {showEmptySearchMessage && (
-          <div className="empty-search-message">Por favor, ingrese un alojamiento a buscar.</div>
+          <div className="empty-search-message">
+            Por favor, ingrese un alojamiento a buscar.
+          </div>
         )}
       </div>
 
       <div className="busqueda-fechas">
-      <DatePicker
+        <DatePicker
           selected={fechaInicio}
           onChange={(date) => setFechaInicio(date)}
           selectsStart
