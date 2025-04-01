@@ -73,47 +73,6 @@
   color: #e76f51;
   border: 1px solid #e76f51;
 }
-/*por si deseo cambiar el color de fondo del checkbox*/
-/* 
-input[type="checkbox"] {
-  display: none;
-}
-
-
-input[type="checkbox"] + label {
-  position: relative;
-  padding-left: 30px;
-  cursor: pointer;
-  font-size: 16px;
-  color: #333;
-}
-
-
-input[type="checkbox"] + label::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 2px;
-  width: 20px;
-  height: 20px;
-  background-color: #e74c3c; 
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-
-input[type="checkbox"]:checked + label::before {
-  background-color: #27ae60; 
-  content: "✔";
-  color: white;
-  text-align: center;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: bold;
-}
-
-
-
 
 
 
