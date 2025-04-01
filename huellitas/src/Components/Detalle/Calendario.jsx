@@ -19,8 +19,10 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
       setFechaTemporal(fechaSeleccionada);
     } else if (!fechas[1]) {
       // Si hay fecha de inicio pero no de fin, establecemos la fecha de fin
-      const nuevaFechaInicio = fechaSeleccionada < fechas[0] ? fechaSeleccionada : fechas[0];
-      const nuevaFechaFin = fechaSeleccionada < fechas[0] ? fechas[0] : fechaSeleccionada;
+      const nuevaFechaInicio =
+        fechaSeleccionada < fechas[0] ? fechaSeleccionada : fechas[0];
+      const nuevaFechaFin =
+        fechaSeleccionada < fechas[0] ? fechas[0] : fechaSeleccionada;
       setFechas([nuevaFechaInicio, nuevaFechaFin]);
       onChange([nuevaFechaInicio, nuevaFechaFin]);
       setFechaTemporal(null); // Reiniciamos la fecha temporal
@@ -62,7 +64,10 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
   return (
     <div className="calendario-disponibilidad">
       <h3 className="calendario-titulo">{mensaje}</h3>
-      <div className="calendario-disponibilidad-a" style={{ display: "flex", gap: "20px" }}>
+      <div
+        className="calendario-disponibilidad-a"
+        style={{ display: "flex", gap: "20px" }}
+      >
         <div>
           <Calendar
             onChange={handleDateChange}
@@ -72,7 +77,7 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
             tileClassName={tileClassName} // Aplicar estilos personalizados
             minDate={hoy} // Restringir fechas anteriores a hoy
             defaultActiveStartDate={mesActual}
-            showFixedNumberOfWeeks 
+            showFixedNumberOfWeeks
           />
         </div>
         <div>
@@ -88,7 +93,6 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
           />
         </div>
       </div>
-      
     </div>
   );
 };
