@@ -26,16 +26,18 @@
       margin: 0;
     }
     .clear-filter-btn {
-      background-color: #e74c3c;
+      background-color: colors.$primary;
       color: white;
-      border: none;
+      border: 1px solid transparent;
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #c0392b;
+        background-color: white;
+        color: #e76f51;
+        border: 1px solid #e76f51;
       }
     }
   }
@@ -141,11 +143,14 @@
 
   .prev-btn,
   .next-btn {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: colors.$primary;
     color: white;
     border: none;
+    aspect-ratio: 1 / 1;
+    height: 55px;
+    border-radius: 50%;
     padding: 10px 15px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     cursor: pointer;
     position: absolute;
     top: 50%;
@@ -153,8 +158,16 @@
     z-index: 10;
     transition: background 0.3s ease;
 
+    p {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+    }
+
     &:hover {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: color.mix(colors.$primary, colors.$white, 50%);
     }
 
     &:disabled {

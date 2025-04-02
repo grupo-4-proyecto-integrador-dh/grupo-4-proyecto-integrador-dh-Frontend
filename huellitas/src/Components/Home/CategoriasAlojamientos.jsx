@@ -96,7 +96,7 @@ const CategoriasAlojamientos = ({
 
       <div className="carousel-container">
         <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>
-          ‹
+          <p>‹</p>
         </button>
 
         <div className="carousel-slider" ref={sliderRef}>
@@ -123,7 +123,7 @@ const CategoriasAlojamientos = ({
           onClick={nextSlide}
           disabled={index >= categorias.length - itemsPerPage}
         >
-          ›
+          <p>›</p>
         </button>
       </div>
     </section>
