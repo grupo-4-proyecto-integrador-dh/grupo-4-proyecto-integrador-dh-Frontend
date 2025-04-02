@@ -90,7 +90,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
   };
 
   if (loading) {
-    return <p>Cargando recomendaciones...</p>;
+    return <p className="loading-message">Cargando recomendaciones...</p>;
   }
 
   if (error) {

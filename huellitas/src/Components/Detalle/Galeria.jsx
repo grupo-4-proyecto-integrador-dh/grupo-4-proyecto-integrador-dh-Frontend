@@ -67,7 +67,7 @@ function Galeria() {
           )}
         </>
       ) : (
-        <p className="loading-message">Cargando imágenes</p>
+        <p className="loading-message">Cargando imágenes...</p>
       )}
     </div>
   );

@@ -17,7 +17,9 @@ const Home = () => {
     const fetchAlojamientos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
+        );
         setAlojamientos(response.data);
       } catch (error) {
         console.error("Error al cargar los alojamientos:", error);
@@ -31,19 +33,19 @@ const Home = () => {
 
   useEffect(() => {
     let filtered = alojamientos;
-  
+
     if (searchQuery) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-  
+
     if (selectedCategory) {
-      filtered = filtered.filter((alojamiento) =>
-        alojamiento.categoria.id === selectedCategory.id
+      filtered = filtered.filter(
+        (alojamiento) => alojamiento.categoria.id === selectedCategory.id
       );
     }
-  
+
     // 🚀 Evitar actualizaciones innecesarias
     setFilteredAlojamientos((prevFiltered) => {
       if (JSON.stringify(prevFiltered) !== JSON.stringify(filtered)) {
@@ -51,10 +53,10 @@ const Home = () => {
       }
       return prevFiltered;
     });
-  
+
     console.log("Alojamientos filtrados", filtered.length);
   }, [searchQuery, selectedCategory, alojamientos]);
-  
+
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
@@ -64,7 +66,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return <p>Cargando alojamientos...</p>;
+    return <p className="loading-message">Cargando alojamientos...</p>;
   }
 
   return (

@@ -262,7 +262,7 @@ const Detalle = () => {
   };
 
   if (!alojamiento) {
-    return <div>Cargando...</div>;
+    return <div className="loading-message">Cargando...</div>;
   }
 
   return (
