@@ -1,0 +1,156 @@
+$primary-color: #e76f51;
+$secondary-color: #2a9d8f;
+$light-color: #f8f9fa;
+$dark-color: #343a40;
+$gray-color: #6c757d;
+$border-color: #dee2e6;
+$input-bg: #f9f9f9;
+$error-color: #dc3545;
+$primary-color-dark: #d65a3d;
+$light-color-dark: #e9ecef;
+
+.registro-mascota-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .registro-mascota-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      color: $primary-color;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $gray-color;
+      font-size: 1.1rem;
+    }
+  }
+
+  .registro-mascota-form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+
+    .registro-mascota-form {
+      .form-group {
+        margin-bottom: 1.5rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+          color: $dark-color;
+        }
+
+        input,
+        select,
+        textarea {
+          width: 100%;
+          padding: 0.8rem 1rem;
+          border: 1px solid $border-color;
+          border-radius: 4px;
+          background-color: $input-bg;
+          font-size: 1rem;
+          transition: border-color 0.3s, box-shadow 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: $secondary-color;
+            box-shadow: 0 0 0 3px rgba($secondary-color, 0.25);
+          }
+
+          &::placeholder {
+            color: lighten($gray-color, 20%);
+          }
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 100px;
+        }
+      }
+
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .form-group {
+          flex: 1;
+        }
+      }
+
+      .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+
+        button {
+          padding: 0.8rem 1.5rem;
+          border-radius: 4px;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
+        }
+
+        .cancel-btn {
+          background-color: white;
+          color: $gray-color;
+          border: 1px solid $border-color;
+
+          &:hover:not(:disabled) {
+            background-color: $light-color-dark;
+          }
+        }
+
+        .submit-btn {
+          background-color: $primary-color;
+          color: white;
+          border: none;
+
+          &:hover:not(:disabled) {
+            background-color: $primary-color-dark;
+          }
+        }
+
+        @media (max-width: 576px) {
+          flex-direction: column-reverse;
+          gap: 1rem;
+          
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+.invalid-field {
+  border-color: $error-color !important;
+  
+  &:focus {
+    box-shadow: 0 0 0 3px rgba($error-color, 0.25) !important;
+  }
+}
+
+.error-message {
+  color: $error-color;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+} 

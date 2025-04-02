@@ -1,17 +1,13 @@
-
 import "../Styles/Header.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import logo from "/media/svg/logo-svg.svg";
 
 const Header = () => {
-  
-
- 
-    console.log("Header renderizado");
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchUser = async () => {
@@ -37,26 +33,43 @@ const Header = () => {
     }
   };
   
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     fetchUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setMenuOpen(false);
   }, [localStorage.getItem("user")]); 
   
-
-  useEffect(() => {
-    console.log("Usuario cargado:", user);
-  }, [user]);
-
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("rol");
     localStorage.removeItem("token");
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.startsWith('favorito_')) {
+        sessionStorage.removeItem(key);
+      }
+    });
     window.dispatchEvent(new Event("storage"));
     setUser(null);
     navigate("/");
+    setMenuOpen(false);
   };
   
+  const handleProfileClick = () => {
+    navigate("/perfil");
+    setMenuOpen(false);
+  };
 
   return (
     <nav className="navbar">
@@ -76,7 +89,7 @@ const Header = () => {
         {/* Contenedor de enlaces y usuario */}
         <div className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>
           {user ? (
-            <div className="user-info">
+            <div className="user-info" ref={menuRef}>
               <div className="avatar" onClick={() => setMenuOpen(!menuOpen)}>
                 {user.nombre ? user.nombre.charAt(0).toUpperCase() : ""}
                 {user.apellido ? user.apellido.charAt(0).toUpperCase() : ""}
@@ -85,7 +98,8 @@ const Header = () => {
                 <div className="user-menu">
                   <p>{user.nombre} {user.apellido}</p>
                   <p>{user.email}</p>
-                  <button onClick={handleLogout}>Cerrar Sesión</button>
+                  <button className="profile-btn" onClick={handleProfileClick}>Mi Perfil</button>
+                  <button className="logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               )}
             </div>

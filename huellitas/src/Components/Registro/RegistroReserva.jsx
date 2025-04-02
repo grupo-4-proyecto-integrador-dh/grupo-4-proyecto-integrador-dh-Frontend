@@ -16,4 +16,4 @@ const RegistroReserva = () => {
   );
 };
 
-export default RegistroReserva;
+export default RegistroReserva; 

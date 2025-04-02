@@ -308,6 +308,43 @@
     text-align: left;
   }
 
+  .card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+
+    .card__title {
+      margin: 0;
+      flex: 1;
+    }
+
+    .favorito-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+      color: #999;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+
+      &.active {
+        color: #e76f51;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
   .card__title {
     font-size: 1.3rem;
     font-weight: 600;
