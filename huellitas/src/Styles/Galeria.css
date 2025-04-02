@@ -2,7 +2,6 @@
   display: flex;
   grid-column: 1/3;
   grid-row: 1/3;
-  border-radius: 5%;
   contain: content;
   width: 100%;
   height: 100%;
@@ -44,7 +43,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: cover;
-  border-radius: 5%;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   transition: filter 0.3s ease-in-out;
@@ -64,8 +63,8 @@
 
 .boton_vermas_galeria.boton_vermas_galeria {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 10px;
+  right: 10px;
   background-color: #fffdf4 !important;
   padding: 12px 32px;
   border: none;
@@ -152,7 +151,7 @@
   }
 
   .grid_layout_galeria {
-    max-height: 600px;
+    max-height: 500px;
   }
 
 

@@ -2,6 +2,27 @@
 @use "sass:color";
 .reserva-container {
   color: colors.$black;
+
+  .service-container__top-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+    font-family: "Martian Mono", monospace;
+
+    .service-container__top-info__price,
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+    }
+
+    .service-container__top-info__price {
+      padding: 10px 15px;
+      border-radius: 4px;
+      background-color: colors.$white;
+      color: colors.$black;
+    }
+  }
 }
 .back-button {
   position: fixed;
@@ -58,8 +79,11 @@
   }
 
   .reserve-button {
-    background-color: #ffd166;
-    color: colors.$black;
+    position: sticky;
+    bottom: 2rem;
+    width: 100%;
+    background-color: colors.$primary;
+    color: colors.$white;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;

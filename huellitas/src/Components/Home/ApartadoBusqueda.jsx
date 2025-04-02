@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,7 +17,6 @@ const ApartadoBusqueda = ({
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
-  const [sugerencias, setSugerencias] = useState([]);
   const navigate = useNavigate();
 
   // Filtrar sugerencias usando useMemo para optimizar el cálculo
