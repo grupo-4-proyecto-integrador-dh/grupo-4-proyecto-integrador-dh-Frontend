@@ -299,3 +299,38 @@ button {
 }
 }
 }
+
+.hospedaje-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  .hospedaje-premium {
+    margin: 0;
+  }
+
+  .favorito-btn-detalle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    color: #999;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: scale(1.1);
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    &.active {
+      color: #e76f51;
+    }
+  }
+}

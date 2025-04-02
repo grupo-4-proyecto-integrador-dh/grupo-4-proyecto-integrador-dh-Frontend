@@ -1,33 +1,46 @@
 import axios from "axios";
 import { useNavigate, useParams, useLocation} from "react-router-dom";
-import {React, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Swal from "sweetalert2";
 import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
+import FavoritosService from "../Services/FavoritosService";
 
 const Detalle = () => {
   const location = useLocation();
-  const { alojamientoId, fechaDesde, fechaHasta, mascotaId, usuario }= location.state || {};
   const navigate = useNavigate();
   const { id } = useParams();
+  
   const [alojamiento, setAlojamiento] = useState(null);
   const [mostrarCalendario, setMostrarCalendario] = useState(false);
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState([null, null]);
-  const [mascotas, setMascotas] = useState([]);
+  const [fechasReservadas, setFechasReservadas] = useState([]);
+  
   const [isLogin, setIsLogin] = useState(false);
   const [userID, setUserID] = useState(null);
-  const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
-  const [cargando, setCargando] = useState(true);
   const [token, setToken] = useState(null);
-  const [nuevaMascotaNombre, setNuevaMascotaNombre] = useState("");
+  
+  const [mascotas, setMascotas] = useState([]);
+  const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
+  const [mostrarDetallesMascota, setMostrarDetallesMascota] = useState(false);
+  
   const [mostrarInputNuevaMascota, setMostrarInputNuevaMascota] = useState(false);
-  const [fechasReservadas, setFechasReservadas] = useState([]); // Estado para las fechas reservadas
-
+  const [nuevaMascotaNombre, setNuevaMascotaNombre] = useState("");
+  const [nuevaMascotaEspecie, setNuevaMascotaEspecie] = useState("");
+  const [nuevaMascotaRaza, setNuevaMascotaRaza] = useState("");
+  const [nuevaMascotaPeso, setNuevaMascotaPeso] = useState("");
+  const [nuevaMascotaEdad, setNuevaMascotaEdad] = useState("");
+  const [nuevaMascotaObservaciones, setNuevaMascotaObservaciones] = useState("");
+  
+  const [esFavorito, setEsFavorito] = useState(false);
+  
+  const [cargando, setCargando] = useState(true);
+  
   const url_base = import.meta.env.VITE_BACKEND_URL;
 
-  // Obtener el token y el usuario al cargar el componente
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
@@ -40,37 +53,150 @@ const Detalle = () => {
     if (user) {
       try {
         const userData = JSON.parse(user);
-        setUserID(userData.id); // Aquí deberías usar userData.id si el ID del usuario está en el objeto user
+        setUserID(userData.id);
       } catch (error) {
         console.error("Error al parsear el usuario:", error);
       }
     }
   }, []);
 
-  // Obtener las mascotas cuando el token o el userID cambien
+  useEffect(() => {
+    const verificarFavorito = async () => {
+      if (isLogin && userID && id) {
+        try {
+          await FavoritosService.esFavorito(userID, Number(id));
+        } catch (error) {
+          console.error("Error al verificar favorito:", error);
+        }
+      }
+    };
+    
+    if (isLogin && userID && id) {
+      const estadoGuardado = sessionStorage.getItem(`favorito_${userID}_${id}`);
+      if (estadoGuardado !== null) {
+        setEsFavorito(JSON.parse(estadoGuardado));
+      } else {
+        verificarFavorito();
+      }
+    }
+
+    const handleStorageChange = (e) => {
+      if (e.key === `favorito_${userID}_${id}`) {
+        const nuevoEstado = JSON.parse(e.newValue);
+        setEsFavorito(nuevoEstado);
+      }
+    };
+
+    const handleFavoritoChange = (e) => {
+      if (e.detail && e.detail.clienteId === userID && e.detail.alojamientoId === Number(id)) {
+        setEsFavorito(e.detail.esFavorito);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('favoritoChanged', handleFavoritoChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('favoritoChanged', handleFavoritoChange);
+    };
+  }, [userID, id, isLogin]);
+
   useEffect(() => {
     if (token && userID) {
-      const obtenerMascotas = async () => {
-        try {
-          setCargando(true);
-          const response = await axios.get(`${url_base}/clientes/${userID}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setMascotas(response.data.mascotas);
-        } catch (error) {
-          console.error("Error al obtener las mascotas:", error);
-        } finally {
-          setCargando(false);
-        }
-      };
-
-      obtenerMascotas();
+      obtenerMascotasDelCliente();
     }
   }, [token, userID]);
 
-  // Obtener los detalles del alojamiento
+  const handleFavoritoClick = async () => {
+    if (!isLogin) {
+      Swal.fire({
+        title: "Inicia sesión",
+        text: "Debes iniciar sesión para añadir favoritos",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Iniciar sesión",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login", { state: { from: location } });
+        }
+      });
+      return;
+    }
+
+    try {
+      if (esFavorito) {
+        await FavoritosService.eliminarFavorito(userID, Number(id));
+      } else {
+        await FavoritosService.agregarFavorito(userID, Number(id));
+      }
+      
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: !esFavorito
+          ? "¡Añadido a favoritos!" 
+          : "Eliminado de favoritos",
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true
+      });
+    } catch (error) {
+      console.error("Error al modificar favorito:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo actualizar favoritos",
+        timer: 2000
+      });
+    }
+  };
+
+  const obtenerMascotasDelCliente = async () => {
+    try {
+      setCargando(true);
+      
+      console.log(`Intentando obtener mascotas para el cliente con ID: ${userID}`);
+      console.log(`URL completa: https://rare-compassion-production.up.railway.app/api/mascotas/cliente/${userID}`);
+      console.log(`Token: ${token}`);
+      
+      const response = await axios.get(`https://rare-compassion-production.up.railway.app/api/mascotas/cliente/${userID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      console.log("Respuesta completa del servidor:", response);
+      
+      if (response.data && Array.isArray(response.data)) {
+        console.log("Mascotas recibidas:", response.data);
+        setMascotas(response.data);
+      } else if (response.data && typeof response.data === 'object') {
+        if (Array.isArray(response.data.content)) {
+          console.log("Mascotas encontradas en response.data.content:", response.data.content);
+          setMascotas(response.data.content);
+        } else if (Array.isArray(response.data.mascotas)) {
+          console.log("Mascotas encontradas en response.data.mascotas:", response.data.mascotas);
+          setMascotas(response.data.mascotas);
+        } else {
+          console.warn("La respuesta no contiene un array de mascotas reconocible:", response.data);
+          setMascotas([]);
+        }
+      } else {
+        console.warn("La respuesta no contiene un array de mascotas:", response.data);
+        setMascotas([]);
+      }
+    } catch (error) {
+      console.error("Error al obtener las mascotas del cliente:", error);
+      console.error("Detalles del error:", error.response ? error.response.data : "No hay detalles adicionales");
+      console.error("Estado de la respuesta:", error.response ? error.response.status : "No hay estado");
+      setMascotas([]);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   useEffect(() => {
     if (!location.state) {
       axios
@@ -84,24 +210,29 @@ const Detalle = () => {
     }
   }, [id, location.state]);
 
-  // Obtener las reservas del alojamiento
   useEffect(() => {
     if (alojamiento) {
       axios
         .get(`${url_base}/alojamientos/${id}`)
         .then((response) => {
-          console.log("Respuesta del backend:", response.data); // Inspecciona la respuesta
+          console.log("Respuesta del backend:", response.data);
   
-          // Verifica si response.data.reservas es un array
           if (response.data.reservas && Array.isArray(response.data.reservas)) {
-            const fechasReservadas = response.data.reservas.map((reserva) => ({
+            // Filtrar reservas para excluir las que tienen estado "CANCELADA"
+            const reservasActivas = response.data.reservas.filter(
+              (reserva) => reserva.estado !== "CANCELADA"
+            );
+            
+            console.log("Reservas después de filtrar canceladas:", reservasActivas);
+            
+            const fechasReservadas = reservasActivas.map((reserva) => ({
               fechaInicio: new Date(reserva.fechaDesde),
               fechaFin: new Date(reserva.fechaHasta),
             }));
             setFechasReservadas(fechasReservadas);
           } else {
             console.warn("No hay reservas para este alojamiento.");
-            setFechasReservadas([]); // Inicializa con un array vacío
+            setFechasReservadas([]);
           }
         })
         .catch((error) => console.error("Error al obtener las reservas:", error));
@@ -118,8 +249,7 @@ const Detalle = () => {
         showCancelButton: true,
         cancelButtonText: 'Por ahora no',
         preConfirm: () => {
-          // Redirigir al login
-          navigate('/login?from=reservation', { state: { from: location } });  // Usar navigate para redirigir
+          navigate('/login?from=reservation', { state: { from: location } });
         }
       });
     } else {
@@ -127,43 +257,126 @@ const Detalle = () => {
     }
   };
 
-  // Función para agregar una nueva mascota
   const agregarMascota = async () => {
     if (nuevaMascotaNombre.trim() === "") {
-      alert("Por favor, ingresa un nombre para la mascota.");
+      Swal.fire({
+        title: "Error",
+        text: "Por favor, ingresa un nombre para la mascota.",
+        icon: "error",
+        confirmButtonText: "OK"
+      });
       return;
     }
 
     try {
       setCargando(true);
+      
+      const mascotaData = {
+        nombre: nuevaMascotaNombre,
+        clienteId: userID,
+        especie: nuevaMascotaEspecie || null,
+        raza: nuevaMascotaRaza || null,
+        peso: nuevaMascotaPeso ? parseFloat(nuevaMascotaPeso) : null,
+        edad: nuevaMascotaEdad ? parseInt(nuevaMascotaEdad) : null,
+        observaciones: nuevaMascotaObservaciones || null,
+        activo: true
+      };
+      
+      console.log("Intentando agregar mascota con los datos:", mascotaData);
+      console.log(`URL completa: ${url_base}/api/mascotas`);
+      console.log(`Token: ${token}`);
 
-      // Agregar la nueva mascota
-      await axios.post(
-        `${url_base}/mascotas`,
-        {
-          nombre: nuevaMascotaNombre,
-          clienteId: userID,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      try {
+        const mascotaDataAlt1 = { ...mascotaData, clienteId: userID.toString() };
+        console.log("Alternativa 1 - clienteId como string:", mascotaDataAlt1);
+        
+        const mascotaDataAlt2 = { 
+          ...mascotaData, 
+          cliente: { id: userID },
+          clienteId: undefined 
+        };
+        console.log("Alternativa 2 - usando cliente.id:", mascotaDataAlt2);
+        
+        const response = await axios.post(
+          `${url_base}/api/mascotas`,
+          mascotaData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+          }
+        );
+        
+        console.log("Respuesta al agregar mascota:", response);
+      } catch (innerError) {
+        console.error("Error en el primer intento, probando alternativa:", innerError);
+        
+        try {
+          const response = await axios.post(
+            `${url_base}/api/mascotas`,
+            { ...mascotaData, clienteId: userID.toString() },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+            }
+          );
+          console.log("Respuesta al agregar mascota (alt1):", response);
+        } catch (innerError2) {
+          console.error("Error en el segundo intento, probando alternativa 2:", innerError2);
+          
+          const response = await axios.post(
+            `${url_base}/api/mascotas`,
+            { 
+              nombre: nuevaMascotaNombre,
+              cliente: { id: userID },
+              especie: nuevaMascotaEspecie || null,
+              raza: nuevaMascotaRaza || null,
+              peso: nuevaMascotaPeso ? parseFloat(nuevaMascotaPeso) : null,
+              edad: nuevaMascotaEdad ? parseInt(nuevaMascotaEdad) : null,
+              observaciones: nuevaMascotaObservaciones || null,
+              activo: true
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+            }
+          );
+          console.log("Respuesta al agregar mascota (alt2):", response);
         }
-      );
+      }
 
-      // Obtener la lista actualizada de mascotas desde el servidor
-      const response = await axios.get(`${url_base}/clientes/${userID}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      await obtenerMascotasDelCliente();
+
+      setNuevaMascotaNombre("");
+      setNuevaMascotaEspecie("");
+      setNuevaMascotaRaza("");
+      setNuevaMascotaPeso("");
+      setNuevaMascotaEdad("");
+      setNuevaMascotaObservaciones("");
+      
+      setMostrarInputNuevaMascota(false);
+
+      Swal.fire({
+        title: "¡Mascota agregada!",
+        text: "Tu mascota ha sido agregada exitosamente.",
+        icon: "success",
+        confirmButtonText: "Genial"
       });
-
-      // Actualizar el estado local con las mascotas actualizadas
-      setMascotas(response.data.mascotas);
-      setNuevaMascotaNombre(""); // Limpiar el input
-      setMostrarInputNuevaMascota(false); // Ocultar el input después de agregar la mascota
     } catch (error) {
       console.error("Error al agregar la mascota:", error);
+      console.error("Detalles del error:", error.response ? error.response.data : "No hay detalles adicionales");
+      console.error("Estado de la respuesta:", error.response ? error.response.status : "No hay estado");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo agregar la mascota. Por favor, intenta nuevamente.",
+        icon: "error",
+        confirmButtonText: "OK"
+      });
     } finally {
       setCargando(false);
     }
@@ -175,20 +388,18 @@ const Detalle = () => {
   
     const [fechaInicio, fechaFin] = fechas;
   
-    // Convertir las fechas reservadas a timestamps para comparar fácilmente
     const fechasReservadasTimestamps = fechasReservadas.flatMap(({ fechaInicio, fechaFin }) => {
       const rango = [];
       let actual = new Date(fechaInicio);
       const final = new Date(fechaFin);
   
       while (actual <= final) {
-        rango.push(actual.getTime()); // Guardamos cada día como timestamp
+        rango.push(actual.getTime());
         actual.setDate(actual.getDate() + 1);
       }
       return rango;
     });
   
-    // Verificar si alguna fecha en el rango seleccionado está reservada
     let actual = new Date(fechaInicio);
     let invalida = false;
   
@@ -212,8 +423,7 @@ const Detalle = () => {
     }
   };
 
-  // Confirmar la reserva
-  const finalizarReserva = () => {
+  const finalizarReserva = async () => {
       const [fechaInicio, fechaFin] = fechasSeleccionadas;
 
       if (!fechaInicio && !fechaFin && !mascotaSeleccionada ) {
@@ -223,32 +433,31 @@ const Detalle = () => {
           icon: "error",
         });
         return;
-        } 
+      } 
     
-        if (!mascotaSeleccionada) {
+      if (!mascotaSeleccionada) {
         Swal.fire({
           title: "Error",
           text: "Por favor, selecciona una mascota antes de confirmar la reserva.",
           icon: "error",
         });
         return;
-        }
+      }
 
-        if (!fechaInicio || !fechaFin ) {
-          Swal.fire({
-            title: "Error",
-            text: "Por favor, selecciona las fechas de inicio y fin de estadia antes de confirmar la reserva.",
-            icon: "error",
-          });
-          return;
-          }
+      if (!fechaInicio || !fechaFin ) {
+        Swal.fire({
+          title: "Error",
+          text: "Por favor, selecciona las fechas de inicio y fin de estadia antes de confirmar la reserva.",
+          icon: "error",
+        });
+        return;
+      }
     
-      // ✅ Convertir fechas reservadas a rangos de tiempo
       const hayConflicto = fechasReservadas.some(({ fechaInicio: inicioReservada, fechaFin: finReservada }) => {
         return (
-          (fechaInicio >= inicioReservada && fechaInicio <= finReservada) || // Si el inicio está dentro de un rango reservado
-          (fechaFin >= inicioReservada && fechaFin <= finReservada) ||       // Si el fin está dentro de un rango reservado
-          (fechaInicio <= inicioReservada && fechaFin >= finReservada)        // Si el rango cubre toda la reserva
+          (fechaInicio >= inicioReservada && fechaInicio <= finReservada) ||
+          (fechaFin >= inicioReservada && fechaFin <= finReservada) ||
+          (fechaInicio <= inicioReservada && fechaFin >= finReservada)
         );
       });
     
@@ -261,20 +470,156 @@ const Detalle = () => {
         return;
       }
     
-      // ✅ Formatear fechas antes de enviarlas
-      const fechaDesdeFormateada = fechaInicio.toISOString().split("T")[0];
-      const fechaHastaFormateada = fechaFin.toISOString().split("T")[0];
-    
-      navigate("/registro-reserva", {
-        state: {
-          alojamientoId: id,
+      try {
+        setCargando(true);
+        
+        const fechaDesdeFormateada = fechaInicio.toISOString().split("T")[0];
+        const fechaHastaFormateada = fechaFin.toISOString().split("T")[0];
+        
+        const mascotaSeleccionadaObj = mascotas.find(m => m.id.toString() === mascotaSeleccionada.toString());
+        
+        if (!mascotaSeleccionadaObj) {
+          throw new Error("No se pudo encontrar la información de la mascota seleccionada");
+        }
+        
+        const userData = JSON.parse(localStorage.getItem("user"));
+        
+        if (!userData) {
+          throw new Error("No se encontró información del usuario");
+        }
+        
+        const reservaData = {
           fechaDesde: fechaDesdeFormateada,
           fechaHasta: fechaHastaFormateada,
-          mascotaId: mascotaSeleccionada,
-          usuario: userID,
-        },
-      });
-    };
+          mascotaNombre: mascotaSeleccionadaObj.nombre,
+          mascotaId: Number(mascotaSeleccionada),
+          alojamientoNombre: alojamiento.nombre,
+          alojamientoId: Number(id),
+          alojamientoPrecio: alojamiento.precio,
+          clienteNombre: userData.nombre || "",
+          clienteApellido: userData.apellido || "",
+          clienteEmail: userData.email || "",
+          estado: "PENDIENTE",
+        };
+        
+        console.log("Enviando solicitud de reserva con los datos:", reservaData);
+        
+        try {
+          const response = await axios.post(
+            `${url_base}/reservas`,
+            reservaData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+              },
+            }
+          );
+          
+          console.log("Respuesta del servidor a la reserva:", response);
+        } catch (errorPost1) {
+          console.error("Error en el primer intento de reserva:", errorPost1);
+          
+          try {
+            const reservaDataAlt = {
+              ...reservaData,
+              mascota: { id: Number(mascotaSeleccionada) },
+              alojamiento: { id: Number(id) },
+              cliente: { id: Number(userID) }
+            };
+            
+            console.log("Intento alternativo con formato relacional:", reservaDataAlt);
+            
+            const response = await axios.post(
+              `${url_base}/reservas`,
+              reservaDataAlt,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json"
+                },
+              }
+            );
+            
+            console.log("Respuesta al segundo intento:", response);
+          } catch (errorPost2) {
+            console.error("Error en el segundo intento de reserva:", errorPost2);
+            
+            const reservaDataMinimal = {
+              fechaDesde: fechaDesdeFormateada,
+              fechaHasta: fechaHastaFormateada,
+              mascotaId: Number(mascotaSeleccionada),
+              alojamientoId: Number(id),
+              clienteId: Number(userID)
+            };
+            
+            console.log("Intento con formato simplificado:", reservaDataMinimal);
+            
+            const response = await axios.post(
+              `${url_base}/reservas`,
+              reservaDataMinimal,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json"
+                },
+              }
+            );
+            
+            console.log("Respuesta al tercer intento:", response);
+          }
+        }
+        
+        axios
+          .get(`${url_base}/alojamientos/${id}`)
+          .then((response) => {
+            if (response.data.reservas && Array.isArray(response.data.reservas)) {
+              // Actualizar fechas reservadas excluyendo las canceladas
+              const reservasActivas = response.data.reservas.filter(
+                (reserva) => reserva.estado !== "CANCELADA"
+              );
+              
+              const fechasReservadas = reservasActivas.map((reserva) => ({
+                fechaInicio: new Date(reserva.fechaDesde),
+                fechaFin: new Date(reserva.fechaHasta),
+              }));
+              setFechasReservadas(fechasReservadas);
+            }
+          })
+          .catch((error) => console.error("Error actualizando lista de reservas:", error));
+          
+        Swal.fire({
+          title: "¡Reserva confirmada!",
+          text: `Tu reserva del alojamiento ${alojamiento.nombre} ha sido registrada correctamente.`,
+          icon: "success",
+          confirmButtonText: "Ver mis reservas",
+          showCancelButton: true,
+          cancelButtonText: "Volver al inicio"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/perfil");
+          } else {
+            navigate("/");
+          }
+        });
+        
+        setMostrarCalendario(false);
+        
+      } catch (error) {
+        console.error("Error al realizar la reserva:", error);
+        console.error("Detalles del error:", error.response ? error.response.data : "No hay detalles adicionales");
+        console.error("Estado del error:", error.response ? error.response.status : "No hay estado");
+        
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo completar la reserva. Por favor, intenta nuevamente más tarde.",
+          icon: "error",
+          confirmButtonText: "OK"
+        });
+      } finally {
+        setCargando(false);
+      }
+  };
 
   
 
@@ -291,7 +636,16 @@ const Detalle = () => {
       <div className="container-detalle">
         <div className="content">
           <div className="service-container">
-            <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
+            <div className="hospedaje-header">
+              <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
+              <button 
+                className={`favorito-btn-detalle ${esFavorito ? 'active' : ''}`} 
+                onClick={handleFavoritoClick}
+                aria-label={esFavorito ? "Eliminar de favoritos" : "Añadir a favoritos"}
+              >
+                {esFavorito ? <FaHeart color="#e76f51" size={24} /> : <FaRegHeart size={24} />}
+              </button>
+            </div>
             <Galeria imagenes={alojamiento.imagenes} />
             <div className="servicio-detalle">
               <h3>Descripción:</h3>
@@ -310,70 +664,264 @@ const Detalle = () => {
                 <Calendario
                   mensaje="Elige fechas de estadía"
                   onChange={handleFechaSeleccionada}
-                  fechasReservadas={fechasReservadas} // Pasa las fechas reservadas
+                  fechasReservadas={fechasReservadas}
                 />
                 <div className="fechas_elegidas">
                   <p>Fechas elegidas</p>
                   <span>Inicio:  {fechasSeleccionadas[0]?.toLocaleDateString()}</span>
                   <span>Final:   {fechasSeleccionadas[1]?.toLocaleDateString()}</span>
                 </div>
-                <div className="formulario-mascota-reserva">
-                  {/* Lista de mascotas existentes */}
-                  <form>
-                    <select className="form-select" aria-label="Default select example"
-                      value={mascotaSeleccionada}
-                      onChange={(e) => setMascotaSeleccionada(e.target.value)}
-                    >
-                      <option value="">Selecciona una mascota</option>
-                      {mascotas && Array.isArray(mascotas) && mascotas
-                        .filter((mascota) => mascota != null)
-                        .map((mascota) => (
-                          <option key={mascota.id} value={mascota.id}>
-                            {mascota.nombre}
-                          </option>
-                        ))}
-                    </select>
-                  </form>
-                  {!mostrarInputNuevaMascota && (
-                    <button
-                      onClick={() => setMostrarInputNuevaMascota(true)}
-                      className="reserve-button"
-                    >
-                      ➕ Agregar nueva mascota
-                    </button>
-                  )}
+                <div className="formulario-mascota-reserva" style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  gap: '15px',
+                  marginTop: '20px',
+                  padding: '15px',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  backgroundColor: '#f9f9f9'
+                }}>
+                  <h3 style={{ margin: '0 0 10px 0' }}>Selecciona tu mascota</h3>
+                  
+                  {cargando ? (
+                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                      <p>Cargando mascotas...</p>
+                      <div className="spinner" style={{
+                        width: '40px',
+                        height: '40px',
+                        margin: '10px auto',
+                        border: '4px solid rgba(0, 0, 0, 0.1)',
+                        borderLeft: '4px solid #7983ff',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }}></div>
+                      <style>
+                        {`
+                          @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                          }
+                        `}
+                      </style>
+                    </div>
+                  ) : (
+                    <>
+                      <form>
+                        <select 
+                          className="form-select" 
+                          aria-label="Default select example"
+                          value={mascotaSeleccionada}
+                          onChange={(e) => setMascotaSeleccionada(e.target.value)}
+                          style={{
+                            padding: '10px',
+                            borderRadius: '5px',
+                            width: '100%',
+                            marginBottom: '10px'
+                          }}
+                        >
+                          <option value="">Selecciona una mascota</option>
+                          {mascotas && Array.isArray(mascotas) && mascotas
+                            .filter((mascota) => mascota != null)
+                            .map((mascota) => (
+                              <option key={mascota.id} value={mascota.id}>
+                                {mascota.nombre} 
+                                {mascota.especie ? ` - ${mascota.especie}` : ''} 
+                                {mascota.raza ? ` (${mascota.raza})` : ''} 
+                                {mascota.edad ? ` - ${mascota.edad} años` : ''}
+                              </option>
+                            ))}
+                        </select>
+                      </form>
+                      
+                      {mascotas.length === 0 && (
+                        <div style={{ 
+                          padding: '15px',
+                          backgroundColor: '#fff8e1',
+                          border: '1px solid #ffecb3',
+                          borderRadius: '5px',
+                          marginBottom: '10px'
+                        }}>
+                          <p style={{ margin: 0 }}>No tienes mascotas registradas. ¡Agrega una para continuar!</p>
+                        </div>
+                      )}
+                      
+                      {mascotaSeleccionada && (
+                        <button 
+                          onClick={() => setMostrarDetallesMascota(!mostrarDetallesMascota)} 
+                          className="reserve-button"
+                          style={{
+                            marginTop: '5px',
+                            marginBottom: '5px'
+                          }}
+                        >
+                          {mostrarDetallesMascota ? 'Ocultar detalles' : 'Ver detalles'}
+                        </button>
+                      )}
+                      
+                      {mostrarDetallesMascota && mascotaSeleccionada && (
+                        <div className="detalles-mascota" style={{
+                          padding: '15px',
+                          border: '1px solid #ccc',
+                          borderRadius: '5px',
+                          backgroundColor: '#fff',
+                          marginBottom: '15px'
+                        }}>
+                          {mascotas
+                            .filter(mascota => mascota && mascota.id.toString() === mascotaSeleccionada.toString())
+                            .map(mascota => (
+                              <div key={mascota.id} className="card-detalles-mascota">
+                                <h4 style={{ 
+                                  margin: '0 0 10px 0',
+                                  color: '#333',
+                                  borderBottom: '1px solid #eee',
+                                  paddingBottom: '5px'
+                                }}>{mascota.nombre}</h4>
+                                <p style={{ margin: '5px 0' }}><strong>Especie:</strong> {mascota.especie || 'No especificada'}</p>
+                                <p style={{ margin: '5px 0' }}><strong>Raza:</strong> {mascota.raza || 'No especificada'}</p>
+                                <p style={{ margin: '5px 0' }}><strong>Edad:</strong> {mascota.edad ? `${mascota.edad} años` : 'No especificada'}</p>
+                                <p style={{ margin: '5px 0' }}><strong>Peso:</strong> {mascota.peso ? `${mascota.peso} kg` : 'No especificado'}</p>
+                                <p style={{ margin: '5px 0' }}><strong>Observaciones:</strong> {mascota.observaciones || 'Sin observaciones'}</p>
+                              </div>
+                            ))}
+                        </div>
+                      )}
+   
+                      {!mostrarInputNuevaMascota && (
+                        <button
+                          onClick={() => setMostrarInputNuevaMascota(true)}
+                          className="reserve-button"
+                        >
+                          ➕ Agregar nueva mascota
+                        </button>
+                      )}
 
-                  {/* Input para agregar una nueva mascota (solo se muestra si mostrarInputNuevaMascota es true) */}
-                  {mostrarInputNuevaMascota && (
-                    <form  onSubmit={(e) => e.preventDefault()}>
-                      <input className="mascota_nueva"
-                        type="text"
-                        placeholder="Nombre de la mascota"
-                        value={nuevaMascotaNombre}
-                        onChange={(e) => setNuevaMascotaNombre(e.target.value)}
-                      />
-                      <button onClick={agregarMascota} className="reserve-button">
-                        Agregar mascota
-                      </button>
-                      <button
-                        onClick={() => setMostrarInputNuevaMascota(false)}
-                        className="reserve-button"
-                      >
-                        X
-                      </button>
-                    </form>
-                  )}
+                      {mostrarInputNuevaMascota && (
+                        <form className="formulario-nueva-mascota" onSubmit={(e) => e.preventDefault()} style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '10px',
+                          padding: '15px',
+                          border: '1px solid #ccc',
+                          borderRadius: '5px',
+                          backgroundColor: '#fff'
+                        }}>
+                          <input className="mascota_nueva"
+                            type="text"
+                            placeholder="Nombre de la mascota*"
+                            value={nuevaMascotaNombre}
+                            onChange={(e) => setNuevaMascotaNombre(e.target.value)}
+                            required
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc'
+                            }}
+                          />
+                          <input className="mascota_nueva"
+                            type="text"
+                            placeholder="Especie (perro, gato, etc.)"
+                            value={nuevaMascotaEspecie}
+                            onChange={(e) => setNuevaMascotaEspecie(e.target.value)}
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc'
+                            }}
+                          />
+                          <input className="mascota_nueva"
+                            type="text"
+                            placeholder="Raza"
+                            value={nuevaMascotaRaza}
+                            onChange={(e) => setNuevaMascotaRaza(e.target.value)}
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc'
+                            }}
+                          />
+                          <input className="mascota_nueva"
+                            type="number"
+                            step="0.1"
+                            placeholder="Peso en kg"
+                            value={nuevaMascotaPeso}
+                            onChange={(e) => setNuevaMascotaPeso(e.target.value)}
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc'
+                            }}
+                          />
+                          <input className="mascota_nueva"
+                            type="number"
+                            placeholder="Edad en años"
+                            value={nuevaMascotaEdad}
+                            onChange={(e) => setNuevaMascotaEdad(e.target.value)}
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc'
+                            }}
+                          />
+                          <textarea className="mascota_nueva"
+                            placeholder="Observaciones (alergias, comportamiento, etc.)"
+                            value={nuevaMascotaObservaciones}
+                            onChange={(e) => setNuevaMascotaObservaciones(e.target.value)}
+                            style={{
+                              padding: '10px',
+                              borderRadius: '5px',
+                              border: '1px solid #ccc',
+                              minHeight: '80px',
+                              resize: 'vertical'
+                            }}
+                          />
+                          <div className="botones-formulario" style={{
+                            display: 'flex',
+                            gap: '10px',
+                            marginTop: '10px'
+                          }}>
+                            <button 
+                              onClick={agregarMascota} 
+                              className="reserve-button"
+                              disabled={cargando}
+                            >
+                              {cargando ? 'Agregando...' : 'Agregar mascota'}
+                            </button>
+                            <button
+                              onClick={() => setMostrarInputNuevaMascota(false)}
+                              className="reserve-button"
+                              disabled={cargando}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </form>
+                      )}
 
-                  {/* Botones para confirmar o cancelar la reserva */}
-                  <button onClick={finalizarReserva} className="reserve-button">
-                    Finalizar reserva
-                  </button>
-                  <button
-                    onClick={() => setMostrarCalendario(false)}
-                    className="reserve-button"
-                  >
-                    Cancelar
-                  </button>
+                      <div style={{ 
+                        display: 'flex', 
+                        gap: '10px',
+                        marginTop: '15px',
+                        justifyContent: 'space-between'
+                      }}>
+                        <button 
+                          onClick={finalizarReserva} 
+                          className="reserve-button" 
+                          style={{ flex: 1 }}
+                          disabled={cargando}
+                        >
+                          Finalizar reserva
+                        </button>
+                        <button
+                          onClick={() => setMostrarCalendario(false)}
+                          className="reserve-button"
+                          style={{ flex: 1 }}
+                          disabled={cargando}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
