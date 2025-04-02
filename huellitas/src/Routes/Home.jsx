@@ -8,7 +8,7 @@ import "../Styles/Home.scss";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,13 +38,12 @@ const Home = () => {
       );
     }
   
-    if (selectedCategory) {
+    if (selectedCategories.length > 0) {
       filtered = filtered.filter((alojamiento) =>
-        alojamiento.categoria.id === selectedCategory.id
+        selectedCategories.some((cat) => cat.id === alojamiento.categoria.id)
       );
     }
   
-    // 🚀 Evitar actualizaciones innecesarias
     setFilteredAlojamientos((prevFiltered) => {
       if (JSON.stringify(prevFiltered) !== JSON.stringify(filtered)) {
         return filtered;
@@ -53,14 +52,20 @@ const Home = () => {
     });
   
     console.log("Alojamientos filtrados", filtered.length);
-  }, [searchQuery, selectedCategory, alojamientos]);
+  }, [searchQuery, selectedCategories, alojamientos]);
+  
   
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
+    setSelectedCategories((prevCategories) => {
+      const isSelected = prevCategories.some((cat) => cat.id === category.id);
+      return isSelected
+        ? prevCategories.filter((cat) => cat.id !== category.id) // Quitar si ya está
+        : [...prevCategories, category]; // Agregar si no estaba
+    });
+  }
 
   const handleClearCategoryFilter = () => {
-    setSelectedCategory(null);
+    setSelectedCategories([]);
   };
 
   if (loading) {
@@ -77,11 +82,11 @@ const Home = () => {
       <CategoriasAlojamientos
         onCategoryClick={handleCategoryClick}
         onClearCategoryFilter={handleClearCategoryFilter}
-        selectedCategory={selectedCategory}
+        selectedCategories={selectedCategories}
       />
       <RecomendacionesAlojamientos
         filteredAlojamientos={filteredAlojamientos}
-        selectedCategories={selectedCategory ? [selectedCategory] : []}
+        selectedCategories={selectedCategories}
       />
     </div>
   );

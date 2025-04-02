@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import CategoriaCard from "./CategoriaCard";
 import "../../Styles/Home.scss";
 
-const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, selectedCategory }) => {
+const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, selectedCategories }) => {
   const [categorias, setCategorias] = useState([]);
   const [alojamientos, setAlojamientos] = useState([]);
   const [categoriasConCantidad, setCategoriasConCantidad] = useState([]);
@@ -84,7 +84,7 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
     <section className="main__categorias">
       <div className="categorias__header">
         <h2>Categorías</h2>
-        {selectedCategory && (
+        {selectedCategories && (
           <button className="clear-filter-btn" onClick={handleClearLocalFilter}>
             Borrar Filtros
           </button>
@@ -104,7 +104,7 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
                 alt={`Imagen de ${categoria.nombre}`}
                 cantidad={categoria.alojamientosCount}
                 onClick={() => handleCardClick(categoria.id)}
-                isSelected={selectedCategory?.id === categoria.id}
+                isSelected={selectedCategories.some((cat) => cat.id === categoria.id)}
               />
             ))}
           </div>
@@ -120,7 +120,8 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
 CategoriasAlojamientos.propTypes = {
   onCategoryClick: PropTypes.func.isRequired,
   onClearCategoryFilter: PropTypes.func.isRequired,
-  selectedCategory: PropTypes.object,
+  selectedCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
+
 
 export default CategoriasAlojamientos;
