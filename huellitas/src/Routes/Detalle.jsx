@@ -158,10 +158,10 @@ const Detalle = () => {
       setCargando(true);
       
       console.log(`Intentando obtener mascotas para el cliente con ID: ${userID}`);
-      console.log(`URL completa: https://rare-compassion-production.up.railway.app/api/mascotas/cliente/${userID}`);
+      console.log(`URL completa: ${url_base}/api/mascotas/cliente/${userID}`);
       console.log(`Token: ${token}`);
       
-      const response = await axios.get(`https://rare-compassion-production.up.railway.app/api/mascotas/cliente/${userID}`, {
+      const response = await axios.get(`${url_base}/api/mascotas/cliente/${userID}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
