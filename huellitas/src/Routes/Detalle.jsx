@@ -201,7 +201,7 @@ const Detalle = () => {
   }
 
   return (
-    <div>
+    <div className="reserva-container">
       <button className="back-button" onClick={() => navigate("/")}>
         ⬅ Volver
       </button>
@@ -209,12 +209,15 @@ const Detalle = () => {
       <div className="container-detalle">
         <div className="content">
           <div className="service-container">
-            <h2 className="hospedaje-premium">{alojamiento.nombre}</h2>
             <Galeria imagenes={alojamiento.imagenes} />
+            <span className="service-container__top-info">
+              <h1 className="hospedaje-premium">{alojamiento.nombre}</h1>
+              <p className="service-container__top-info__price">{`$ ${alojamiento.precio}`}</p>
+            </span>
             <div className="servicio-detalle">
-              <h4>Descripción:</h4>
+              <h2>Descripción:</h2>
               <p>{alojamiento.descripcion}</p>
-              <p>{alojamiento.precio}</p>
+              <strong>{`Precio por noche $ ${alojamiento.precio}`}</strong>
             </div>
 
             {!mostrarCalendario && (
