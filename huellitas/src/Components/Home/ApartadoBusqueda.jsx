@@ -11,7 +11,6 @@ import Swal from "sweetalert2";
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filteredAlojamientos, setFilteredAlojamientos}) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
-  const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
