@@ -1,6 +1,4 @@
-
-
-import axios from "axios"; 
+import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
@@ -21,7 +19,8 @@ const Detalle = () => {
   const [fechasReservadas, setFechasReservadas] = useState([]);
   const [mascotaSeleccionada, setMascotaSeleccionada] = useState("");
   const [nuevaMascotaNombre, setNuevaMascotaNombre] = useState("");
-  const [mostrarInputNuevaMascota, setMostrarInputNuevaMascota] = useState(false);
+  const [mostrarInputNuevaMascota, setMostrarInputNuevaMascota] =
+    useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [userID, setUserID] = useState(null);
   const [token, setToken] = useState(null);
@@ -98,7 +97,9 @@ const Detalle = () => {
             setFechasReservadas([]);
           }
         })
-        .catch((error) => console.error("Error al obtener las reservas:", error));
+        .catch((error) =>
+          console.error("Error al obtener las reservas:", error)
+        );
     }
   }, [alojamiento, id, url_base]);
 
@@ -161,7 +162,9 @@ const Detalle = () => {
     const [fechaInicio, fechaFin] = fechasSeleccionadas;
 
     if (!fechaInicio || !fechaFin || !mascotaSeleccionada) {
-      alert("Por favor, selecciona las fechas y una mascota antes de confirmar la reserva.");
+      alert(
+        "Por favor, selecciona las fechas y una mascota antes de confirmar la reserva."
+      );
       return;
     }
 
@@ -263,7 +266,10 @@ const Detalle = () => {
                         value={nuevaMascotaNombre}
                         onChange={(e) => setNuevaMascotaNombre(e.target.value)}
                       />
-                      <button onClick={agregarMascota} className="reserve-button">
+                      <button
+                        onClick={agregarMascota}
+                        className="reserve-button"
+                      >
                         Agregar mascota
                       </button>
                       <button
