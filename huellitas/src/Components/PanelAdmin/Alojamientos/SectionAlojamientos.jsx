@@ -25,6 +25,7 @@ const Alojamientos = () => {
     const [loading, setLoading] = useState(false);
     const [categoria, setCategoria] = useState("");
     const [categorias, setCategorias] = useState([]);
+    const token = localStorage.getItem("token")
 
     useEffect(() => {
         api.get("/alojamientos")
@@ -154,6 +155,7 @@ const Alojamientos = () => {
             api.put(`/alojamientos/${servicioEditando}`, nuevoServicio, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             })
             .then(response => {
@@ -174,7 +176,12 @@ const Alojamientos = () => {
             });
 
         } else {
-            api.post("/alojamientos", nuevoServicio)
+            api.post("/alojamientos", nuevoServicio, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response => {
                     setServicios(prev => [...prev, response.data]);
                     Swal.fire({
@@ -207,7 +214,7 @@ const Alojamientos = () => {
         setModalAbierto(false);
     };
     
-      const handleDelete = (id) => {
+      const handleDelete = (id) => {     
         Swal.fire({
           title: "¿Estás seguro?",
           text: "No podrás revertir esta acción!",
@@ -224,7 +231,11 @@ const Alojamientos = () => {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            api.delete(`/alojamientos/${id}`)
+            api.delete(`/alojamientos/${id}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              })
               .then(() => {
                 setServicios(prev => prev.filter(servicio => servicio.id !== id));
                 Swal.fire({
