@@ -1,0 +1,29 @@
+@use "colors";
+@use "sass:color";
+
+.loading-message {
+  color: colors.$primary;
+  font-size: 17px;
+  font-weight: bold;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  width: 100%;
+
+  animation: loading-msg-animation 1s infinite;
+}
+
+@keyframes loading-msg-animation {
+  0% {
+    transform: scale(1);
+    color: colors.$primary;
+  }
+  50% {
+    transform: scale(1.01);
+    color: color.adjust(colors.$primary, $whiteness: 50%);
+  }
+  100% {
+    transform: scale(1);
+    color: colors.$primary;
+  }
+}

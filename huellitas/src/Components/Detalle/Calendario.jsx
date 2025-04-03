@@ -1,32 +1,30 @@
-import  { useState } from "react";
+import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../../Styles/Detalle/Calendario.scss"; // Archivo CSS para estilos personalizados
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
-  const [fechas, setFechas] = useState([null, null]); // [fechaInicio, fechaFin]
-  const [fechaTemporal, setFechaTemporal] = useState(null); // Fecha temporal para la selección
+  const [fechas, setFechas] = useState([null, null]);
+  const [fechaTemporal, setFechaTemporal] = useState(null);
 
-  // Fechas iniciales para los calendarios
   const hoy = new Date();
-  const mesActual = new Date(hoy.getFullYear(), hoy.getMonth(), 1); // Primer día del mes actual
-  const mesSiguiente = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1); // Primer día del mes siguiente
+  const mesActual = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const mesSiguiente = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
 
   const handleDateChange = (fechaSeleccionada) => {
     if (!fechas[0]) {
-      // Si no hay fecha de inicio, la establecemos
       setFechas([fechaSeleccionada, null]);
       setFechaTemporal(fechaSeleccionada);
     } else if (!fechas[1]) {
-      // Si hay fecha de inicio pero no de fin, establecemos la fecha de fin
-      const nuevaFechaInicio = fechaSeleccionada < fechas[0] ? fechaSeleccionada : fechas[0];
-      const nuevaFechaFin = fechaSeleccionada < fechas[0] ? fechas[0] : fechaSeleccionada;
+      const nuevaFechaInicio =
+        fechaSeleccionada < fechas[0] ? fechaSeleccionada : fechas[0];
+      const nuevaFechaFin =
+        fechaSeleccionada < fechas[0] ? fechas[0] : fechaSeleccionada;
       setFechas([nuevaFechaInicio, nuevaFechaFin]);
       onChange([nuevaFechaInicio, nuevaFechaFin]);
-      setFechaTemporal(null); // Reiniciamos la fecha temporal
+      setFechaTemporal(null);
     } else {
-      // Si ambas fechas están seleccionadas, reiniciamos la selección
       setFechas([fechaSeleccionada, null]);
       setFechaTemporal(fechaSeleccionada);
     }
@@ -43,17 +41,15 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
 
   const tileClassName = ({ date, view }) => {
     if (view === "month") {
-      // Deshabilitar y colorear fechas anteriores a hoy
       if (date <= hoy) {
-        return "fecha-pasada"; // Clase CSS para fechas pasadas
+        return "fecha-pasada";
       }
-      // Colorear el rango seleccionado
       if (fechas[0] && fechas[1]) {
         const fecha = date.getTime();
         const inicio = fechas[0].getTime();
         const fin = fechas[1].getTime();
         if (fecha >= inicio && fecha <= fin) {
-          return "rango-seleccionado"; // Clase CSS para el rango seleccionado
+          return "rango-seleccionado";
         }
       }
     }
@@ -63,7 +59,10 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
   return (
     <div className="calendario-disponibilidad">
       <h3 className="calendario-titulo">{mensaje}</h3>
-      <div className="calendario-disponibilidad-a" style={{ display: "flex", gap: "20px" }}>
+      <div
+        className="calendario-disponibilidad-a"
+        style={{ display: "flex", gap: "20px" }}
+      >
         <div>
           <Calendar
             onChange={handleDateChange}
@@ -73,7 +72,7 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
             tileClassName={tileClassName} // Aplicar estilos personalizados
             minDate={hoy} // Restringir fechas anteriores a hoy
             defaultActiveStartDate={mesActual}
-            showFixedNumberOfWeeks 
+            showFixedNumberOfWeeks
           />
         </div>
         <div>
@@ -89,7 +88,6 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
           />
         </div>
       </div>
-      
     </div>
   );
   // eslint-disable-next-line no-unreachable
@@ -98,7 +96,6 @@ const Calendario = ({ mensaje, onChange, fechasReservadas }) => {
     onChange: PropTypes.func,
     fechasReservadas: PropTypes.arrayOf(PropTypes.string),
   };
-  
 };
 
 export default Calendario;

@@ -49,20 +49,28 @@ function Galeria() {
             />
           ))}
           {!show && (
-            <Button className="boton_vermas_galeria" variant="primary" onClick={() => setShow(true)}>
+            <Button
+              className="boton_vermas_galeria"
+              variant="primary"
+              onClick={() => setShow(true)}
+            >
               Ver más
             </Button>
           )}
-          {show && <GaleriaModal show={show} setShow={setShow} foto={imagenes} dialogClassName="custom-modal" />}
+          {show && (
+            <GaleriaModal
+              show={show}
+              setShow={setShow}
+              foto={imagenes}
+              dialogClassName="custom-modal"
+            />
+          )}
         </>
       ) : (
-        <p>Cargando imágenes o no hay imágenes disponibles.</p>
+        <p className="loading-message">Cargando imágenes...</p>
       )}
     </div>
   );
 }
 
 export default Galeria;
-
-
-

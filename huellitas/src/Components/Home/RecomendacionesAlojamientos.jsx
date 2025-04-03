@@ -1,9 +1,12 @@
-
 import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 import PropTypes from "prop-types";
 
-const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSuggestions }) => {
+const RecomendacionesAlojamientos = ({
+  selectedCategories,
+  searchQuery,
+  setSuggestions,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
   const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
@@ -17,12 +20,14 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        
+
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
         setFilteredAlojamientos(shuffledAlojamientos);
@@ -38,7 +43,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
     fetchAlojamientos();
   }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     let filtered = alojamientos;
 
     if (searchQuery && searchQuery.length > 0) {
@@ -48,8 +53,10 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
     }
 
     if (selectedCategories && selectedCategories.length > 0) {
-      filtered = filtered.filter((alojamiento) =>
-        alojamiento.categoria && selectedCategories.includes(alojamiento.categoria.id)
+      filtered = filtered.filter(
+        (alojamiento) =>
+          alojamiento.categoria &&
+          selectedCategories.includes(alojamiento.categoria.id)
       );
     }
 
@@ -73,22 +80,27 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
 
   const renderCards = () => {
     const startIndex = (currentPage - 1) * cardsPerPage;
-    const endIndex = Math.min(startIndex + cardsPerPage, filteredAlojamientos.length);
-    return filteredAlojamientos.slice(startIndex, endIndex).map((alojamiento) => (
-      <Card
-        key={alojamiento.id}
-        id={alojamiento.id}
-        title={alojamiento.nombre}
-        description={alojamiento.descripcion}
-        price={alojamiento.precio}
-        imagenes={alojamiento.imagenes}
-        alojamiento={alojamiento}
-      />
-    ));
+    const endIndex = Math.min(
+      startIndex + cardsPerPage,
+      filteredAlojamientos.length
+    );
+    return filteredAlojamientos
+      .slice(startIndex, endIndex)
+      .map((alojamiento) => (
+        <Card
+          key={alojamiento.id}
+          id={alojamiento.id}
+          title={alojamiento.nombre}
+          description={alojamiento.descripcion}
+          price={alojamiento.precio}
+          imagenes={alojamiento.imagenes}
+          alojamiento={alojamiento}
+        />
+      ));
   };
 
   if (loading) {
-    return <p>Cargando recomendaciones...</p>;
+    return <p className="loading-message">Cargando recomendaciones...</p>;
   }
 
   if (error) {
@@ -99,10 +111,15 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
     <main className="main__recomendaciones">
       <h1>Recomendaciones</h1>
       <p>
-        Mostrando {filteredAlojamientos.length} de {totalAlojamientos} alojamientos
+        Mostrando {filteredAlojamientos.length} de {totalAlojamientos}{" "}
+        alojamientos
       </p>
       <section className="main__recomendaciones__grid">
-        {filteredAlojamientos.length ? renderCards() : <p>No se han encontrado resultados</p>}
+        {filteredAlojamientos.length ? (
+          renderCards()
+        ) : (
+          <p>No se han encontrado resultados</p>
+        )}
       </section>
 
       {totalPages > 1 && (
@@ -113,7 +130,10 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, setSugge
           <span>
             Página {currentPage} de {totalPages}
           </span>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
             Siguiente
           </button>
         </div>
