@@ -58,7 +58,9 @@
     gap: 1rem;
     transition: transform 0.5s ease-in-out;
     width: fit-content;
+    margin-top: 5px;
   }
+
 
   .card__container {
     display: flex;
@@ -123,6 +125,11 @@
         color: #777;
       }
     }
+  }
+
+  .selected{
+    border: 2px solid colors.$primary;
+    padding: 2px;
   }
 
   .prev-btn, .next-btn {
@@ -213,6 +220,9 @@
       font-size: 1.2rem;
     }
   }
+
+
+
 }
 
 

@@ -84,11 +84,11 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
     <section className="main__categorias">
       <div className="categorias__header">
         <h2>Categorías</h2>
-        {selectedCategories && (
-          <button className="clear-filter-btn" onClick={handleClearLocalFilter}>
-            Borrar Filtros
-          </button>
-        )}
+        {selectedCategories.length > 0 && ( // Solo muestra el botón si hay categorías seleccionadas
+        <button className="clear-filter-btn" onClick={handleClearLocalFilter}>
+          Borrar Filtros
+        </button>
+         )}
       </div>
   
       <div className="carousel-container">
@@ -104,7 +104,7 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
                 alt={`Imagen de ${categoria.nombre}`}
                 cantidad={categoria.alojamientosCount}
                 onClick={() => handleCardClick(categoria.id)}
-                isSelected={selectedCategories.some((cat) => cat.id === categoria.id)}
+                isSelected={selectedCategories.includes(categoria.id)} 
               />
             ))}
           </div>

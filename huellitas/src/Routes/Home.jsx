@@ -44,29 +44,28 @@ const Home = () => {
       );
     }
   
-    setFilteredAlojamientos((prevFiltered) => {
-      if (JSON.stringify(prevFiltered) !== JSON.stringify(filtered)) {
-        return filtered;
-      }
-      return prevFiltered;
-    });
+    setFilteredAlojamientos(filtered);
   
     console.log("Alojamientos filtrados", filtered.length);
+    console.log("Categorías seleccionadas", selectedCategories);
   }, [searchQuery, selectedCategories, alojamientos]);
   
-  
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (categoryId) => {
     setSelectedCategories((prevCategories) => {
-      const isSelected = prevCategories.some((cat) => cat.id === category.id);
+      const isSelected = prevCategories.includes(categoryId);
+      console.log("Nueva selección de categorías", isSelected);
       return isSelected
-        ? prevCategories.filter((cat) => cat.id !== category.id) // Quitar si ya está
-        : [...prevCategories, category]; // Agregar si no estaba
+        ? prevCategories.filter((id) => id !== categoryId) // Quitar si ya está
+        : [...prevCategories, categoryId]; // Agregar si no estaba
     });
-  }
+  };
+  
 
+  
   const handleClearCategoryFilter = () => {
     setSelectedCategories([]);
   };
+  
 
   if (loading) {
     return <p>Cargando alojamientos...</p>;
