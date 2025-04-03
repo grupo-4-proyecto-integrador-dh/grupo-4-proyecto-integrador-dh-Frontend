@@ -17,6 +17,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [] }) =>
 
   // Filtrar sugerencias usando useMemo para optimizar el cálculo
   const sugerenciasMemo = useMemo(() => {
+    console.log(searchQuery)
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>

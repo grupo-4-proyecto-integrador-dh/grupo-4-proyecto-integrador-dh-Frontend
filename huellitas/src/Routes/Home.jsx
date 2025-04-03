@@ -30,6 +30,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log(searchQuery);
     let filtered = alojamientos;
   
     if (searchQuery) {
@@ -40,11 +41,12 @@ const Home = () => {
   
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((alojamiento) =>
-        selectedCategories.some((cat) => cat.id === alojamiento.categoria.id)
+        selectedCategories.includes(alojamiento.categoria.id)
       );
     }
   
     setFilteredAlojamientos(filtered);
+    console.log(filteredAlojamientos)
   
     console.log("Alojamientos filtrados", filtered.length);
     console.log("Categorías seleccionadas", selectedCategories);
@@ -53,14 +55,11 @@ const Home = () => {
   const handleCategoryClick = (categoryId) => {
     setSelectedCategories((prevCategories) => {
       const isSelected = prevCategories.includes(categoryId);
-      console.log("Nueva selección de categorías", isSelected);
       return isSelected
         ? prevCategories.filter((id) => id !== categoryId) // Quitar si ya está
         : [...prevCategories, categoryId]; // Agregar si no estaba
     });
   };
-  
-
   
   const handleClearCategoryFilter = () => {
     setSelectedCategories([]);
@@ -85,6 +84,7 @@ const Home = () => {
       />
       <RecomendacionesAlojamientos
         filteredAlojamientos={filteredAlojamientos}
+        setFilteredAlojamientos={setFilteredAlojamientos}
         selectedCategories={selectedCategories}
       />
     </div>
