@@ -13,30 +13,32 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
   const itemsPerPage = 3;
   const cardWidthWithGap = 196;
 
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/categorias"
+        );
+        setCategorias(response.data);
+      } catch (error) {
+        console.error("Error al cargar las categorías:", error);
+      }
+    };
 
-    useEffect(() => {
-        const fetchCategorias = async () => {
-            try {
-                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/categorias");
-                setCategorias(response.data);
-            } catch (error) {
-                console.error("Error al cargar las categorías:", error);
-            }
-        };
-
-        const fetchAlojamientos = async () => {
-            try {
-                const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
-                setAlojamientos(response.data);
-            } catch (error) {
-                console.error("Error al cargar los alojamientos:", error);
-            }
-        };
+    const fetchAlojamientos = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
+        );
+        setAlojamientos(response.data);
+      } catch (error) {
+        console.error("Error al cargar los alojamientos:", error);
+      }
+    };
 
     fetchCategorias();
     fetchAlojamientos();
   }, []);
-
 
   useEffect(() => {
     if (categorias.length > 0 && alojamientos.length > 0) {
@@ -47,16 +49,15 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
         }
         return acc;
       }, {});
-  
+
       const nuevasCategorias = categorias.map((categoria) => ({
         ...categoria,
         alojamientosCount: conteoAlojamientos[categoria.id] || 0,
       }));
-  
+
       setCategoriasConCantidad(nuevasCategorias);
     }
   }, [categorias, alojamientos]);
-
 
   const nextSlide = () => {
     if (index < categorias.length - itemsPerPage) {
@@ -70,11 +71,9 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
     }
   };
 
-
   const handleCardClick = (categoryId) => {
     onCategoryClick(categoryId);
   };
-  
 
   const handleClearLocalFilter = () => {
     onClearCategoryFilter();
@@ -90,12 +89,17 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
         </button>
          )}
       </div>
-  
+
       <div className="carousel-container">
-        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>‹</button>
-  
+        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>
+          <p>‹</p>
+        </button>
+
         <div className="carousel-slider" ref={sliderRef}>
-          <div className="carousel-track" style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}>
+          <div
+            className="carousel-track"
+            style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}
+          >
             {categoriasConCantidad.map((categoria) => (
               <CategoriaCard
                 key={categoria.id}
@@ -109,13 +113,18 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
             ))}
           </div>
         </div>
-  
-        <button className="next-btn" onClick={nextSlide} disabled={index >= categorias.length - itemsPerPage}>›</button>
+
+        <button
+          className="next-btn"
+          onClick={nextSlide}
+          disabled={index >= categorias.length - itemsPerPage}
+        >
+          <p>›</p>
+        </button>
       </div>
     </section>
   );
 };
-
 
 CategoriasAlojamientos.propTypes = {
   onCategoryClick: PropTypes.func.isRequired,

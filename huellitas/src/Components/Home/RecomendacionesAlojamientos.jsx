@@ -22,12 +22,14 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, filtered
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
+        setFilteredAlojamientos(shuffledAlojamientos);
         setTotalAlojamientos(shuffledAlojamientos.length);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error al obtener los alojamientos:", err);
+      } catch (error) {
+        setError(error.message);
+        console.error("Error al obtener los alojamientos:", error);
       } finally {
         setLoading(false);
       }
@@ -95,7 +97,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, filtered
   };
 
   if (loading) {
-    return <p>Cargando recomendaciones...</p>;
+    return <p className="loading-message">Cargando recomendaciones...</p>;
   }
 
   if (error) {
@@ -138,13 +140,15 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, filtered
 };
 
 RecomendacionesAlojamientos.propTypes = {
+  selectedCategories: PropTypes.array,
   searchQuery: PropTypes.string,
-  setSuggestions: PropTypes.func, // Cambia a no requerido
+  setSuggestions: PropTypes.func,
 };
 
 RecomendacionesAlojamientos.defaultProps = {
+  selectedCategories: [],
   searchQuery: "",
-  setSuggestions: () => {}, // Define un valor por defecto
+  setSuggestions: () => {},
 };
 
 export default RecomendacionesAlojamientos;

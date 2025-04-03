@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "../Styles/Detalle.scss";
 import Swal from "sweetalert2";
+import Galeria from "../Components/Detalle/Galeria";
 import Calendario from "../Components/Detalle/Calendario";
 import Galeria from "../Components/Detalle/Galeria";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
@@ -47,7 +48,7 @@ const Detalle = () => {
 
     if (token) {
       setToken(token);
-      setIsLogin(true)
+      setIsLogin(true);
     }
 
     if (user) {
@@ -208,7 +209,7 @@ const Detalle = () => {
     } else {
       setAlojamiento(location.state);
     }
-  }, [id, location.state]);
+  }, [id, location.state, url_base]);
 
   useEffect(() => {
     if (alojamiento) {
@@ -229,25 +230,27 @@ const Detalle = () => {
               fechaInicio: new Date(reserva.fechaDesde),
               fechaFin: new Date(reserva.fechaHasta),
             }));
-            setFechasReservadas(fechasReservadas);
+            setFechasReservadas(fechas);
           } else {
             console.warn("No hay reservas para este alojamiento.");
             setFechasReservadas([]);
           }
         })
-        .catch((error) => console.error("Error al obtener las reservas:", error));
+        .catch((error) =>
+          console.error("Error al obtener las reservas:", error)
+        );
     }
-  }, [alojamiento, id]);
+  }, [alojamiento, id, url_base]);
 
   const handleReserveClick = () => {
     if (!isLogin) {
       Swal.fire({
-        title: '¿Quién está ahí?',
-        text: 'Para poder realizar reservas, debes iniciar sesión con tu usuario.',
-        icon: 'question',
-        confirmButtonText: 'Iniciar sesión',
+        title: "¿Quién está ahí?",
+        text: "Para poder realizar reservas, debes iniciar sesión con tu usuario.",
+        icon: "question",
+        confirmButtonText: "Iniciar sesión",
         showCancelButton: true,
-        cancelButtonText: 'Por ahora no',
+        cancelButtonText: "Por ahora no",
         preConfirm: () => {
           navigate('/login?from=reservation', { state: { from: location } });
         }
@@ -621,14 +624,12 @@ const Detalle = () => {
       }
   };
 
-  
-
   if (!alojamiento) {
     return <div>Cargando...</div>;
   }
 
   return (
-    <div>
+    <div className="reserva-container">
       <button className="back-button" onClick={() => navigate("/")}>
         ⬅ Volver
       </button>
@@ -647,10 +648,14 @@ const Detalle = () => {
               </button>
             </div>
             <Galeria imagenes={alojamiento.imagenes} />
+            <span className="service-container__top-info">
+              <h1 className="hospedaje-premium">{alojamiento.nombre}</h1>
+              <p className="service-container__top-info__price">{`$ ${alojamiento.precio}`}</p>
+            </span>
             <div className="servicio-detalle">
-              <h3>Descripción:</h3>
+              <h2>Descripción:</h2>
               <p>{alojamiento.descripcion}</p>
-              <h3>{`$ ${alojamiento.precio}`}</h3>
+              <strong>{`Precio por noche $ ${alojamiento.precio}`}</strong>
             </div>
 
             {!mostrarCalendario && (

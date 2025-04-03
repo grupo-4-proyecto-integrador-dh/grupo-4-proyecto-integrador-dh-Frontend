@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filteredAlojamientos, setFilteredAlojamientos}) => {
   const [fechaInicio, setFechaInicio] = useState(null);
   const [fechaFin, setFechaFin] = useState(null);
+  const [sugerencias, setSugerencias] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [showEmptySearchMessage, setShowEmptySearchMessage] = useState(false);
@@ -53,17 +54,16 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filt
     if (searchQuery.length > 1) {
       const nuevasSugerencias = Array.isArray(alojamientos)
         ? alojamientos.filter((alojamiento) =>
-            alojamiento.nombre && searchQuery &&
             alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
           )
         : [];
       setSugerencias(nuevasSugerencias);
       setMostrarSugerencias(nuevasSugerencias.length > 0);
-      setShowEmptySearchMessage(false); 
+      setShowEmptySearchMessage(false);
     } else {
-      setSugerencias([]);
+      setSugerencias([]); // 🔹 También corregido aquí
       setMostrarSugerencias(false);
-      setShowEmptySearchMessage(false); 
+      setShowEmptySearchMessage(false);
     }
   }, [searchQuery, alojamientos]);
 
@@ -77,6 +77,7 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filt
   const handleSearch = async () => {
     // Verificar si el campo de búsqueda está vacío
     if (searchQuery.trim() === "") {
+      setShowEmptySearchMessage(true);
       setShowEmptySearchMessage(true);
     } else if (selectedSuggestion) {
       const alojamiento = selectedSuggestion; // El alojamiento seleccionado
@@ -165,7 +166,10 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filt
         {mostrarSugerencias && (
           <ul className="busqueda-sugerencias">
             {sugerencias.map((sugerencia, index) => (
-              <li key={index} onClick={() => handleSuggestionClick(sugerencia)}>
+              <li
+                key={index}
+                onMouseDown={() => handleSuggestionClick(sugerencia)}
+              >
                 <span className="busqueda-sugerencia-item">
                   <FaPaw className="sugerencia-icono" />
                   <strong>{sugerencia.nombre}</strong>
@@ -175,12 +179,14 @@ const ApartadoBusqueda = ({ searchQuery, setSearchQuery, alojamientos = [], filt
           </ul>
         )}
         {showEmptySearchMessage && (
-          <div className="empty-search-message">Por favor, ingrese un alojamiento a buscar.</div>
+          <div className="empty-search-message">
+            Por favor, ingrese un alojamiento a buscar.
+          </div>
         )}
       </div>
 
       <div className="busqueda-fechas">
-      <DatePicker
+        <DatePicker
           selected={fechaInicio}
           onChange={(date) => setFechaInicio(date)}
           selectsStart
@@ -221,4 +227,3 @@ ApartadoBusqueda.propTypes = {
 };
 
 export default ApartadoBusqueda;
-

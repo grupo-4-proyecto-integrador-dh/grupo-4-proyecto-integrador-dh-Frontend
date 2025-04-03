@@ -1,7 +1,6 @@
 @use "colors";
 @use "sass:color";
 
-
 .main__categorias {
   display: flex;
   flex-direction: column;
@@ -9,6 +8,7 @@
   padding: 2rem;
   overflow: hidden;
   text-align: left;
+  height: max-content;
 
   .categorias__header {
     display: flex;
@@ -19,21 +19,25 @@
     margin-bottom: 1.5rem;
 
     h2 {
-      color: #333;
+      font-family: "Martian Mono", monospace;
+      font-weight: bold;
+      color: colors.$primary;
       font-size: 1.5rem;
-      margin: 0; 
+      margin: 0;
     }
     .clear-filter-btn {
-      background-color: #e74c3c;
+      background-color: colors.$primary;
       color: white;
-      border: none;
+      border: 1px solid transparent;
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #c0392b;
+        background-color: white;
+        color: #e76f51;
+        border: 1px solid #e76f51;
       }
     }
   }
@@ -48,8 +52,10 @@
   }
 
   .carousel-slider {
+    padding: 14px;
     overflow: hidden;
     width: 80%;
+    min-height: 248px;
     max-width: 1000px;
   }
 
@@ -58,12 +64,17 @@
     gap: 1rem;
     transition: transform 0.5s ease-in-out;
     width: fit-content;
-    margin-top: 5px;
   }
 
-
+  @keyframes show-card {
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
   .card__container {
     display: flex;
+    opacity: 0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -71,14 +82,26 @@
     gap: 1rem;
     border-radius: 12px;
     padding: 1rem;
-    width: 180px; 
+    width: 180px;
     height: 220px;
+    transform: scale(0);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: show-card 600ms 100ms cubic-bezier(0.61, 0.59, 0.07, 1.04)
+      forwards;
     cursor: pointer;
 
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
+      .categorias__card {
+        background-color: colors.$light;
+      }
+
+      img {
+        transform: scale(1.1);
+        filter: grayscale(0%);
+      }
     }
 
     .categorias__card {
@@ -92,21 +115,12 @@
       background-color: rgba(0, 0, 0, 0.05);
       transition: background-color 0.3s ease;
 
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
         filter: grayscale(30%);
-        
-        &:hover {
-          transform: scale(1.1);
-          filter: grayscale(0%);
-        }
       }
     }
 
@@ -132,12 +146,16 @@
     padding: 2px;
   }
 
-  .prev-btn, .next-btn {
-    background-color: rgba(0, 0, 0, 0.5);
+  .prev-btn,
+  .next-btn {
+    background-color: colors.$primary;
     color: white;
     border: none;
+    aspect-ratio: 1 / 1;
+    height: 55px;
+    border-radius: 50%;
     padding: 10px 15px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     cursor: pointer;
     position: absolute;
     top: 50%;
@@ -145,8 +163,16 @@
     z-index: 10;
     transition: background 0.3s ease;
 
+    p {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+    }
+
     &:hover {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: color.mix(colors.$primary, colors.$white, 50%);
     }
 
     &:disabled {
@@ -155,34 +181,39 @@
     }
   }
 
-  .prev-btn { left: 10px; }
-  .next-btn { right: 10px; }
+  .prev-btn {
+    left: 10px;
+  }
+  .next-btn {
+    right: 10px;
+  }
 
   @media (max-width: 768px) {
     .carousel-slider {
-      width: 100%; 
+      width: 100%;
     }
 
     .card__container {
-      width: 150px; 
-      height: 200px; 
+      width: 150px;
+      height: 200px;
     }
 
     .categorias__card {
-      width: 80px; 
+      width: 80px;
       height: 80px;
     }
 
     .categorias__card__info p {
-      font-size: 0.9rem; 
+      font-size: 0.9rem;
     }
 
     .categorias__card__info .cantidad {
-      font-size: 0.8rem;  
+      font-size: 0.8rem;
     }
 
-    .prev-btn, .next-btn {
-      font-size: 1.2rem; 
+    .prev-btn,
+    .next-btn {
+      font-size: 1.2rem;
       padding: 8px 12px;
     }
 
@@ -192,27 +223,28 @@
     }
 
     .categorias__header h2 {
-      font-size: 1.3rem;  
+      font-size: 1.3rem;
     }
 
     .clear-filter-btn {
-      padding: 8px 12px;  
+      padding: 8px 12px;
     }
   }
 
   @media (max-width: 480px) {
     .card__container {
-      width: 130px; 
+      width: 130px;
       height: 180px;
     }
 
     .categorias__card {
-      width: 70px; 
+      width: 70px;
       height: 70px;
     }
 
-    .prev-btn, .next-btn {
-      font-size: 1rem; 
+    .prev-btn,
+    .next-btn {
+      font-size: 1rem;
       padding: 6px 10px;
     }
 
@@ -220,13 +252,7 @@
       font-size: 1.2rem;
     }
   }
-
-
-
 }
-
-
-
 
 .main__recomendaciones {
   display: flex;
@@ -237,6 +263,8 @@
   align-items: center;
 
   h1 {
+    font-family: "Martian Mono", monospace;
+    font-weight: bold;
     color: colors.$primary;
     font-size: 2rem;
     font-weight: bold;
@@ -272,7 +300,7 @@
       transition: background 0.3s ease;
 
       &:hover {
-        background-color: color.adjust(colors.$primary, $lightness: -10%)
+        background-color: color.adjust(colors.$primary, $lightness: -10%);
       }
 
       &:disabled {
@@ -406,8 +434,6 @@
     }
   }
 }
-
-
 
 @media (max-width: 768px) {
   .main__recomendaciones__grid {

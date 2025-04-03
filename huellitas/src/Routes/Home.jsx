@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import axios from "axios";
 import ApartadoBusqueda from "../Components/Home/ApartadoBusqueda";
 import CategoriasAlojamientos from "../Components/Home/CategoriasAlojamientos";
@@ -17,7 +17,9 @@ const Home = () => {
     const fetchAlojamientos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
+        );
         setAlojamientos(response.data);
       } catch (error) {
         console.error("Error al cargar los alojamientos:", error);
@@ -32,7 +34,7 @@ const Home = () => {
   useEffect(() => {
     console.log(searchQuery);
     let filtered = alojamientos;
-  
+
     if (searchQuery) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
@@ -67,7 +69,7 @@ const Home = () => {
   
 
   if (loading) {
-    return <p>Cargando alojamientos...</p>;
+    return <p className="loading-message">Cargando alojamientos...</p>;
   }
 
   return (
