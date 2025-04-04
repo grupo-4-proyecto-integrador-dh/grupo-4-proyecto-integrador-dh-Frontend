@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import axios from "axios";
 import ApartadoBusqueda from "../Components/Home/ApartadoBusqueda";
 import CategoriasAlojamientos from "../Components/Home/CategoriasAlojamientos";
@@ -17,7 +17,9 @@ const Home = () => {
     const fetchAlojamientos = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(import.meta.env.VITE_BACKEND_URL + "/alojamientos");
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + "/alojamientos"
+        );
         setAlojamientos(response.data);
       } catch (error) {
         console.error("Error al cargar los alojamientos:", error);
@@ -30,8 +32,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log(searchQuery);
     let filtered = alojamientos;
-  
+
     if (searchQuery) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
@@ -40,36 +43,33 @@ const Home = () => {
   
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((alojamiento) =>
-        selectedCategories.some((cat) => cat.id === alojamiento.categoria.id)
+        selectedCategories.includes(alojamiento.categoria.id)
       );
     }
   
-    setFilteredAlojamientos((prevFiltered) => {
-      if (JSON.stringify(prevFiltered) !== JSON.stringify(filtered)) {
-        return filtered;
-      }
-      return prevFiltered;
-    });
+    setFilteredAlojamientos(filtered);
+    console.log(filteredAlojamientos)
   
     console.log("Alojamientos filtrados", filtered.length);
+    console.log("Categorías seleccionadas", selectedCategories);
   }, [searchQuery, selectedCategories, alojamientos]);
   
-  
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (categoryId) => {
     setSelectedCategories((prevCategories) => {
-      const isSelected = prevCategories.some((cat) => cat.id === category.id);
+      const isSelected = prevCategories.includes(categoryId);
       return isSelected
-        ? prevCategories.filter((cat) => cat.id !== category.id) // Quitar si ya está
-        : [...prevCategories, category]; // Agregar si no estaba
+        ? prevCategories.filter((id) => id !== categoryId) // Quitar si ya está
+        : [...prevCategories, categoryId]; // Agregar si no estaba
     });
-  }
-
+  };
+  
   const handleClearCategoryFilter = () => {
     setSelectedCategories([]);
   };
+  
 
   if (loading) {
-    return <p>Cargando alojamientos...</p>;
+    return <p className="loading-message">Cargando alojamientos...</p>;
   }
 
   return (
@@ -78,6 +78,8 @@ const Home = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         alojamientos={alojamientos}
+        filteredAlojamientos={filteredAlojamientos}
+        setFilteredAlojamientos={setFilteredAlojamientos}
       />
       <CategoriasAlojamientos
         onCategoryClick={handleCategoryClick}
@@ -86,6 +88,7 @@ const Home = () => {
       />
       <RecomendacionesAlojamientos
         filteredAlojamientos={filteredAlojamientos}
+        setFilteredAlojamientos={setFilteredAlojamientos}
         selectedCategories={selectedCategories}
       />
     </div>

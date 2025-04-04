@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import Card from "../Home/CardRecomendaciones";
 import PropTypes from "prop-types";
 
-const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
+const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, filteredAlojamientos, setFilteredAlojamientos }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [alojamientos, setAlojamientos] = useState([]);
-  const [filteredAlojamientos, setFilteredAlojamientos] = useState([]);
   const [totalAlojamientos, setTotalAlojamientos] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const cardsPerPage = 5;
+  const cardsPerPage = 10;
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
@@ -23,12 +22,14 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+
         const shuffledAlojamientos = data.sort(() => Math.random() - 0.5);
         setAlojamientos(shuffledAlojamientos);
+        setFilteredAlojamientos(shuffledAlojamientos);
         setTotalAlojamientos(shuffledAlojamientos.length);
-      } catch (err) {
-        setError(err.message);
-        console.error("Error al obtener los alojamientos:", err);
+      } catch (error) {
+        setError(error.message);
+        console.error("Error al obtener los alojamientos:", error);
       } finally {
         setLoading(false);
       }
@@ -39,13 +40,13 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
 
   useEffect(() => {
     let filtered = alojamientos;
-
+  
     if (searchQuery && searchQuery.length > 0) {
       filtered = filtered.filter((alojamiento) =>
         alojamiento.nombre.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+  
     if (selectedCategories && selectedCategories.length > 0) {
       filtered = filtered.filter(
         (alojamiento) =>
@@ -53,10 +54,16 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
           selectedCategories.includes(alojamiento.categoria.id)
       );
     }
-
-    setFilteredAlojamientos(filtered);
-    setCurrentPage(1);
-  }, [searchQuery, selectedCategories, alojamientos]);
+  
+    // Solo actualizar si realmente ha cambiado
+    if (JSON.stringify(filtered) !== JSON.stringify(filteredAlojamientos)) {
+      setFilteredAlojamientos(filtered);
+    }
+  
+    setCurrentPage(1); // Esto reinicia la página al cambiar el filtro
+  }, [searchQuery, selectedCategories, alojamientos]); // No incluir filteredAlojamientos como dependencia
+  
+  
 
   const totalPages = Math.ceil(filteredAlojamientos.length / cardsPerPage);
 
@@ -90,7 +97,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
   };
 
   if (loading) {
-    return <p>Cargando recomendaciones...</p>;
+    return <p className="loading-message">Cargando recomendaciones...</p>;
   }
 
   if (error) {
@@ -133,13 +140,15 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery }) => {
 };
 
 RecomendacionesAlojamientos.propTypes = {
+  selectedCategories: PropTypes.array,
   searchQuery: PropTypes.string,
-  setSuggestions: PropTypes.func, // Cambia a no requerido
+  setSuggestions: PropTypes.func,
 };
 
 RecomendacionesAlojamientos.defaultProps = {
+  selectedCategories: [],
   searchQuery: "",
-  setSuggestions: () => {}, // Define un valor por defecto
+  setSuggestions: () => {},
 };
 
 export default RecomendacionesAlojamientos;
