@@ -240,11 +240,22 @@
     .categorias__card {
       width: 70px;
       height: 70px;
+
+      img {
+        object-fit: scale-down!important;
+      }
+    }
+
+    
+
+    .categorias__card__info {
+      text-align: center;
+      margin-top: 10px;
     }
 
     .prev-btn,
     .next-btn {
-      font-size: 1rem;
+      font-size: 32px;
       padding: 6px 10px;
     }
 

@@ -82,8 +82,14 @@ const Header = () => {
         </div>
 
         {/* Botón del menú responsive */}
-        <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          ☰
+        <button 
+          className="menu-toggle" 
+          onClick={() => {
+          setIsMobileMenuOpen(!isMobileMenuOpen);
+          setMenuOpen(!menuOpen);
+        }}
+        >
+         ☰
         </button>
 
         {/* Contenedor de enlaces y usuario */}
