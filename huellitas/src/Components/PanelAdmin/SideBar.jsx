@@ -9,9 +9,6 @@ const Sidebar = ({ onSectionChange }) => {
                 <li onClick={() => onSectionChange("alojamientos")}>
                     <FaHome /> Gestión de Alojamientos
                 </li>
-                <li onClick={() => onSectionChange("reservas")}>
-                    <FaClipboardList /> Gestión de Reservas
-                </li>
                 <li onClick={() => onSectionChange("usuarios")}>
                     <FaUserGroup /> Gestión de Usuarios
                 </li>
