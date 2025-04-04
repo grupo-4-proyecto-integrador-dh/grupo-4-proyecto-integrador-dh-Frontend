@@ -8,7 +8,7 @@ const RecomendacionesAlojamientos = ({ selectedCategories, searchQuery, filtered
   const [totalAlojamientos, setTotalAlojamientos] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const cardsPerPage = 5;
+  const cardsPerPage = 10;
 
   useEffect(() => {
     const fetchAlojamientos = async () => {
