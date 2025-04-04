@@ -3,12 +3,12 @@ import "../Styles/ConfirmacionPage.css";
 
 export default function ConfirmacionPage() {
   const location = useLocation();
-  const { reserva, usuario } = location.state || {};
+  const { reservaData } = location.state || {};
 
-  if (!reserva || !usuario) {
+  if (!reservaData) {
     return (
-      <div className="container">
-        <h1 className="title">Error</h1>
+      <div className="container_confirmacion_page">
+        <h1 className="title_confirmacion_page">Error</h1>
         <p>
           No se encontraron datos de la reserva. Por favor, vuelve a intentarlo.
         </p>
@@ -17,32 +17,32 @@ export default function ConfirmacionPage() {
   }
 
   return (
-    <div className="container">
-      <h1 className="title">¡Reserva confirmada!</h1>
+    <div className="container_confirmacion_page">
+      <h1 className="title_confirmacion_page">¡Reserva confirmada!</h1>
       <p>
-        Gracias por tu reserva, {usuario.nombre} {usuario.apellido}. Aquí tienes
+        Gracias por tu reserva, {reservaData.clienteNombre} {reservaData.clienteApellido}. Aquí tienes
         los detalles:
       </p>
-      <div className="card">
-        <div className="card-content">
-          <h2 className="subtitle">Detalles del alojamiento</h2>
+      <div className="card_confirmacion_page">
+        <div className="card-content_confirmacion_page">
+          <h2 className="subtitle_confirmacion_page">Detalles del alojamiento</h2>
           <p>
-            <strong>🏡 Nombre:</strong> {reserva.alojamiento.nombre}
+            <strong>🏡 Nombre:</strong> {reservaData.alojamientoNombre}
           </p>
           <p>
-            <strong>📌 Descripción:</strong> {reserva.alojamiento.descripcion}
+            <strong>📌 Descripción:</strong> {reservaData.alojamientoDescripcion}
           </p>
           <p>
-            <strong>📅 Fechas:</strong> {reserva.fechaDesde} -{" "}
-            {reserva.fechaHasta}
+            <strong>📅 Fechas:</strong> {reservaData.fechaDesde} -{" "}
+            {reservaData.fechaHasta}
           </p>
           <p>
-            <strong>🐶🐱 Mascota:</strong> {reserva.mascota.nombre}
+            <strong>🐶🐱 Mascota:</strong> {reservaData.mascotaNombre}
           </p>
         </div>
       </div>
       <button
-        className="submit-button"
+        className="submit-button_confirmacion_page"
         onClick={() => (window.location.href = "/")}
       >
         Volver al inicio

@@ -508,13 +508,6 @@ const Detalle = () => {
         navigate("/reserva", { state: { reservaData } });
         
         console.log("Enviando solicitud de reserva con los datos:", reservaData);
-        
-        Swal.fire({
-          title: "Error",
-          text: "No se pudo completar la reserva. Por favor, intenta nuevamente más tarde.",
-          icon: "error",
-          confirmButtonText: "OK"
-        });
       } finally {
         setCargando(false);
       }

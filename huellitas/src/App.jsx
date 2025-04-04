@@ -7,12 +7,11 @@ import NotFoundPage from "./Components/NotFoundPage";
 import Registro from "./Routes/Registro";
 import Login from "./Routes/Login";
 import ProtectedRoute from "./Routes/ProtectedRoute";
-import RegistroReserva from "./Components/Registro/RegistroReserva";
 import RegistroMascota from "./Components/Registro/RegistroMascota";
 import PerfilUsuario from "./Routes/PerfilUsuario";
 import ReservaPage from "./Routes/ReservaPage";
 import ConfirmacionPage from "./Routes/ConfirmacionPage";
-import "./Styles/index.css";
+import "./Styles/index.scss";
 
 function App() {
   return (
@@ -22,6 +21,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/login" element={<Login />} />
+                <Route path="/perfil" element={<PerfilUsuario />} />
           <Route
             path="/administracion"
             element={<ProtectedRoute allowedRoles={["ADMIN"]} />}
@@ -29,6 +29,7 @@ function App() {
             <Route index element={<PanelAdmin />} />
           </Route>
           <Route path="/alojamiento/:id" element={<Detalle />} />
+              <Route path="/RegistroMascota" element={<RegistroMascota />} />
           <Route path="/reserva" element={<ReservaPage />} />
           <Route path="/confirmacion" element={<ConfirmacionPage />} />
           <Route path="*" element={<NotFoundPage />} />

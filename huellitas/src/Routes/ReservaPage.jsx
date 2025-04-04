@@ -11,11 +11,13 @@ const ReservePage = () => {
   const location = useLocation();
   const { reservaData } = location.state || {};
   const url_base = import.meta.env.VITE_BACKEND_URL;
-  const navigate = useNavigate(); // Inicializar useNavigate
+  const navigate = useNavigate();
+  const [aceptaPoliticas, setAceptaPoliticas] = useState(false);
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user")
+ 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
   
     if (token && user && reservaData?.alojamientoId) {
       axios
@@ -31,9 +33,55 @@ const ReservePage = () => {
         .catch((error) => {
           console.error("Error al obtener las imágenes del alojamiento:", error);
         });
-      setUsuario(localStorage.getItem("user"));
+      setUsuario(JSON.parse(localStorage.getItem("user")));
     }
   }, [url_base, reservaData]);
+
+
+  const handleConfirmarReserva = async () => {
+    if (!aceptaPoliticas) {
+      Swal.fire({
+        icon: "warning",
+        title: "Falta aceptar políticas",
+        text: "Debes aceptar las políticas de reserva para continuar.",
+      });
+      return;
+    }
+
+    const reservaDataMinimal = {
+      fechaDesde: reservaData.fechaDesde,
+      fechaHasta: reservaData.fechaHasta,
+      mascotaId: reservaData.mascotaId,
+      alojamientoId: reservaData.alojamientoId,
+      clienteId: usuario.id,
+    };
+    
+    console.log(reservaDataMinimal);
+
+    try {
+      const response = await axios.post(
+        `${url_base}/reservas`,
+        reservaDataMinimal,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Reserva confirmada (primer intento):", response);
+      setTimeout(() => {
+        navigate("/confirmacion", {
+          state: {
+            reservaData,
+          },
+        });
+      }, 2000);
+  
+    } catch (errorPost1) {
+      console.error("Error en el primer intento de reserva:", errorPost1);
+    }
+  }; 
 
 
   return (
@@ -81,7 +129,12 @@ const ReservePage = () => {
             las políticas de cancelación.
           </p>
           <label>
-            <input type="checkbox" required /> Acepto las políticas de reserva
+            <input
+             type="checkbox"
+             checked={aceptaPoliticas}
+             onChange={(e) => setAceptaPoliticas(e.target.checked)}
+            />{" "}
+           Acepto las políticas de reserva
           </label>
         </div>
       </div>
