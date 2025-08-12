@@ -128,27 +128,16 @@ const Alojamientos = () => {
             });
             return;
         }
-    
-        const categoriaId = categorias.find(cat => cat.nombre === categoria)?.id;
-    
-        if (!categoriaId) {
-            Swal.fire({
-                title: "Error",
-                text: "Categoría no válida",
-                icon: "error",
-                customClass: {
-                    confirmButton: "mi-boton-ok",
-                },
-            });
-            return;
-        }
-    
+
+        // The categoria state should already contain the ID from the select
+        const categoriaId = parseInt(categoria); // Convert to number since select values are strings
+
         const nuevoServicio = {
             nombre,
             descripcion,
             precio: parseFloat(precio),
             imagenesUrl: imagenes,
-            categoriaId: categoriaId,
+            categoriaId: categoriaId, // Send the ID directly as expected by the DTO
         };
     
         if (servicioEditando) {
@@ -216,50 +205,71 @@ const Alojamientos = () => {
     
       const handleDelete = (id) => {     
         Swal.fire({
-          title: "¿Estás seguro?",
-          text: "No podrás revertir esta acción!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Sí, eliminar",
-          cancelButtonText: "Cancelar",
-          customClass: {
-            popup: 'mi-popup',
-            title: 'mi-titulo',
-            content: 'mi-contenido',
-            confirmButton: 'mi-boton-confirmar',
-            cancelButton: 'mi-boton-cancelar'
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            api.delete(`/alojamientos/${id}`, {
-                headers: {
-                  Authorization: `Bearer ${token}`
+            title: "¿Estás seguro?",
+            text: "No podrás revertir esta acción!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar",
+            customClass: {
+                popup: 'mi-popup',
+                title: 'mi-titulo',
+                content: 'mi-contenido',
+                confirmButton: 'mi-boton-confirmar',
+                cancelButton: 'mi-boton-cancelar'
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    // First, get all reservations for this alojamiento
+                    const reservasResponse = await api.get(`/reservas/alojamiento/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    // Delete all reservations first
+                    if (reservasResponse.data && reservasResponse.data.length > 0) {
+                        await Promise.all(
+                            reservasResponse.data.map(reserva => 
+                                api.delete(`/reservas/${reserva.id}`, {
+                                    headers: {
+                                        Authorization: `Bearer ${token}`
+                                    }
+                            })
+                        )
+                    );
+                    }
+
+                    // Then delete the alojamiento
+                    await api.delete(`/alojamientos/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    setServicios(prev => prev.filter(servicio => servicio.id !== id));
+                    Swal.fire({
+                        title: "Eliminado",
+                        text: "El alojamiento ha sido eliminado",
+                        icon: "success",
+                        customClass: {
+                            popup: 'mi-popup-exito',
+                            confirmButton: 'mi-boton-ok'
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error al eliminar:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Ocurrió un error al eliminar. Inténtalo nuevamente.",
+                        icon: "error",
+                        customClass: {
+                            confirmButton: "mi-boton-ok",
+                        }
+                    });
                 }
-              })
-              .then(() => {
-                setServicios(prev => prev.filter(servicio => servicio.id !== id));
-                Swal.fire({
-                  title: "Eliminado",
-                  text: "El servicio ha sido eliminado",
-                  icon: "success",
-                  customClass: {
-                    popup: 'mi-popup-exito',
-                    confirmButton: 'mi-boton-ok'
-                  }
-                });
-              })
-              .catch(error => {
-                console.error("Error al eliminar el servicio:", error);
-                Swal.fire({
-                  title: "Error",
-                  text: "Ocurrió un error al eliminar el servicio. Inténtalo nuevamente.",
-                  icon: "error",
-                  customClass: {
-                    confirmButton: "mi-boton-ok",
-                  }
-                });
-              });
-          }
+            }
         });
       };
     

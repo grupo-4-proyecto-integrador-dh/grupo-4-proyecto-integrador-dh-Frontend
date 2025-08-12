@@ -59,18 +59,39 @@ const Categorias = () => {
   };
 
   const agregarCategoria = () => {
-    let imagenUrl = ""; // ✅ Estado para la URL de la imagen
+    let imagenUrl = "";
 
     Swal.fire({
       title: "Agregar Categoría",
       html: `
-                <input id="swal-nombre" class="swal2-input" placeholder="Nombre">
-                <input id="swal-descripcion" class="swal2-input" placeholder="Descripción">
-                <input type="file" id="swal-icono" class="swal2-file">
-                <div id="swal-loading" style="display: none;">Subiendo imagen...</div>
-            `,
+            <input id="swal-nombre" class="swal2-input" placeholder="Nombre">
+            <input id="swal-descripcion" class="swal2-input" placeholder="Descripción">
+            <label class="custom-file-upload">
+                <input type="file" id="swal-icono" class="file-input" accept="image/*">
+                <div class="file-label">
+                    <span>📸 Seleccionar imagen</span>
+                </div>
+                <div id="file-name" class="file-name-display">Ningún archivo seleccionado</div>
+            </label>
+            <div id="swal-loading" style="display: none;">Subiendo imagen...</div>
+        `,
+      didOpen: () => {
+        document
+          .getElementById("swal-icono")
+          .addEventListener("change", function (e) {
+            const fileName = e.target.files[0]
+              ? e.target.files[0].name
+              : "Ningún archivo seleccionado";
+            document.getElementById("file-name").textContent = fileName;
+          });
+      },
       showCancelButton: true,
       confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        confirmButton: "mi-boton-confirmar",
+        cancelButton: "mi-boton-cancelar",
+      },
       preConfirm: async () => {
         const nombre = document.getElementById("swal-nombre").value;
         const descripcion = document.getElementById("swal-descripcion").value;
@@ -93,15 +114,32 @@ const Categorias = () => {
       },
     }).then((result) => {
       if (result.isConfirmed) {
+        // ✅ Obtener token JWT del localStorage (o donde lo guardes)
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          Swal.fire(
+            "Error",
+            "Debes iniciar sesión para agregar una categoría",
+            "error"
+          );
+          return;
+        }
+
         api
-          .post("/categorias", result.value)
+          .post("/categorias", result.value, {
+            headers: {
+              Authorization: `Bearer ${token}`, // ✅ Token en el header
+            },
+          })
           .then(() => {
             cargarCategorias();
             Swal.fire("Éxito", "Categoría agregada correctamente", "success");
           })
-          .catch(() =>
-            Swal.fire("Error", "No se pudo agregar la categoría", "error")
-          );
+          .catch((error) => {
+            console.error("Error al agregar categoría:", error);
+            Swal.fire("Error", "No se pudo agregar la categoría", "error");
+          });
       }
     });
   };
@@ -161,6 +199,18 @@ const Categorias = () => {
   };
 
   const eliminarCategoria = (id) => {
+    // Get the token from localStorage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      Swal.fire(
+        "Error",
+        "No estás autorizado. Por favor, inicia sesión nuevamente.",
+        "error"
+      );
+      return;
+    }
+
     Swal.fire({
       title: "¿Eliminar esta categoría?",
       text: "Esta acción no se puede deshacer",
@@ -171,7 +221,12 @@ const Categorias = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         api
-          .delete(`/categorias/${id}`)
+          .delete(`/categorias/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
           .then(() => {
             cargarCategorias();
             Swal.fire(
@@ -180,9 +235,20 @@ const Categorias = () => {
               "success"
             );
           })
-          .catch(() =>
-            Swal.fire("Error", "No se pudo eliminar la categoría", "error")
-          );
+          .catch((error) => {
+            console.error("Error al eliminar categoría:", error);
+            let errorMessage = "No se pudo eliminar la categoría";
+
+            if (error.response) {
+              if (error.response.status === 403) {
+                errorMessage = "No tienes permiso para eliminar esta categoría";
+              } else if (error.response.status === 401) {
+                errorMessage = "Sesión expirada. Por favor, inicia sesión nuevamente";
+              }
+            }
+
+            Swal.fire("Error", errorMessage, "error");
+          });
       }
     });
   };

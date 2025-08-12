@@ -7,8 +7,8 @@ import { setToken, setUser, setRol } from "../Reducers/authReducer"
 
 
 
-const API_URL = import.meta.env.VITE_BACKEND_URL  + "/api/auth/login";
-const ROL_URL = import.meta.env.VITE_BACKEND_URL + "/usuarios/rol";
+const API_URL = import.meta.env.VITE_BACKEND_URL + "/api/auth/login";
+const USER_INFO_URL = import.meta.env.VITE_BACKEND_URL + "/usuarios";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -28,11 +28,6 @@ const Login = () => {
         navigate('/registro?from=reservation'); // Redirige a la página de registro
       };
 
-    const handleLogin = () => {
-        // Lógica de inicio de sesión
-        // Si el inicio de sesión es exitoso, redirige al usuario a la página anterior
-        navigate(from, { replace: true });
-    };  
 
 
     useEffect(() => {
@@ -44,69 +39,58 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-
         try {
             const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email, contrasena: password }),
+                body: JSON.stringify({ 
+                    email, 
+                    contrasena: password
+                }),
             });
 
             if (!response.ok) {
-                throw new Error("Correo o contraseña incorrectos.");
+                throw new Error('Network response was not ok');
             }
 
             const data = await response.json();
-            console.log("Datos del backend:", data);
 
             if (data.jwt && data.usuario) {
-                const { id, nombre, apellido, email } = data.usuario;
-                const user = { id, nombre, apellido, email };
+                const { id } = data.usuario;
+                
+                // Set token first
                 dispatch(setToken(data.jwt));
-                dispatch(setUser(user));
-                if (rememberMe) {
-                    localStorage.setItem("token", data.jwt);
-                    localStorage.setItem("user", JSON.stringify(user));
-                } else {
-                    sessionStorage.setItem("token", data.jwt);
-                    localStorage.setItem("user", JSON.stringify(user));
-                }
-                setInicioExitoso(true);
-                console.log("Inicio de sesión exitoso:", user);
-                window.dispatchEvent(new Event("storage"));
-                             
-                axios.get(`${ROL_URL}/${user.id}`, {
+                
+                // Fetch complete user info including role
+                const userInfoResponse = await fetch(`${USER_INFO_URL}/${id}`, {
                     headers: {
-                        Authorization: `Bearer ${data.jwt}`,
-                    },
-                })
-                    .then((rolResponse) => {
-                        const rol = rolResponse.data;
-                        dispatch(setRol(rol));
-                        localStorage.setItem("rol", rol);
-                        if (rol === "ADMIN") {
-                            navigate("/administracion");
-                        } else{
-                            if (fromReservation) {
-                                navigate(from, { replace: true }); // Redirigir a la página de reserva original
-                            } else {
-                                navigate("/"); // Redirigir al home si no venía de una reserva
-                            }
-                        }
-                    })
-                    .catch((rolError) => {
-                        console.error("Error al obtener el rol:", rolError);
-                        navigate("/");
-                    });
+                        "Authorization": `Bearer ${data.jwt}`
+                    }
+                });
+                
+                if (userInfoResponse.ok) {
+                    const userInfo = await userInfoResponse.json();
+                    
+                    // Update user state with complete info including role
+                    dispatch(setUser(userInfo));
+                    dispatch(setRol(userInfo.rol));
+                    
+                    setInicioExitoso("Inicio de sesión exitoso");
+                    
+                    if (userInfo.rol === "ADMIN") {
+                        navigate("/administracion");
+                    } else {
+                        navigate(fromReservation ? from : "/");
+                    }
+                }
             } else {
-                throw new Error("Respuesta del servidor inválida.");
+                setError("Credenciales inválidas");
             }
-        } catch (err) {
-            console.error("Error en la autenticación:", err);
-            setError("Correo o contraseña incorrectos. Verifica tus datos.");
+        } catch (error) {
+            setError("Error al iniciar sesión");
+            console.error("Error:", error);
         }
     };
 

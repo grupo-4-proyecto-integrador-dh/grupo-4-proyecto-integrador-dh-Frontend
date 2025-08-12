@@ -252,6 +252,64 @@ th {
   text-align: right;
 }
 
+/* Update the existing modal-content input styles and add new ones */
+.swal2-popup .swal2-input,
+.swal2-popup .swal2-file,
+.swal2-popup .swal2-textarea,
+.swal2-popup .custom-file-upload,
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: calc(100% - 40px) !important;
+  max-width: 500px !important;
+  margin: 10px auto !important;
+  padding: 10px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  outline: none !important;
+  transition: border-color 0.3s !important;
+  box-sizing: border-box !important;
+}
+
+/* Update the file input container styles */
+.custom-file-upload {
+  display: inline-block;
+  width: calc(100% - 40px) !important;
+  max-width: 500px !important;
+  margin: 10px auto !important;
+  background-color: #f4e3c1;
+  border: 2px dashed #d19a6c !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-sizing: border-box !important;
+}
+
+/* Style focus state for all inputs */
+.swal2-popup .swal2-input:focus,
+.swal2-popup .swal2-file:focus,
+.swal2-popup .swal2-textarea:focus,
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+  border-color: #e3b085 !important;
+  box-shadow: 0 0 5px rgba(227, 176, 133, 0.5) !important;
+}
+
+/* Update button styles to match input width */
+.swal2-popup .swal2-actions {
+  width: calc(100% - 40px) !important;
+  max-width: 500px !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure content is centered */
+.swal2-popup .swal2-html-container {
+  text-align: center !important;
+}
+
 .modal-content input {
   width: 100%;
   padding: 10px;
@@ -373,4 +431,108 @@ th {
   border-radius: 5px;
   padding: 10px 20px;
   font-weight: bold;
+}
+
+/* Styles for file input in modal */
+.custom-file-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background-color: #f4e3c1;
+  color: #6d4c41;
+  border: 2px dashed #d19a6c;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.custom-file-input:hover {
+  background-color: #e3b085;
+  border-color: #6d4c41;
+}
+
+/* Hide the default "Examinar..." button */
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+  width: 0;
+}
+
+/* Create custom button appearance */
+.custom-file-input::before {
+  content: "📸 Seleccionar imagen";
+  display: inline-block;
+  background: #d19a6c;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.custom-file-input:hover::before {
+  background: #6d4c41;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-file-input:active::before {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-input-container {
+  position: relative;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.file-name {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #6d4c41;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Add these styles at the end of the file */
+.custom-file-upload {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  background-color: #f4e3c1;
+  border: 2px dashed #d19a6c;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.custom-file-upload:hover {
+  background-color: #e3b085;
+  border-color: #6d4c41;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #6d4c41;
+  font-weight: bold;
+}
+
+.file-name-display {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #6d4c41;
+  font-style: italic;
 }

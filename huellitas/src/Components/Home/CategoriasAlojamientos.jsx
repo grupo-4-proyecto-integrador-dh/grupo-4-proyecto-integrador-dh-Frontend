@@ -10,8 +10,8 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
   const [categoriasConCantidad, setCategoriasConCantidad] = useState([]);
   const sliderRef = useRef(null);
   const [index, setIndex] = useState(0);
-  const itemsPerPage = 3;
-  const cardWidthWithGap = 196;
+  const itemsPerPage = window.innerWidth < 768 ? 1 : 3;
+  const cardWidthWithGap = 196; // 180px card width + 16px gap
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -19,9 +19,10 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
         const response = await axios.get(
           import.meta.env.VITE_BACKEND_URL + "/categorias"
         );
+        console.log("Raw categories data:", response.data);
         setCategorias(response.data);
       } catch (error) {
-        console.error("Error al cargar las categorías:", error);
+        console.error("Error fetching categories:", error);
       }
     };
 
@@ -42,6 +43,8 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
 
   useEffect(() => {
     if (categorias.length > 0 && alojamientos.length > 0) {
+      console.log("Processing categories with alojamientos");
+      
       const conteoAlojamientos = alojamientos.reduce((acc, alojamiento) => {
         if (alojamiento.categoria && alojamiento.categoria.id) {
           const categoriaId = alojamiento.categoria.id;
@@ -51,13 +54,24 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
       }, {});
 
       const nuevasCategorias = categorias.map((categoria) => ({
-        ...categoria,
-        alojamientosCount: conteoAlojamientos[categoria.id] || 0,
+        id: categoria.id,
+        nombre: categoria.nombre,
+        imagenUrl: categoria.imagenUrl,
+        alojamientosCount: conteoAlojamientos[categoria.id] || 0
       }));
 
+      console.log("Categorías procesadas:", nuevasCategorias);
       setCategoriasConCantidad(nuevasCategorias);
     }
-  }, [categorias, alojamientos]);
+  }, [categorias, alojamientos]); // Only depend on raw data, not derived state
+
+  useEffect(() => {
+    if (categorias.length > 0) {
+      console.log("Processing categories:", categorias);
+      console.log("Current categoriasConCantidad:", categoriasConCantidad);
+      console.log("Current transform value:", -index * cardWidthWithGap);
+    }
+  }, [categorias, categoriasConCantidad, index]);
 
   const nextSlide = () => {
     if (index < categorias.length - itemsPerPage) {
@@ -79,6 +93,20 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
     onClearCategoryFilter();
   };
 
+  // Agregado para manejar el estado de carga
+  if (categoriasConCantidad.length === 0) {
+    return (
+      <section className="main__categorias">
+        <div className="categorias__header">
+          <h2>Categorías</h2>
+        </div>
+        <div className="carousel-container">
+          <p>Cargando categorías...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="main__categorias">
       <div className="categorias__header">
@@ -91,24 +119,33 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
       </div>
 
       <div className="carousel-container">
-        <button className="prev-btn" onClick={prevSlide} disabled={index === 0}>
+        <button 
+          className="prev-btn" 
+          onClick={prevSlide} 
+          disabled={index === 0}
+        >
           <p>‹</p>
         </button>
 
-        <div className="carousel-slider" ref={sliderRef}>
+        <div className="carousel-slider">
           <div
             className="carousel-track"
-            style={{ transform: `translateX(-${index * cardWidthWithGap}px)` }}
+            style={{
+              transform: `translateX(-${index * cardWidthWithGap}px)`,
+              display: 'flex',
+              gap: '1rem',
+              transition: 'transform 0.5s ease-in-out'
+            }}
           >
             {categoriasConCantidad.map((categoria) => (
               <CategoriaCard
                 key={categoria.id}
                 nombre={categoria.nombre}
-                imagen={categoria.imagenUrl || "/imagenes/default.jpg"}
-                alt={`Imagen de ${categoria.nombre}`}
-                cantidad={categoria.alojamientosCount}
+                imagen={categoria.imagenUrl}
+                alt={`Categoría ${categoria.nombre}`}
+                cantidad={categoria.alojamientosCount || 0}
                 onClick={() => handleCardClick(categoria.id)}
-                isSelected={selectedCategories.includes(categoria.id)} 
+                isSelected={selectedCategories.includes(categoria.id)}
               />
             ))}
           </div>
@@ -117,7 +154,7 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
         <button
           className="next-btn"
           onClick={nextSlide}
-          disabled={index >= categorias.length - itemsPerPage}
+          disabled={index >= categoriasConCantidad.length - itemsPerPage}
         >
           <p>›</p>
         </button>
@@ -129,7 +166,7 @@ const CategoriasAlojamientos = ({ onCategoryClick, onClearCategoryFilter, select
 CategoriasAlojamientos.propTypes = {
   onCategoryClick: PropTypes.func.isRequired,
   onClearCategoryFilter: PropTypes.func.isRequired,
-  selectedCategories: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedCategories: PropTypes.arrayOf(PropTypes.number).isRequired, // Changed from PropTypes.object
 };
 
 

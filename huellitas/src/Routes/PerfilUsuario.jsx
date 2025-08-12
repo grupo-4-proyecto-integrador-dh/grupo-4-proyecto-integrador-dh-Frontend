@@ -68,37 +68,33 @@ const PerfilUsuario = () => {
   const obtenerDatosCliente = async (id, token) => {
     setCargandoUsuario(true);
     try {
-      // Usar el endpoint completo de perfil con el ID del usuario
-      const response = await axios.get(`https://rare-compassion-production.up.railway.app/perfil/${id}`, {
+      const response = await axios.get(`${url_base}/perfil/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
       
       console.log("Datos completos del perfil:", response.data);
-      
-      // Actualizar el usuario con los datos completos
       setUsuario(response.data);
-      
       setCargandoUsuario(false);
     } catch (error) {
       console.error("Error al obtener datos del perfil:", error);
       
-      if (error.response && error.response.status === 403) {
-        // Si hay un error de autorización (token expirado)
+      if (error.response?.status === 403) {
         Swal.fire({
           title: "Sesión expirada",
           text: "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
           icon: "warning",
           confirmButtonText: "Iniciar sesión"
         }).then(() => {
-          // Limpiar el localStorage y redirigir al login
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           navigate("/login");
         });
       } else {
-        setErrorUsuario("No se pudieron cargar los datos completos del usuario");
+        setErrorUsuario(`Error al cargar los datos: ${error.response?.data?.message || 'Error de conexión'}`);
       }
       
       setCargandoUsuario(false);

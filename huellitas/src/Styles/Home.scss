@@ -49,21 +49,28 @@
     width: 100%;
     max-width: 1200px;
     position: relative;
+    padding: 0 60px;
+    margin: 20px auto; // Changed to auto for horizontal centering
   }
 
   .carousel-slider {
-    padding: 14px;
     overflow: hidden;
-    width: 80%;
-    min-height: 248px;
-    max-width: 1000px;
+    width: 100%;
+    min-height: 260px;
+    position: relative;
+    display: flex; // Added
+    justify-content: center; // Added
   }
 
   .carousel-track {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     transition: transform 0.5s ease-in-out;
     width: fit-content;
+    min-height: 240px;
+    margin: 0 auto; // Added
+    justify-content: center; // Added
+    padding: 0 calc((100% - (180px * 3 + 3rem)) / 2); // Added to center cards
   }
 
   @keyframes show-card {
@@ -73,22 +80,19 @@
     }
   }
   .card__container {
+    flex: 0 0 180px;
+    width: 180px; // Fixed width
+    height: 240px; // Fixed height
+    padding: 1.5rem;
+    margin: 0;
     display: flex;
-    opacity: 0;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; // Better spacing
     background-color: #f9f9f9;
-    gap: 1rem;
     border-radius: 12px;
-    padding: 1rem;
-    width: 180px;
-    height: 220px;
-    transform: scale(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: show-card 600ms 100ms cubic-bezier(0.61, 0.59, 0.07, 1.04)
-      forwards;
-    cursor: pointer;
 
     &:hover {
       transform: translateY(-5px);
@@ -105,38 +109,34 @@
     }
 
     .categorias__card {
-      width: 100px;
-      height: 100px;
+      width: 120px; // Larger icons
+      height: 120px;
       border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(0, 0, 0, 0.05);
-      transition: background-color 0.3s ease;
+      margin-bottom: 1rem;
 
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
-        filter: grayscale(30%);
       }
     }
 
     .categorias__card__info {
+      width: 100%;
       text-align: center;
-      margin-top: 10px;
-
+      
       p {
-        font-size: 1rem;
-        font-weight: bold;
-        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        color: colors.$primary;
       }
 
       .cantidad {
         font-size: 0.9rem;
-        color: #777;
+        color: #666;
+        display: block; // Stack on new line
       }
     }
   }
@@ -148,108 +148,112 @@
 
   .prev-btn,
   .next-btn {
-    background-color: colors.$primary;
-    color: white;
-    border: none;
-    aspect-ratio: 1 / 1;
-    height: 55px;
-    border-radius: 50%;
-    padding: 10px 15px;
-    font-size: 2rem;
-    cursor: pointer;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
-    transition: background 0.3s ease;
-
-    p {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      margin: 0;
-    }
-
-    &:hover {
-      background-color: color.mix(colors.$primary, colors.$white, 50%);
-    }
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 48px;  // Increased from 40px
+    height: 48px; // Increased from 40px
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px; // Increased from 24px
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    &:hover:not(:disabled) {
+      background: #f5f5f5;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    p {
+      margin: 0;
+      line-height: 1;
+      font-weight: bold;
+      color: #6d4c41;
+    }
   }
 
   .prev-btn {
-    left: 10px;
+    left: 10px; // Increased from 0
   }
+
   .next-btn {
-    right: 10px;
+    right: 10px; // Increased from 0
   }
 
   @media (max-width: 768px) {
-    .carousel-slider {
-      width: 100%;
-    }
-
-    .card__container {
-      width: 150px;
-      height: 200px;
-    }
-
-    .categorias__card {
-      width: 80px;
-      height: 80px;
-    }
-
-    .categorias__card__info p {
-      font-size: 0.9rem;
-    }
-
-    .categorias__card__info .cantidad {
-      font-size: 0.8rem;
-    }
-
     .prev-btn,
     .next-btn {
-      font-size: 1.2rem;
-      padding: 8px 12px;
-    }
-
-    .carousel-container {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .categorias__header h2 {
-      font-size: 1.3rem;
-    }
-
-    .clear-filter-btn {
-      padding: 8px 12px;
+      width: 40px;  // Slightly smaller on tablets
+      height: 40px;
+      font-size: 28px;
     }
   }
 
   @media (max-width: 480px) {
-    .card__container {
-      width: 130px;
-      height: 180px;
-    }
-
-    .categorias__card {
-      width: 70px;
-      height: 70px;
-    }
-
     .prev-btn,
     .next-btn {
-      font-size: 1rem;
-      padding: 6px 10px;
+      width: 36px;  // Even smaller on mobile
+      height: 36px;
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .carousel-slider {
+      min-height: 240px;
     }
 
-    .categorias__header h2 {
-      font-size: 1.2rem;
+    .card__container {
+      width: 160px;
+      height: 220px;
+      padding: 1rem;
+
+      .categorias__card {
+        width: 100px;
+        height: 100px;
+      }
+
+      .categorias__card__info {
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .carousel-track {
+      padding: 0 calc((100% - (160px * 2 + 1.5rem)) / 2); // Adjust for tablet
+    }
+  }
+
+  @media (max-width: 480px) {
+    .carousel-container {
+      padding: 0 45px;
+    }
+
+    .card__container {
+      width: 140px;
+      height: 200px;
+
+      .categorias__card {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    .carousel-track {
+      padding: 0 calc((100% - 140px) / 2); // Adjust for mobile
     }
   }
 }
