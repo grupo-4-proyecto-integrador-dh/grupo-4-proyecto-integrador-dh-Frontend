@@ -223,13 +223,14 @@
   }
 
   .imagen_principal {
-    grid-column: 1/3;
-    grid-row: 1;
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
   }
 
   .grid_layout_galeria {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    display: grid;
+    grid-template-columns: 300px (2, 1fr);
+    grid-template-rows: 300px (4, 1fr);
     gap: 8px;
   }
 
